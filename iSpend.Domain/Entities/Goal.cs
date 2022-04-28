@@ -7,21 +7,21 @@ public sealed class Goal : Entity
     public Guid UserId { get; private set; }
     public string Name { get; private set; }
     public string Description { get; private set; }
-    public float GoalValue { get; private set; }
-    public float ValueSaved { get; private set; }
+    public decimal GoalValue { get; private set; }
+    public decimal ValueSaved { get; private set; }
     public int Duration { get; private set; }
 
-    public Goal(string name, string description, float goalValue, float valueSaved, int duration, string userId)
+    public Goal(string name, string description, decimal goalValue, decimal valueSaved, int duration, string userId)
     {
         ValidateDomain(name, description, goalValue, valueSaved, duration, userId);
     }
 
-    public void Update(string name, string description, float goalValue, float valueSaved, int duration)
+    public void Update(string name, string description, decimal goalValue, decimal valueSaved, int duration)
     {
         ValidateDomain(name, description, goalValue, valueSaved, duration, this.UserId.ToString(), this.RegisteredAt);
     }
 
-    private void ValidateDomain(string name, string description, float goalValue, float valueSaved, int duration, string userId, DateTime? registeredAt = null)
+    private void ValidateDomain(string name, string description, decimal goalValue, decimal valueSaved, int duration, string userId, DateTime? registeredAt = null)
     {
         Guid validGuid;
         DomainExceptionValidation.When(string.IsNullOrEmpty(name), "Invalid name. Name is required");
