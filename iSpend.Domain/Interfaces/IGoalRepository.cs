@@ -4,7 +4,7 @@ namespace iSpend.Domain.Interfaces;
 
 public interface IGoalRepository
 {
-    Task<IEnumerable<Goal>> GetGoalsAsync();
+    Task<IEnumerable<Goal>> GetGoalsAsync(string userId);
     Task<Goal> GetGoalByIdAsync(int? id);
     Task<Goal> CreateAsync(Goal goal);
     Task<Goal> UpdateAsync(Goal goal);
