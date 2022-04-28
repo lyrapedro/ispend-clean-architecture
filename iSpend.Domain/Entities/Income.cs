@@ -9,7 +9,6 @@ public sealed class Income : Entity
     public bool Recurrent { get; private set; }
     public float Value { get; private set; }
     public bool Active { get; private set; }
-    public DateTime RegisteredAt { get; private set; }
 
     public Income(string name, float value, bool active, bool recurrent, string userId)
     {
