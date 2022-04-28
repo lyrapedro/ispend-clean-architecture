@@ -2,24 +2,26 @@
 
 namespace iSpend.Domain.Entities;
 
-public sealed class Goal
+public sealed class Goal : Entity
 {
-    public int Id { get; private set; }
     public Guid UserId { get; private set; }
     public string Name { get; private set; }
     public string Description { get; private set; }
     public float GoalValue { get; private set; }
     public float ValueSaved { get; private set; }
     public int Duration { get; private set; }
-    public DateTime RegisteredAt { get; private set; }
-    public DateTime ModifiedAt { get; private set; }
 
     public Goal(string name, string description, float goalValue, float valueSaved, int duration, string userId)
     {
         ValidateDomain(name, description, goalValue, valueSaved, duration, userId);
     }
 
-    private void ValidateDomain(string name, string description, float goalValue, float valueSaved, int duration, string userId)
+    public void Update(string name, string description, float goalValue, float valueSaved, int duration)
+    {
+        ValidateDomain(name, description, goalValue, valueSaved, duration, this.UserId.ToString(), this.RegisteredAt);
+    }
+
+    private void ValidateDomain(string name, string description, float goalValue, float valueSaved, int duration, string userId, DateTime? registeredAt = null)
     {
         Guid validGuid;
         DomainExceptionValidation.When(string.IsNullOrEmpty(name), "Invalid name. Name is required");
@@ -33,7 +35,7 @@ public sealed class Goal
         GoalValue = goalValue;
         ValueSaved = valueSaved;
         Duration = duration;
-        RegisteredAt = DateTime.UtcNow;
+        RegisteredAt = registeredAt == null ? DateTime.UtcNow : registeredAt.Value;
         ModifiedAt = DateTime.UtcNow;
         UserId = validGuid;
     }

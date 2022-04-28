@@ -2,9 +2,8 @@
 
 namespace iSpend.Domain.Entities;
 
-public sealed class Income
+public sealed class Income : Entity
 {
-    public int Id { get; private set; }
     public Guid UserId { get; private set; }
     public string Name { get; private set; }
     public bool Recurrent { get; private set; }
@@ -17,7 +16,12 @@ public sealed class Income
         ValidateDomain(name, value, active, recurrent, userId);
     }
 
-    private void ValidateDomain(string name, float value, bool active, bool recurrent, string userId)
+    public void Update(string name, float value, bool active, bool recurrent)
+    {
+        ValidateDomain(name, value, active, recurrent, this.UserId.ToString(), this.RegisteredAt);
+    }
+
+    private void ValidateDomain(string name, float value, bool active, bool recurrent, string userId, DateTime? registeredAt = null)
     {
         Guid validGuid;
         DomainExceptionValidation.When(string.IsNullOrEmpty(name), "Invalid name. Name is required");
@@ -28,7 +32,8 @@ public sealed class Income
         Value = value;
         Active = active;
         Recurrent = recurrent;
-        RegisteredAt = DateTime.UtcNow;
+        RegisteredAt = registeredAt == null ? DateTime.UtcNow : registeredAt.Value;
+        ModifiedAt = DateTime.UtcNow;
         UserId = validGuid;
     }
 }

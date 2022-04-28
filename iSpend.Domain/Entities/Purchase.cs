@@ -2,9 +2,8 @@
 
 namespace iSpend.Domain.Entities;
 
-public sealed class Purchase
+public sealed class Purchase : Entity
 {
-    public int Id { get; private set; }
     public string Name { get; private set; }
     public float Price { get; private set; }
     public DateTime PurchasedAt { get; private set; }
@@ -14,11 +13,16 @@ public sealed class Purchase
         ValidateDomain(name, price, purchasedAt, creditCardId);
     }
 
+    public void Update(string name, float price, string purchasedAt, int creditCardId)
+    {
+        ValidateDomain(name, price, purchasedAt, creditCardId, this.RegisteredAt);
+    }
+
     public int CreditCardId { get; set; }
     public CreditCard CreditCard { get; set; }
     public ICollection<Installment> Installments { get; set; }
 
-    private void ValidateDomain(string name, float price, string purchasedAt, int creditCardId)
+    private void ValidateDomain(string name, float price, string purchasedAt, int creditCardId, DateTime? registeredAt = null)
     {
         DateTime validDate;
         DomainExceptionValidation.When(string.IsNullOrEmpty(name), "Invalid name. Name is required");
@@ -30,5 +34,8 @@ public sealed class Purchase
         Price = price;
         PurchasedAt = validDate;
         CreditCardId = creditCardId;
+        RegisteredAt = registeredAt == null ? DateTime.UtcNow : registeredAt.Value;
+        ModifiedAt = DateTime.UtcNow;
+
     }
 }
