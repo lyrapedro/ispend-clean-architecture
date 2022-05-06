@@ -21,7 +21,7 @@ public class GoalRepository : IGoalRepository
         return expense;
     }
 
-    public async Task<Goal> GetGoalById(int? id)
+    public async Task<Goal> GetById(int? id)
     {
         return await _goalContext.Goals.FindAsync(id);
     }

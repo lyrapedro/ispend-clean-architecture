@@ -21,7 +21,7 @@ public class PurchaseRepository : IPurchaseRepository
         return purchase;
     }
 
-    public async Task<Purchase> GetPurchaseById(int? id)
+    public async Task<Purchase> GetById(int? id)
     {
         return await _purchaseRepository.Purchases.FindAsync(id);
     }

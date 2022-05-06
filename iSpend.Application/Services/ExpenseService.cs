@@ -25,7 +25,7 @@ public class ExpenseService : IExpenseService
 
     public async Task<ExpenseDTO> GetById(int? id)
     {
-        var expense = await _expenseRepository.GetExpenseById(id);
+        var expense = await _expenseRepository.GetById(id);
         return _mapper.Map<ExpenseDTO>(expense);
     }
 
@@ -43,7 +43,7 @@ public class ExpenseService : IExpenseService
 
     public async Task Remove(int? id)
     {
-        var expense = _expenseRepository.GetExpenseById(id).Result;
+        var expense = _expenseRepository.GetById(id).Result;
         await _expenseRepository.Remove(expense);
     }
 }

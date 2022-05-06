@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using iSpend.Application.DTOs;
+using iSpend.Application.Interfaces;
 using iSpend.Domain.Entities;
 using iSpend.Domain.Interfaces;
 
 namespace iSpend.Application.Services;
 
-public class GoalService
+public class GoalService : IGoalService
 {
     private IGoalRepository _goalRepository;
     private readonly IMapper _mapper;
@@ -24,7 +25,7 @@ public class GoalService
 
     public async Task<GoalDTO> GetById(int? id)
     {
-        var goal = await _goalRepository.GetGoalById(id);
+        var goal = await _goalRepository.GetById(id);
         return _mapper.Map<GoalDTO>(goal);
     }
 
@@ -42,7 +43,7 @@ public class GoalService
 
     public async Task Remove(int? id)
     {
-        var goal = _goalRepository.GetGoalById(id).Result;
+        var goal = _goalRepository.GetById(id).Result;
         await _goalRepository.Remove(goal);
     }
 }

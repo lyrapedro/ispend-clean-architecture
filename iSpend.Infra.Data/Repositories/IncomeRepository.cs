@@ -21,7 +21,7 @@ public class IncomeRepository : IIncomeRepository
         return expense;
     }
 
-    public async Task<Income> GetIncomeById(int? id)
+    public async Task<Income> GetById(int? id)
     {
         return await _incomeContext.Incomes.FindAsync(id);
     }

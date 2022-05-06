@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using iSpend.Application.DTOs;
+using iSpend.Application.Interfaces;
 using iSpend.Domain.Entities;
 using iSpend.Domain.Interfaces;
 
 namespace iSpend.Application.Services;
 
-public class IncomeService
+public class IncomeService : IIncomeService
 {
     private IIncomeRepository _incomeRepository;
     private readonly IMapper _mapper;
@@ -24,7 +25,7 @@ public class IncomeService
 
     public async Task<IncomeDTO> GetById(int? id)
     {
-        var income = await _incomeRepository.GetIncomeById(id);
+        var income = await _incomeRepository.GetById(id);
         return _mapper.Map<IncomeDTO>(income);
     }
 
@@ -42,7 +43,7 @@ public class IncomeService
 
     public async Task Remove(int? id)
     {
-        var income = _incomeRepository.GetIncomeById(id).Result;
+        var income = _incomeRepository.GetById(id).Result;
         await _incomeRepository.Remove(income);
     }
 }

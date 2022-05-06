@@ -21,7 +21,7 @@ public class ExpenseRepository : IExpenseRepository
         return expense;
     }
 
-    public async Task<Expense> GetExpenseById(int? id)
+    public async Task<Expense> GetById(int? id)
     {
         return await _expenseContext.Expenses.FindAsync(id);
     }

@@ -21,7 +21,7 @@ public class SubscriptionRepository : ISubscriptionRepository
         return subscription;
     }
 
-    public async Task<Subscription> GetSubscriptionById(int? id)
+    public async Task<Subscription> GetById(int? id)
     {
         return await _subscriptionContext.Subscriptions.FindAsync(id);
     }

@@ -20,7 +20,7 @@ public class CreditCardRepository : ICreditCardRepository
         return creditCard;
     }
 
-    public async Task<CreditCard> GetCreditCardById(int? id)
+    public async Task<CreditCard> GetById(int? id)
     {
         return await _creditCardContext.CreditCards.FindAsync(id);
     }

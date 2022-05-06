@@ -5,7 +5,7 @@ namespace iSpend.Domain.Interfaces;
 public interface IPurchaseRepository
 {
     Task<IEnumerable<Purchase>> GetPurchases(int creditCardId);
-    Task<Purchase> GetPurchaseById(int? id);
+    Task<Purchase> GetById(int? id);
     Task<Purchase> GetPurchaseCreditCard(int? id);
     Task<Purchase> Create(Purchase purchase);
     Task<Purchase> Update(Purchase purchase);

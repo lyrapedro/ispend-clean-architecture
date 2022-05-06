@@ -21,7 +21,7 @@ public class InstallmentRepository : IInstallmentRepository
         return installment;
     }
 
-    public async Task<Installment> GetInstallmentById(int? id)
+    public async Task<Installment> GetById(int? id)
     {
         return await _installmentContext.Installments.FindAsync(id);
     }
