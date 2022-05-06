@@ -14,32 +14,32 @@ public class GoalRepository : IGoalRepository
         _goalContext = context;
     }
 
-    public async Task<Goal> CreateAsync(Goal expense)
+    public async Task<Goal> Create(Goal expense)
     {
         _goalContext.Add(expense);
         await _goalContext.SaveChangesAsync();
         return expense;
     }
 
-    public async Task<Goal> GetGoalByIdAsync(int? id)
+    public async Task<Goal> GetGoalById(int? id)
     {
         return await _goalContext.Goals.FindAsync(id);
     }
 
-    public async Task<IEnumerable<Goal>> GetGoalsAsync(string userId)
+    public async Task<IEnumerable<Goal>> GetGoals(string userId)
     {
         Guid validGuid = Guid.Parse(userId);
         return await _goalContext.Goals.Where(g => g.UserId == validGuid).ToListAsync();
     }
 
-    public async Task<Goal> RemoveAsync(Goal expense)
+    public async Task<Goal> Remove(Goal expense)
     {
         _goalContext.Remove(expense);
         await _goalContext.SaveChangesAsync();
         return expense;
     }
 
-    public async Task<Goal> UpdateAsync(Goal expense)
+    public async Task<Goal> Update(Goal expense)
     {
         _goalContext.Update(expense);
         await _goalContext.SaveChangesAsync();

@@ -4,9 +4,9 @@ namespace iSpend.Domain.Interfaces;
 
 public interface IIncomeRepository
 {
-    Task<IEnumerable<Income>> GetIncomesAsync(string userId);
-    Task<Income> GetIncomeByIdAsync(int? id);
-    Task<Income> CreateAsync(Income income);
-    Task<Income> UpdateAsync(Income income);
-    Task<Income> RemoveAsync(Income income);
+    Task<IEnumerable<Income>> GetIncomes(string userId);
+    Task<Income> GetIncomeById(int? id);
+    Task<Income> Create(Income income);
+    Task<Income> Update(Income income);
+    Task<Income> Remove(Income income);
 }

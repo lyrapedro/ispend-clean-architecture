@@ -14,36 +14,36 @@ public class SubscriptionRepository : ISubscriptionRepository
         _subscriptionContext = context;
     }
 
-    public async Task<Subscription> CreateAsync(Subscription subscription)
+    public async Task<Subscription> Create(Subscription subscription)
     {
         _subscriptionContext.Add(subscription);
         await _subscriptionContext.SaveChangesAsync();
         return subscription;
     }
 
-    public async Task<Subscription> GetSubscriptionByIdAsync(int? id)
+    public async Task<Subscription> GetSubscriptionById(int? id)
     {
         return await _subscriptionContext.Subscriptions.FindAsync(id);
     }
 
-    public async Task<Subscription> GetSubscriptionCreditCardAsync(int? id)
+    public async Task<Subscription> GetSubscriptionCreditCard(int? id)
     {
         return await _subscriptionContext.Subscriptions.Include(s => s.CreditCard).SingleOrDefaultAsync(s => s.Id == id);
     }
 
-    public async Task<IEnumerable<Subscription>> GetSubscriptionsAsync(int creditCardId)
+    public async Task<IEnumerable<Subscription>> GetSubscriptions(int creditCardId)
     {
         return await _subscriptionContext.Subscriptions.Where(s => s.CreditCardId == creditCardId).ToListAsync();
     }
 
-    public async Task<Subscription> RemoveAsync(Subscription subscription)
+    public async Task<Subscription> Remove(Subscription subscription)
     {
         _subscriptionContext.Remove(subscription);
         await _subscriptionContext.SaveChangesAsync();
         return subscription;
     }
 
-    public async Task<Subscription> UpdateAsync(Subscription subscription)
+    public async Task<Subscription> Update(Subscription subscription)
     {
         _subscriptionContext.Update(subscription);
         await _subscriptionContext.SaveChangesAsync();

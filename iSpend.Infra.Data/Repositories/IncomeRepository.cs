@@ -14,32 +14,32 @@ public class IncomeRepository : IIncomeRepository
         _incomeContext = context;
     }
 
-    public async Task<Income> CreateAsync(Income expense)
+    public async Task<Income> Create(Income expense)
     {
         _incomeContext.Add(expense);
         await _incomeContext.SaveChangesAsync();
         return expense;
     }
 
-    public async Task<Income> GetIncomeByIdAsync(int? id)
+    public async Task<Income> GetIncomeById(int? id)
     {
         return await _incomeContext.Incomes.FindAsync(id);
     }
 
-    public async Task<IEnumerable<Income>> GetIncomesAsync(string userId)
+    public async Task<IEnumerable<Income>> GetIncomes(string userId)
     {
         Guid validGuid = Guid.Parse(userId);
         return await _incomeContext.Incomes.Where(i => i.UserId == validGuid).ToListAsync();
     }
 
-    public async Task<Income> RemoveAsync(Income expense)
+    public async Task<Income> Remove(Income expense)
     {
         _incomeContext.Remove(expense);
         await _incomeContext.SaveChangesAsync();
         return expense;
     }
 
-    public async Task<Income> UpdateAsync(Income expense)
+    public async Task<Income> Update(Income expense)
     {
         _incomeContext.Update(expense);
         await _incomeContext.SaveChangesAsync();

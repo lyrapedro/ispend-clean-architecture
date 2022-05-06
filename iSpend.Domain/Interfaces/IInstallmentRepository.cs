@@ -4,10 +4,10 @@ namespace iSpend.Domain.Interfaces;
 
 public interface IInstallmentRepository
 {
-    Task<IEnumerable<Installment>> GetInstallmentsAsync(int purchaseId);
-    Task<Installment> GetInstallmentByIdAsync(int? id);
-    Task<Installment> GetInstallmentPurchaseAsync(int? id);
-    Task<Installment> CreateAsync(Installment installment);
-    Task<Installment> UpdateAsync(Installment installment);
-    Task<Installment> RemoveAsync(Installment installment);
+    Task<IEnumerable<Installment>> GetInstallments(int purchaseId);
+    Task<Installment> GetInstallmentById(int? id);
+    Task<Installment> GetInstallmentPurchase(int? id);
+    Task<Installment> Create(Installment installment);
+    Task<Installment> Update(Installment installment);
+    Task<Installment> Remove(Installment installment);
 }

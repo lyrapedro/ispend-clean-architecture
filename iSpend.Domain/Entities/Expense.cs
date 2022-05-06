@@ -7,33 +7,35 @@ public sealed class Expense : Entity
     public Guid UserId { get; private set; }
     public string Name { get; private set; }
     public decimal Value { get; private set; }
+    public bool Recurrent { get; private set; }
     public bool Active { get; private set; }
-    public int Duration { get; private set; }
+    public int BillingDay { get; set; }
     public int PaidMonths { get; private set; }
 
-    public Expense(string name, decimal value, bool active, int duration, int paidMonths, string userId)
+    public Expense(string name, decimal value, bool active, bool recurrent, int billingDay, int paidMonths, string userId)
     {
-        ValidateDomain(name, value, active, duration, paidMonths, userId);
+        ValidateDomain(name, value, active, recurrent, billingDay, paidMonths, userId);
     }
 
-    public void Update(string name, decimal value, bool active, int duration, int paidMonths)
+    public void Update(string name, decimal value, bool active, bool recurrent, int billingDay, int paidMonths)
     {
-        ValidateDomain(name, value, active, duration, paidMonths, this.UserId.ToString(), this.RegisteredAt);
+        ValidateDomain(name, value, active, recurrent, billingDay, paidMonths, this.UserId.ToString(), this.RegisteredAt);
     }
 
-    private void ValidateDomain(string name, decimal value, bool active, int duration, int paidMonths, string userId, DateTime? registeredAt = null)
+    private void ValidateDomain(string name, decimal value, bool active, bool recurrent, int billingDay, int paidMonths, string userId, DateTime? registeredAt = null)
     {
         Guid validGuid;
         DomainExceptionValidation.When(string.IsNullOrEmpty(name), "Invalid name. Name is required");
         DomainExceptionValidation.When((value < 0), "Invalid value. Value cannot be less than 0");
-        DomainExceptionValidation.When((duration < 0), "Invalid duration. Duration must be number of months");
         DomainExceptionValidation.When((paidMonths < 0), "Invalid number of paid months.");
+        DomainExceptionValidation.When((billingDay < 0 || billingDay > 31), "Invalid billing day");
         DomainExceptionValidation.When(!Guid.TryParse(userId, out validGuid), "Invalid user.");
 
         Name = name;
         Value = value;
         Active = active;
-        Duration = duration;
+        Recurrent = recurrent;
+        BillingDay = billingDay;
         PaidMonths = paidMonths;
         RegisteredAt = registeredAt == null ? DateTime.UtcNow : registeredAt.Value;
         ModifiedAt = DateTime.UtcNow;

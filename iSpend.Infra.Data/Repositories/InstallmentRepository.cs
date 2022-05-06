@@ -14,36 +14,36 @@ public class InstallmentRepository : IInstallmentRepository
         _installmentContext = context;
     }
 
-    public async Task<Installment> CreateAsync(Installment installment)
+    public async Task<Installment> Create(Installment installment)
     {
         _installmentContext.Add(installment);
         await _installmentContext.SaveChangesAsync();
         return installment;
     }
 
-    public async Task<Installment> GetInstallmentByIdAsync(int? id)
+    public async Task<Installment> GetInstallmentById(int? id)
     {
         return await _installmentContext.Installments.FindAsync(id);
     }
 
-    public async Task<Installment> GetInstallmentPurchaseAsync(int? id)
+    public async Task<Installment> GetInstallmentPurchase(int? id)
     {
         return await _installmentContext.Installments.Include(i => i.Purchase).SingleOrDefaultAsync(i => i.Id == id);
     }
 
-    public async Task<IEnumerable<Installment>> GetInstallmentsAsync(int purchaseId)
+    public async Task<IEnumerable<Installment>> GetInstallments(int purchaseId)
     {
         return await _installmentContext.Installments.Where(i => i.PurchaseId == purchaseId).ToListAsync();
     }
 
-    public async Task<Installment> RemoveAsync(Installment installment)
+    public async Task<Installment> Remove(Installment installment)
     {
         _installmentContext.Remove(installment);
         await _installmentContext.SaveChangesAsync();
         return installment;
     }
 
-    public async Task<Installment> UpdateAsync(Installment installment)
+    public async Task<Installment> Update(Installment installment)
     {
         _installmentContext.Update(installment);
         await _installmentContext.SaveChangesAsync();

@@ -4,9 +4,9 @@ namespace iSpend.Domain.Interfaces;
 
 public interface ICreditCardRepository
 {
-    Task<IEnumerable<CreditCard>> GetCreditCardsAsync(string userId);
-    Task<CreditCard> GetCreditCardByIdAsync(int? id);
-    Task<CreditCard> CreateAsync(CreditCard creditCard);
-    Task<CreditCard> UpdateAsync(CreditCard creditCard);
-    Task<CreditCard> RemoveAsync(CreditCard creditCard);
+    Task<IEnumerable<CreditCard>> GetCreditCards(string userId);
+    Task<CreditCard> GetCreditCardById(int? id);
+    Task<CreditCard> Create(CreditCard creditCard);
+    Task<CreditCard> Update(CreditCard creditCard);
+    Task<CreditCard> Remove(CreditCard creditCard);
 }

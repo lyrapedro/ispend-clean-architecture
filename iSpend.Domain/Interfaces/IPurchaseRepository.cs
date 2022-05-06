@@ -4,10 +4,10 @@ namespace iSpend.Domain.Interfaces;
 
 public interface IPurchaseRepository
 {
-    Task<IEnumerable<Purchase>> GetPurchasesAsync(int creditCardId);
-    Task<Purchase> GetPurchaseByIdAsync(int? id);
-    Task<Purchase> GetPurchaseCreditCardAsync(int? id);
-    Task<Purchase> CreateAsync(Purchase purchase);
-    Task<Purchase> UpdateAsync(Purchase purchase);
-    Task<Purchase> RemoveAsync(Purchase purchase);
+    Task<IEnumerable<Purchase>> GetPurchases(int creditCardId);
+    Task<Purchase> GetPurchaseById(int? id);
+    Task<Purchase> GetPurchaseCreditCard(int? id);
+    Task<Purchase> Create(Purchase purchase);
+    Task<Purchase> Update(Purchase purchase);
+    Task<Purchase> Remove(Purchase purchase);
 }

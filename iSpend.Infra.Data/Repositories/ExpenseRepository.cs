@@ -14,32 +14,32 @@ public class ExpenseRepository : IExpenseRepository
         _expenseContext = context;
     }
 
-    public async Task<Expense> CreateAsync(Expense expense)
+    public async Task<Expense> Create(Expense expense)
     {
         _expenseContext.Add(expense);
         await _expenseContext.SaveChangesAsync();
         return expense;
     }
 
-    public async Task<Expense> GetExpenseByIdAsync(int? id)
+    public async Task<Expense> GetExpenseById(int? id)
     {
         return await _expenseContext.Expenses.FindAsync(id);
     }
 
-    public async Task<IEnumerable<Expense>> GetExpensesAsync(string userId)
+    public async Task<IEnumerable<Expense>> GetExpenses(string userId)
     {
         Guid validGuid = Guid.Parse(userId);
         return await _expenseContext.Expenses.Where(e => e.UserId == validGuid).ToListAsync();
     }
 
-    public async Task<Expense> RemoveAsync(Expense expense)
+    public async Task<Expense> Remove(Expense expense)
     {
         _expenseContext.Remove(expense);
         await _expenseContext.SaveChangesAsync();
         return expense;
     }
 
-    public async Task<Expense> UpdateAsync(Expense expense)
+    public async Task<Expense> Update(Expense expense)
     {
         _expenseContext.Update(expense);
         await _expenseContext.SaveChangesAsync();

@@ -9,24 +9,25 @@ public sealed class Goal : Entity
     public string Description { get; private set; }
     public decimal GoalValue { get; private set; }
     public decimal ValueSaved { get; private set; }
-    public int Duration { get; private set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
 
-    public Goal(string name, string description, decimal goalValue, decimal valueSaved, int duration, string userId)
+    public Goal(string name, string description, decimal goalValue, decimal valueSaved, DateTime startDate, DateTime endDate, string userId)
     {
-        ValidateDomain(name, description, goalValue, valueSaved, duration, userId);
+        ValidateDomain(name, description, goalValue, valueSaved, startDate, endDate, userId);
     }
 
-    public void Update(string name, string description, decimal goalValue, decimal valueSaved, int duration)
+    public void Update(string name, string description, decimal goalValue, decimal valueSaved, DateTime startDate, DateTime endDate)
     {
-        ValidateDomain(name, description, goalValue, valueSaved, duration, this.UserId.ToString(), this.RegisteredAt);
+        ValidateDomain(name, description, goalValue, valueSaved, startDate, endDate, this.UserId.ToString(), this.RegisteredAt);
     }
 
-    private void ValidateDomain(string name, string description, decimal goalValue, decimal valueSaved, int duration, string userId, DateTime? registeredAt = null)
+    private void ValidateDomain(string name, string description, decimal goalValue, decimal valueSaved, DateTime startDate, DateTime endDate, string userId, DateTime? registeredAt = null)
     {
         Guid validGuid;
         DomainExceptionValidation.When(string.IsNullOrEmpty(name), "Invalid name. Name is required");
         DomainExceptionValidation.When((goalValue < 0), "Invalid value. Value cannot be less than 0");
-        DomainExceptionValidation.When((duration < 0), "Invalid duration. Duration must be number of months");
+        DomainExceptionValidation.When((endDate > DateTime.UtcNow), "Invalid end date. End date must be a future date");
         DomainExceptionValidation.When((valueSaved < 0 || valueSaved > goalValue), "Invalid value. Value cannot be under than 0 or greater than goal value");
         DomainExceptionValidation.When(!Guid.TryParse(userId, out validGuid), "Invalid user.");
 
@@ -34,7 +35,8 @@ public sealed class Goal : Entity
         Description = description;
         GoalValue = goalValue;
         ValueSaved = valueSaved;
-        Duration = duration;
+        StartDate = startDate;
+        EndDate = endDate;
         RegisteredAt = registeredAt == null ? DateTime.UtcNow : registeredAt.Value;
         ModifiedAt = DateTime.UtcNow;
         UserId = validGuid;
