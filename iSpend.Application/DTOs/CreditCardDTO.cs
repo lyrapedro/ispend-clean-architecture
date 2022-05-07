@@ -5,6 +5,8 @@ namespace iSpend.Application.DTOs;
 
 public class CreditCardDTO
 {
+    public int Id { get; set; }
+
     [Required(ErrorMessage = "The user is required")]
     public Guid UserId { get; set; }
 

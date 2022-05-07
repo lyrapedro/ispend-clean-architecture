@@ -1,4 +1,7 @@
-﻿using iSpend.Domain.Interfaces;
+﻿using iSpend.Application.Interfaces;
+using iSpend.Application.Mappings;
+using iSpend.Application.Services;
+using iSpend.Domain.Interfaces;
 using iSpend.Infra.Data.Context;
 using iSpend.Infra.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +25,16 @@ public static class DependencyInjection
         services.AddScoped<IInstallmentRepository, InstallmentRepository>();
         services.AddScoped<IPurchaseRepository, PurchaseRepository>();
         services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+
+        services.AddScoped<ICreditCardService, CreditCardService>();
+        services.AddScoped<IExpenseService, ExpenseService>();
+        services.AddScoped<IGoalService, GoalService>();
+        services.AddScoped<IIncomeService, IncomeService>();
+        services.AddScoped<IInstallmentService, InstallmentService>();
+        services.AddScoped<IPurchaseService, PurchaseService>();
+        services.AddScoped<ISubscriptionService, SubscriptionService>();
+
+        services.AddAutoMapper(typeof(DomainToDTOMappingProfile));
 
         return services;
     }
