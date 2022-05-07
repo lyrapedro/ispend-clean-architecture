@@ -4,6 +4,7 @@ namespace iSpend.Domain.Entities;
 
 public sealed class Installment : Entity
 {
+    public int Sequence { get; set; }
     public decimal Price { get; private set; }
     public bool Paid { get; private set; }
     public DateTime ExpiresAt { get; set; }

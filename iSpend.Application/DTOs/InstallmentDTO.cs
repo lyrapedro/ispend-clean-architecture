@@ -8,6 +8,8 @@ public class InstallmentDTO
 {
     public int Id { get; set; }
 
+    public int Sequence { get; set; }
+
     [Required(ErrorMessage = "The price is required")]
     [Column(TypeName = "decimal(18, 2")]
     [DataType(DataType.Currency)]

@@ -1,15 +1,16 @@
-﻿using iSpend.Application.Interfaces;
+﻿
+using iSpend.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace iSpend.WebUI.Controllers;
 
-public class CreditCardController : Controller
+public class ExpenseController : Controller
 {
-    private readonly ICreditCardService _creditCardService;
-    public CreditCardController(ICreditCardService creditCardService)
+    private readonly IExpenseService _expenseService;
+    public ExpenseController(IExpenseService expenseService)
     {
-        _creditCardService = creditCardService;
+        _expenseService = expenseService;
     }
 
     [HttpGet]
@@ -17,8 +18,8 @@ public class CreditCardController : Controller
     {
         //verificar depois se essa maneira de pegar o id do usuario logado esta correta
         var userId = http.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-        var creditCards = await _creditCardService.GetCreditCards(userId);
+        var expenses = await _expenseService.GetExpenses(userId);
 
-        return View(creditCards);
+        return View(expenses);
     }
 }
