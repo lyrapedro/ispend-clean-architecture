@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iSpend.Domain", "iSpend.Domain\iSpend.Domain.csproj", "{F67897C1-6C72-4AA6-BA39-CF3B521005AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iSpend.Domain", "iSpend.Domain\iSpend.Domain.csproj", "{F67897C1-6C72-4AA6-BA39-CF3B521005AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iSpend.Application", "iSpend.Application\iSpend.Application.csproj", "{DD26086C-43D0-4B4F-8856-60435D42CB8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iSpend.Application", "iSpend.Application\iSpend.Application.csproj", "{DD26086C-43D0-4B4F-8856-60435D42CB8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iSpend.Infra.Data", "iSpend.Infra.Data\iSpend.Infra.Data.csproj", "{098DF66C-D6AC-4E16-AA12-BC3249E493E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iSpend.Infra.Data", "iSpend.Infra.Data\iSpend.Infra.Data.csproj", "{098DF66C-D6AC-4E16-AA12-BC3249E493E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iSpend.Infra.IoC", "iSpend.Infra.IoC\iSpend.Infra.IoC.csproj", "{DE854A27-D9B5-4F4B-B7D6-12C16D7AA620}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iSpend.Infra.IoC", "iSpend.Infra.IoC\iSpend.Infra.IoC.csproj", "{DE854A27-D9B5-4F4B-B7D6-12C16D7AA620}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iSpend.WebUI", "iSpend.WebUI\iSpend.WebUI.csproj", "{3E21D53B-5D61-442B-BD37-0087E1EBEA63}"
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "iSpend.Web", "iSpend.Web\iSpend.Web.esproj", "{0E312559-117F-40D1-96DC-331C75B2728C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,12 @@ Global
 		{DE854A27-D9B5-4F4B-B7D6-12C16D7AA620}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE854A27-D9B5-4F4B-B7D6-12C16D7AA620}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE854A27-D9B5-4F4B-B7D6-12C16D7AA620}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3E21D53B-5D61-442B-BD37-0087E1EBEA63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3E21D53B-5D61-442B-BD37-0087E1EBEA63}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3E21D53B-5D61-442B-BD37-0087E1EBEA63}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3E21D53B-5D61-442B-BD37-0087E1EBEA63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E312559-117F-40D1-96DC-331C75B2728C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E312559-117F-40D1-96DC-331C75B2728C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E312559-117F-40D1-96DC-331C75B2728C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{0E312559-117F-40D1-96DC-331C75B2728C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E312559-117F-40D1-96DC-331C75B2728C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E312559-117F-40D1-96DC-331C75B2728C}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
