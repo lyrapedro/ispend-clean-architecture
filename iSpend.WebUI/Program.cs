@@ -1,10 +1,21 @@
 using iSpend.Infra.IoC;
+using JavaScriptEngineSwitcher.ChakraCore;
+using JavaScriptEngineSwitcher.Extensions.MsDependencyInjection;
+using React.AspNet;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddInfraestructure(builder.Configuration);
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddMvc();
+
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddReact();
+
+builder.Services.AddJsEngineSwitcher(options => options.DefaultEngineName = ChakraCoreJsEngine.EngineName)
+  .AddChakraCore();
 
 var app = builder.Build();
 
@@ -18,6 +29,12 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseReact(config =>
+{
+    config
+        .AddScript("~/js/*.jsx");
+});
 
 app.UseRouting();
 
