@@ -13,32 +13,32 @@ public class CreditCardRepository : ICreditCardRepository
         _creditCardContext = context;
     }
 
-    public async Task<CreditCard> Create(CreditCard creditCard)
+    public async Task<CreditCard> CreateAsync(CreditCard creditCard)
     {
         _creditCardContext.Add(creditCard);
         await _creditCardContext.SaveChangesAsync();
         return creditCard;
     }
 
-    public async Task<CreditCard> GetById(int? id)
+    public async Task<CreditCard> GetByIdAsync(int? id)
     {
         return await _creditCardContext.CreditCards.FindAsync(id);
     }
 
-    public async Task<IEnumerable<CreditCard>> GetCreditCards(string userId)
+    public async Task<IEnumerable<CreditCard>> GetCreditCardsAsync(string userId)
     {
         Guid validGuid = Guid.Parse(userId);
         return await _creditCardContext.CreditCards.Where(c => c.UserId == validGuid).ToListAsync();
     }
 
-    public async Task<CreditCard> Remove(CreditCard creditCard)
+    public async Task<CreditCard> RemoveAsync(CreditCard creditCard)
     {
         _creditCardContext.Remove(creditCard);
         await _creditCardContext.SaveChangesAsync();
         return creditCard;
     }
 
-    public async Task<CreditCard> Update(CreditCard creditCard)
+    public async Task<CreditCard> UpdateAsync(CreditCard creditCard)
     {
         _creditCardContext.Update(creditCard);
         await _creditCardContext.SaveChangesAsync();

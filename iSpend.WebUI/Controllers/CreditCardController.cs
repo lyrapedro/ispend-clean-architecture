@@ -1,4 +1,5 @@
 ﻿using iSpend.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -13,6 +14,7 @@ public class CreditCardController : Controller
     }
 
     [HttpGet]
+    [Authorize(Policy = "User")]
     public async Task<IActionResult> Index(HttpContext http)
     {
         //verificar depois se essa maneira de pegar o id do usuario logado esta correta
