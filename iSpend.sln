@@ -11,11 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iSpend.Infra.Data", "iSpend
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iSpend.Infra.IoC", "iSpend.Infra.IoC\iSpend.Infra.IoC.csproj", "{DE854A27-D9B5-4F4B-B7D6-12C16D7AA620}"
 EndProject
-Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "iSpend.Web", "iSpend.Web\iSpend.Web.esproj", "{0E312559-117F-40D1-96DC-331C75B2728C}"
-	ProjectSection(ProjectDependencies) = postProject
-		{DE854A27-D9B5-4F4B-B7D6-12C16D7AA620} = {DE854A27-D9B5-4F4B-B7D6-12C16D7AA620}
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,12 +33,6 @@ Global
 		{DE854A27-D9B5-4F4B-B7D6-12C16D7AA620}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE854A27-D9B5-4F4B-B7D6-12C16D7AA620}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE854A27-D9B5-4F4B-B7D6-12C16D7AA620}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0E312559-117F-40D1-96DC-331C75B2728C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0E312559-117F-40D1-96DC-331C75B2728C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0E312559-117F-40D1-96DC-331C75B2728C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{0E312559-117F-40D1-96DC-331C75B2728C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0E312559-117F-40D1-96DC-331C75B2728C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0E312559-117F-40D1-96DC-331C75B2728C}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
