@@ -21,15 +21,8 @@ public static class DependencyInjectionAPI
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"
         ), b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
-        services.AddIdentity<ApplicationUser, IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
-
         services.ConfigureApplicationCookie(options =>
                 options.AccessDeniedPath = "/Account/Login");
-
-        services.AddScoped<IAuthenticate, AuthenticateService>();
-        services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
 
         services.AddScoped<ICreditCardRepository, CreditCardRepository>();
         services.AddScoped<IExpenseRepository, ExpenseRepository>();

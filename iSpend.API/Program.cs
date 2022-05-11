@@ -1,4 +1,5 @@
 using iSpend.Application.Interfaces;
+using iSpend.Application.Mappings;
 using iSpend.Application.Services;
 using iSpend.Domain.Account;
 using iSpend.Infra.Data.Context;
@@ -26,7 +27,7 @@ builder.Host.UseSerilog((context, configuration) =>
                 });
 });
 builder.Services.AddSqlServer<ApplicationDbContext>(builder.Configuration["ConnectionStrings:DefaultConnection"]);
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireDigit = false;
@@ -35,37 +36,15 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     options.Password.RequireLowercase = false;
 }).AddEntityFrameworkStores<ApplicationDbContext>();
 
-builder.Services.AddAuthentication(x =>
-{
-    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters()
-    {
-        ValidateActor = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ClockSkew = TimeSpan.Zero,
-        ValidIssuer = builder.Configuration["JwtBearerTokenSettings:Issuer"],
-        ValidAudience = builder.Configuration["JwtBearerTokenSettings:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtBearerTokenSettings:SecretKey"]))
-    };
-});
+builder.Services.AddScoped<IAuthenticate, AuthenticateService>();
+builder.Services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
 
 builder.Services.AddInfrastructureAPI(builder.Configuration);
+builder.Services.AddInfrastructureJWT(builder.Configuration);
+
 builder.Services.AddControllers();
 
-builder.Services.AddScoped<IAuthenticate, AuthenticateService>();
-
-builder.Services.AddScoped<ICreditCardService, CreditCardService>();
-builder.Services.AddScoped<IExpenseService, ExpenseService>();
-builder.Services.AddScoped<IIncomeService, IncomeService>();
-builder.Services.AddScoped<IGoalService, GoalService>();
-builder.Services.AddScoped<IPurchaseService, PurchaseService>();
-builder.Services.AddScoped<IInstallmentService, InstallmentService>();
-builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+builder.Services.AddAutoMapper(typeof(DomainToDTOMappingProfile));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>

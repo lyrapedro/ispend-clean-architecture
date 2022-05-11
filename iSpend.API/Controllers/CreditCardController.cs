@@ -1,6 +1,5 @@
 ﻿using iSpend.Application.DTOs;
 using iSpend.Application.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -9,7 +8,7 @@ namespace iSpend.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize]
 public class CreditCardController : ControllerBase
 {
     private ICreditCardService _creditCardService;
