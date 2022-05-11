@@ -110,26 +110,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-SeedUserRoleInitial seedUserRoleInitial = new SeedUserRoleInitial();
-seedUserRoleInitial.SeedRoles();
-seedUserRoleInitial.SeedUsers();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
-
-class SeedUserRoleInitial : ISeedUserRoleInitial
-{
-    public void SeedRoles()
-    {
-        SeedRoles();
-    }
-
-    public void SeedUsers()
-    {
-        SeedUsers();
-    }
-}
