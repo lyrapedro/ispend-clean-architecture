@@ -13,9 +13,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace iSpend.Infra.IoC;
 
-public static class DependencyInjection
+public static class DependencyInjectionAPI
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructureAPI(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"
@@ -24,6 +24,9 @@ public static class DependencyInjection
         services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
+
+        services.ConfigureApplicationCookie(options =>
+                options.AccessDeniedPath = "/Account/Login");
 
         services.AddScoped<IAuthenticate, AuthenticateService>();
         services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();

@@ -20,9 +20,16 @@ public class CreditCardRepository : ICreditCardRepository
         return creditCard;
     }
 
-    public async Task<CreditCard> GetById(int? id)
+    public async Task<CreditCard> GetById(string userId, int? id)
     {
-        return await _creditCardContext.CreditCards.FindAsync(id);
+        Guid validGuid = Guid.Parse(userId);
+        return await _creditCardContext.CreditCards.Where(c => c.UserId == validGuid && c.Id == id).FirstOrDefaultAsync();
+    }
+
+    public async Task<IEnumerable<CreditCard>> GetByName(string userId, string name)
+    {
+        Guid validGuid = Guid.Parse(userId);
+        return await _creditCardContext.CreditCards.Where(c => c.UserId == validGuid && c.Name.Contains(name)).ToListAsync();
     }
 
     public async Task<IEnumerable<CreditCard>> GetCreditCards(string userId)

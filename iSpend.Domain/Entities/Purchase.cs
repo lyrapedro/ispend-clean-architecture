@@ -6,6 +6,7 @@ public sealed class Purchase : Entity
 {
     public string Name { get; private set; }
     public decimal Price { get; private set; }
+    public DateTime FirstInstallmentDate { get; set; }
     public DateTime PurchasedAt { get; private set; }
 
     public Purchase(string name, decimal price, string purchasedAt, int creditCardId)

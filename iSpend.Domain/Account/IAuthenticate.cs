@@ -2,9 +2,9 @@
 
 public interface IAuthenticate
 {
-    Task<bool> AuthenticateAsync(string email, string password);
+    Task<bool> Authenticate(string email, string password);
 
-    Task<bool> RegisterAsync(string email, string password);
+    Task<bool> Register(string email, string password);
 
     Task Logout();
 }

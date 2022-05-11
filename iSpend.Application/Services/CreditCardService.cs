@@ -23,10 +23,27 @@ public class CreditCardService : ICreditCardService
         return _mapper.Map<IEnumerable<CreditCardDTO>>(creditCards);
     }
 
-    public async Task<CreditCardDTO> GetById(int? id)
+    public async Task<CreditCardDTO> GetById(string userId, int? id)
     {
-        var creditCard = await _creditCardRepository.GetById(id);
+        var creditCard = await _creditCardRepository.GetById(userId, id);
         return _mapper.Map<CreditCardDTO>(creditCard);
+    }
+
+    public async Task<IEnumerable<CreditCardDTO>> GetByName(string userId, string name)
+    {
+        IEnumerable<CreditCardDTO> creditCards;
+
+        if (!string.IsNullOrEmpty(name))
+        {
+            var query = await _creditCardRepository.GetByName(userId, name);
+            creditCards = query.Select(c => _mapper.Map<CreditCardDTO>(c)).ToList();
+        }
+        else
+        {
+            creditCards = await GetCreditCards(userId);
+        }
+
+        return creditCards;
     }
 
     public async Task Add(CreditCardDTO creditCardDTO)
@@ -41,9 +58,9 @@ public class CreditCardService : ICreditCardService
         await _creditCardRepository.Update(creditCard);
     }
 
-    public async Task Remove(int? id)
+    public async Task Remove(string userId, int? id)
     {
-        var creditCard = _creditCardRepository.GetById(id).Result;
+        var creditCard = _creditCardRepository.GetById(userId, id).Result;
         await _creditCardRepository.Remove(creditCard);
     }
 }
