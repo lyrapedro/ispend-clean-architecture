@@ -107,12 +107,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+builder.Services.
 app.UseHttpsRedirection();
 
 SeedUserRoleInitial seedUserRoleInitial = new SeedUserRoleInitial();
-seedUserRoleInitial.SeedRoles();
-seedUserRoleInitial.SeedUsers();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -120,16 +118,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-class SeedUserRoleInitial : ISeedUserRoleInitial
-{
-    public void SeedRoles()
-    {
-        SeedRoles();
-    }
-
-    public void SeedUsers()
-    {
-        SeedUsers();
-    }
-}
