@@ -21,9 +21,16 @@ public class IncomeRepository : IIncomeRepository
         return expense;
     }
 
-    public async Task<Income> GetById(int? id)
+    public async Task<Income> GetById(string userId, int? id)
     {
-        return await _incomeContext.Incomes.FindAsync(id);
+        Guid validGuid = Guid.Parse(userId);
+        return await _incomeContext.Incomes.FirstOrDefaultAsync(i => i.UserId == validGuid && i.Id == id);
+    }
+
+    public async Task<IEnumerable<Income>> GetByName(string userId, string name)
+    {
+        Guid validGuid = Guid.Parse(userId);
+        return await _incomeContext.Incomes.Where(i => i.UserId == validGuid && i.Name.Contains(name)).ToListAsync();
     }
 
     public async Task<IEnumerable<Income>> GetIncomes(string userId)

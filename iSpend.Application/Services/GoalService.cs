@@ -23,10 +23,27 @@ public class GoalService : IGoalService
         return _mapper.Map<IEnumerable<GoalDTO>>(goals);
     }
 
-    public async Task<GoalDTO> GetById(int? id)
+    public async Task<GoalDTO> GetById(string userId, int? id)
     {
-        var goal = await _goalRepository.GetById(id);
+        var goal = await _goalRepository.GetById(userId, id);
         return _mapper.Map<GoalDTO>(goal);
+    }
+
+    public async Task<IEnumerable<GoalDTO>> GetByName(string userId, string name)
+    {
+        IEnumerable<GoalDTO> goals;
+
+        if (!string.IsNullOrEmpty(name))
+        {
+            var query = await _goalRepository.GetByName(userId, name);
+            goals = query.Select(c => _mapper.Map<GoalDTO>(c)).ToList();
+        }
+        else
+        {
+            goals = await GetGoals(userId);
+        }
+
+        return goals;
     }
 
     public async Task Add(GoalDTO goalDTO)
@@ -41,9 +58,9 @@ public class GoalService : IGoalService
         await _goalRepository.Update(goal);
     }
 
-    public async Task Remove(int? id)
+    public async Task Remove(string userId, int? id)
     {
-        var goal = _goalRepository.GetById(id).Result;
+        var goal = _goalRepository.GetById(userId, id).Result;
         await _goalRepository.Remove(goal);
     }
 }

@@ -9,44 +9,44 @@ namespace iSpend.API.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class CreditCardController : ControllerBase
+public class GoalController : ControllerBase
 {
-    private ICreditCardService _creditCardService;
+    private IGoalService _goalService;
 
-    public CreditCardController(ICreditCardService creditCardService)
+    public GoalController(IGoalService goalService)
     {
-        _creditCardService = creditCardService;
+        _goalService = goalService;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IAsyncEnumerable<CreditCardDTO>>> GetCreditCards()
+    public async Task<ActionResult<IAsyncEnumerable<GoalDTO>>> GetGoals()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
-            var creditCards = await _creditCardService.GetCreditCards(userId);
-            return Ok(creditCards);
+            var goals = await _goalService.GetGoals(userId);
+            return Ok(goals);
         }
         catch
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Error on getting credit cards");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Error on getting goals");
         }
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<CreditCardDTO>> GetCreditCard(int id)
+    public async Task<ActionResult<GoalDTO>> GetGoal(int id)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
-            var creditCard = await _creditCardService.GetById(userId, id);
+            var goal = await _goalService.GetById(userId, id);
 
-            if (creditCard == null)
-                return NotFound($"Not credit card with id {id}");
+            if (goal == null)
+                NotFound($"Not goal with id {id}");
 
-            return Ok(creditCard);
+            return Ok(goal);
         }
         catch
         {
@@ -54,19 +54,19 @@ public class CreditCardController : ControllerBase
         }
     }
 
-    [HttpGet("{find}")]
-    public async Task<ActionResult<IAsyncEnumerable<CreditCardDTO>>> GetCreditCardsByName([FromQuery] string name)
+    [HttpGet]
+    public async Task<ActionResult<IAsyncEnumerable<GoalDTO>>> GetGoalsByName([FromQuery] string name)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
-            var creditCards = await _creditCardService.GetByName(userId, name);
+            var goals = await _goalService.GetByName(userId, name);
 
-            if (creditCards == null)
+            if (goals == null)
                 return NotFound($"Not to show with name {name}");
 
-            return Ok(creditCards);
+            return Ok(goals);
         }
         catch
         {
@@ -75,15 +75,15 @@ public class CreditCardController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create([FromBody] CreditCardDTO creditCardDto)
+    public async Task<ActionResult> Create([FromBody] GoalDTO goal)
     {
         try
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            await _creditCardService.Add(creditCardDto);
+            await _goalService.Add(goal);
 
-            return CreatedAtRoute(nameof(GetCreditCard), new { id = creditCardDto.Id }, creditCardDto);
+            return CreatedAtRoute(nameof(GetGoal), new { id = goal.Id }, goal);
         }
         catch
         {
@@ -92,20 +92,21 @@ public class CreditCardController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Edit(int id, [FromBody] CreditCardDTO creditCardDto)
+    public async Task<ActionResult> Edit(int id, [FromBody] GoalDTO goal)
     {
         try
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (creditCardDto.Id == id)
+
+            if (goal.Id == id)
             {
                 Guid validGuid;
                 Guid.TryParse(userId, out validGuid);
 
-                if (validGuid == creditCardDto.UserId)
+                if (validGuid == goal.UserId)
                 {
-                    await _creditCardService.Update(creditCardDto);
-                    return Ok($"\"{creditCardDto.Name}\" successfully updated.");
+                    await _goalService.Update(goal);
+                    return Ok($"\"{goal.Name}\" successfully updated.");
                 }
 
                 return Unauthorized("You do not have permissions to do that");
@@ -122,18 +123,26 @@ public class CreditCardController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<ActionResult<CreditCardDTO>> Delete(int id)
+    public async Task<ActionResult> Delete(int id)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         try
         {
-            var creditCard = await _creditCardService.GetById(userId, id);
+            var goal = await _goalService.GetById(userId, id);
 
-            if (creditCard == null)
+            if (goal == null)
                 return NotFound($"Not exists");
 
-            await _creditCardService.Remove(userId, id);
-            return Ok($"\"{creditCard.Name}\" successfully removed");
+            if (goal.UserId.ToString() == userId)
+            {
+                var goalName = goal.Name;
+
+                await _goalService.Remove(userId, id);
+                return Ok($"\"{goalName}\" successfully removed");
+            }
+
+            return Unauthorized("You do not have permissions to do that");
+
         }
         catch
         {

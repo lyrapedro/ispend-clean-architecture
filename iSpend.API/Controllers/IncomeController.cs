@@ -1,6 +1,7 @@
 ﻿using iSpend.Application.DTOs;
 using iSpend.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -9,44 +10,44 @@ namespace iSpend.API.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class CreditCardController : ControllerBase
+public class IncomeController : ControllerBase
 {
-    private ICreditCardService _creditCardService;
+    private IIncomeService _incomeService;
 
-    public CreditCardController(ICreditCardService creditCardService)
+    public IncomeController(IIncomeService incomeService)
     {
-        _creditCardService = creditCardService;
+        _incomeService = incomeService;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IAsyncEnumerable<CreditCardDTO>>> GetCreditCards()
+    public async Task<ActionResult<IAsyncEnumerable<IncomeDTO>>> GetIncomes()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
-            var creditCards = await _creditCardService.GetCreditCards(userId);
-            return Ok(creditCards);
+            var incomes = await _incomeService.GetIncomes(userId);
+            return Ok(incomes);
         }
         catch
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Error on getting credit cards");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Error on getting incomes");
         }
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<CreditCardDTO>> GetCreditCard(int id)
+    public async Task<ActionResult<IncomeDTO>> GetIncome(int id)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
-            var creditCard = await _creditCardService.GetById(userId, id);
+            var income = await _incomeService.GetById(userId, id);
 
-            if (creditCard == null)
-                return NotFound($"Not credit card with id {id}");
+            if (income == null)
+                NotFound($"Not income with id {id}");
 
-            return Ok(creditCard);
+            return Ok(income);
         }
         catch
         {
@@ -54,19 +55,19 @@ public class CreditCardController : ControllerBase
         }
     }
 
-    [HttpGet("{find}")]
-    public async Task<ActionResult<IAsyncEnumerable<CreditCardDTO>>> GetCreditCardsByName([FromQuery] string name)
+    [HttpGet]
+    public async Task<ActionResult<IAsyncEnumerable<IncomeDTO>>> GetIncomesByName([FromQuery] string name)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
-            var creditCards = await _creditCardService.GetByName(userId, name);
+            var incomes = await _incomeService.GetByName(userId, name);
 
-            if (creditCards == null)
+            if (incomes == null)
                 return NotFound($"Not to show with name {name}");
 
-            return Ok(creditCards);
+            return Ok(incomes);
         }
         catch
         {
@@ -75,15 +76,15 @@ public class CreditCardController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create([FromBody] CreditCardDTO creditCardDto)
+    public async Task<ActionResult> Create([FromBody] IncomeDTO income)
     {
         try
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            await _creditCardService.Add(creditCardDto);
+            await _incomeService.Add(income);
 
-            return CreatedAtRoute(nameof(GetCreditCard), new { id = creditCardDto.Id }, creditCardDto);
+            return CreatedAtRoute(nameof(GetIncome), new { id = income.Id }, income);
         }
         catch
         {
@@ -92,20 +93,21 @@ public class CreditCardController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Edit(int id, [FromBody] CreditCardDTO creditCardDto)
+    public async Task<ActionResult> Edit(int id, [FromBody] IncomeDTO income)
     {
         try
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (creditCardDto.Id == id)
+
+            if (income.Id == id)
             {
                 Guid validGuid;
                 Guid.TryParse(userId, out validGuid);
 
-                if (validGuid == creditCardDto.UserId)
+                if (validGuid == income.UserId)
                 {
-                    await _creditCardService.Update(creditCardDto);
-                    return Ok($"\"{creditCardDto.Name}\" successfully updated.");
+                    await _incomeService.Update(income);
+                    return Ok($"\"{income.Name}\" successfully updated.");
                 }
 
                 return Unauthorized("You do not have permissions to do that");
@@ -122,18 +124,25 @@ public class CreditCardController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<ActionResult<CreditCardDTO>> Delete(int id)
+    public async Task<ActionResult> Delete(int id)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         try
         {
-            var creditCard = await _creditCardService.GetById(userId, id);
+            var income = await _incomeService.GetById(userId, id);
 
-            if (creditCard == null)
+            if (income == null)
                 return NotFound($"Not exists");
 
-            await _creditCardService.Remove(userId, id);
-            return Ok($"\"{creditCard.Name}\" successfully removed");
+            if (income.UserId.ToString() == userId)
+            {
+                var incomeName = income.Name;
+
+                await _incomeService.Remove(userId, id);
+                return Ok($"\"{incomeName}\" successfully removed");
+            }
+
+            return Unauthorized("You do not have permissions to do that");
         }
         catch
         {

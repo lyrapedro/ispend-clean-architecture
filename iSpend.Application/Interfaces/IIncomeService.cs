@@ -5,8 +5,9 @@ namespace iSpend.Application.Interfaces;
 public interface IIncomeService
 {
     Task<IEnumerable<IncomeDTO>> GetIncomes(string userId);
-    Task<IncomeDTO> GetById(int? id);
-    Task Add(IncomeDTO creditCardDTO);
-    Task Update(IncomeDTO creditCardDTO);
-    Task Remove(int? id);
+    Task<IncomeDTO> GetById(string userId, int? id);
+    Task<IEnumerable<IncomeDTO>> GetByName(string userId, string name);
+    Task Add(IncomeDTO incomeDTO);
+    Task Update(IncomeDTO incomeDTO);
+    Task Remove(string userId, int? id);
 }

@@ -23,10 +23,27 @@ public class IncomeService : IIncomeService
         return _mapper.Map<IEnumerable<IncomeDTO>>(incomes);
     }
 
-    public async Task<IncomeDTO> GetById(int? id)
+    public async Task<IncomeDTO> GetById(string userId, int? id)
     {
-        var income = await _incomeRepository.GetById(id);
+        var income = await _incomeRepository.GetById(userId, id);
         return _mapper.Map<IncomeDTO>(income);
+    }
+
+    public async Task<IEnumerable<IncomeDTO>> GetByName(string userId, string name)
+    {
+        IEnumerable<IncomeDTO> incomes;
+
+        if (!string.IsNullOrEmpty(name))
+        {
+            var query = await _incomeRepository.GetByName(userId, name);
+            incomes = query.Select(c => _mapper.Map<IncomeDTO>(c)).ToList();
+        }
+        else
+        {
+            incomes = await GetIncomes(userId);
+        }
+
+        return incomes;
     }
 
     public async Task Add(IncomeDTO incomeDTO)
@@ -41,9 +58,9 @@ public class IncomeService : IIncomeService
         await _incomeRepository.Update(income);
     }
 
-    public async Task Remove(int? id)
+    public async Task Remove(string userId, int? id)
     {
-        var income = _incomeRepository.GetById(id).Result;
+        var income = _incomeRepository.GetById(userId, id).Result;
         await _incomeRepository.Remove(income);
     }
 }
