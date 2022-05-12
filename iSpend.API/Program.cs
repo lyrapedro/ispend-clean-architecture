@@ -1,17 +1,12 @@
-using iSpend.Application.Interfaces;
 using iSpend.Application.Mappings;
-using iSpend.Application.Services;
 using iSpend.Domain.Account;
 using iSpend.Infra.Data.Context;
 using iSpend.Infra.Data.Identity;
 using iSpend.Infra.IoC;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Sinks.MSSqlServer;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, configuration) =>
@@ -49,7 +44,7 @@ builder.Services.AddAutoMapper(typeof(DomainToDTOMappingProfile));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("1.0.0", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "iSpend.API", Version = "1.0.0" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "iSpend.API", Version = "v1" });
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {

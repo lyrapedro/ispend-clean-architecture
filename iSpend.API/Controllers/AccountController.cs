@@ -21,16 +21,7 @@ public class AccountController : ControllerBase
         _authentication = authentication ?? throw new ArgumentNullException(nameof(authentication));
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Login(string returnUrl)
-    {
-        return Ok(new LoginViewModel()
-        {
-            ReturnUrl = returnUrl
-        });
-    }
-
-    [HttpPost]
+    [HttpPost("Login")]
     public async Task<ActionResult<UserToken>> Login(LoginViewModel model)
     {
         var result = await _authentication.Authenticate(model.Email, model.Password);
@@ -46,16 +37,7 @@ public class AccountController : ControllerBase
         }
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Register(string returnUrl)
-    {
-        return Ok(new LoginViewModel()
-        {
-            ReturnUrl = returnUrl
-        });
-    }
-
-    [HttpPost]
+    [HttpPost("Register")]
     public async Task<IActionResult> Register(LoginViewModel model)
     {
         var result = await _authentication.Register(model.Email, model.Password);

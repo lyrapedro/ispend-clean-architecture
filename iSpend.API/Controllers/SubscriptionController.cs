@@ -70,7 +70,7 @@ public class SubscriptionController : ControllerBase
         }
     }
 
-    [HttpGet]
+    [HttpGet("find")]
     public async Task<ActionResult<IAsyncEnumerable<SubscriptionDTO>>> GetSubscriptionsByName([FromQuery] string name)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

@@ -70,7 +70,7 @@ public class PurchaseController : ControllerBase
         }
     }
 
-    [HttpGet]
+    [HttpGet("find")]
     public async Task<ActionResult<IAsyncEnumerable<PurchaseDTO>>> GetPurchasesByName([FromQuery] string name)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

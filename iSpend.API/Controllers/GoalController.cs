@@ -54,7 +54,7 @@ public class GoalController : ControllerBase
         }
     }
 
-    [HttpGet]
+    [HttpGet("find")]
     public async Task<ActionResult<IAsyncEnumerable<GoalDTO>>> GetGoalsByName([FromQuery] string name)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

@@ -54,7 +54,7 @@ public class ExpenseController : ControllerBase
         }
     }
 
-    [HttpGet]
+    [HttpGet("find")]
     public async Task<ActionResult<IAsyncEnumerable<ExpenseDTO>>> GetExpensesByName([FromQuery] string name)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
