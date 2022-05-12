@@ -54,7 +54,7 @@ public class CreditCardController : ControllerBase
         }
     }
 
-    [HttpGet("{find}")]
+    [HttpGet("find")]
     public async Task<ActionResult<IAsyncEnumerable<CreditCardDTO>>> GetCreditCardsByName([FromQuery] string name)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

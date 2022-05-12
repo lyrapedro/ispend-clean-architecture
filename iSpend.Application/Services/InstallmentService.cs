@@ -17,21 +17,27 @@ public class InstallmentService : IInstallmentService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<InstallmentDTO>> GetInstallments(int creditCardId)
+    public async Task<IEnumerable<InstallmentDTO>> GetInstallments(string userId)
     {
-        var installments = await _installmentRepository.GetInstallments(creditCardId);
+        var installments = await _installmentRepository.GetInstallments(userId);
         return _mapper.Map<IEnumerable<InstallmentDTO>>(installments);
     }
 
-    public async Task<InstallmentDTO> GetById(int? id)
+    public async Task<InstallmentDTO> GetById(string userId, int? id)
     {
-        var installment = await _installmentRepository.GetById(id);
+        var installment = await _installmentRepository.GetById(userId, id);
         return _mapper.Map<InstallmentDTO>(installment);
     }
 
-    public async Task<InstallmentDTO> GetInstallmentPurchase(int? id)
+    public async Task<IEnumerable<InstallmentDTO>> GetInstallmentsFromPurchase(string userId, int? purchaseId)
     {
-        var installment = await _installmentRepository.GetInstallmentPurchase(id);
+        var installment = await _installmentRepository.GetInstallmentsFromPurchase(userId, purchaseId);
+        return _mapper.Map<IEnumerable<InstallmentDTO>>(installment);
+    }
+
+    public async Task<InstallmentDTO> GetInstallmentPurchase(string userId, int? id)
+    {
+        var installment = await _installmentRepository.GetInstallmentPurchase(userId, id);
         return _mapper.Map<InstallmentDTO>(installment);
     }
 
@@ -47,9 +53,9 @@ public class InstallmentService : IInstallmentService
         await _installmentRepository.Update(installment);
     }
 
-    public async Task Remove(int? id)
+    public async Task Remove(string userId, int? id)
     {
-        var installment = _installmentRepository.GetById(id).Result;
+        var installment = _installmentRepository.GetById(userId, id).Result;
         await _installmentRepository.Remove(installment);
     }
 }

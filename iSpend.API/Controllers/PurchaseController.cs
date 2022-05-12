@@ -34,7 +34,7 @@ public class PurchaseController : ControllerBase
         }
     }
 
-    [HttpGet("{creditCardId:int}")]
+    [HttpGet("fromcreditcard/{creditCardId:int}")]
     public async Task<ActionResult<IAsyncEnumerable<PurchaseDTO>>> GetPurchasesFromCreditCard(int creditCardId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

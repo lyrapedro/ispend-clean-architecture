@@ -14,6 +14,32 @@ public class InstallmentRepository : IInstallmentRepository
         _installmentContext = context;
     }
 
+    public async Task<Installment> GetById(string userId, int? id)
+    {
+        Guid validGuid = Guid.Parse(userId);
+        return await _installmentContext.Installments.Include(i => i.Purchase.CreditCard).Where(i => i.Purchase.CreditCard.UserId == validGuid).FirstOrDefaultAsync(i => i.Id == id);
+    }
+
+    public async Task<IEnumerable<Installment>> GetInstallments(string userId)
+    {
+        Guid validGuid = Guid.Parse(userId);
+        return await _installmentContext.Installments.Include(i => i.Purchase.CreditCard).Where(i => i.Purchase.CreditCard.UserId == validGuid).ToListAsync();
+    }
+
+    public async Task<IEnumerable<Installment>> GetInstallmentsFromPurchase(string userId, int? purchaseId)
+    {
+        Guid validGuid = Guid.Parse(userId);
+        return await _installmentContext.Installments.Include(i => i.Purchase.CreditCard).Where(i => i.Purchase.CreditCard.UserId == validGuid && i.Purchase.Id == purchaseId).ToListAsync();
+    }
+
+    public async Task<Purchase> GetInstallmentPurchase(string userId, int? id)
+    {
+        Guid validGuid = Guid.Parse(userId);
+
+        var installment = await _installmentContext.Installments.Include(i => i.Purchase.CreditCard).FirstOrDefaultAsync(i => i.Purchase.CreditCard.UserId == validGuid && i.Id == id);
+        return installment.Purchase;
+    }
+
     public async Task<Installment> Create(Installment installment)
     {
         _installmentContext.Add(installment);
@@ -21,31 +47,16 @@ public class InstallmentRepository : IInstallmentRepository
         return installment;
     }
 
-    public async Task<Installment> GetById(int? id)
+    public async Task<Installment> Update(Installment installment)
     {
-        return await _installmentContext.Installments.FindAsync(id);
-    }
-
-    public async Task<Installment> GetInstallmentPurchase(int? id)
-    {
-        return await _installmentContext.Installments.Include(i => i.Purchase).SingleOrDefaultAsync(i => i.Id == id);
-    }
-
-    public async Task<IEnumerable<Installment>> GetInstallments(int purchaseId)
-    {
-        return await _installmentContext.Installments.Where(i => i.PurchaseId == purchaseId).ToListAsync();
+        _installmentContext.Update(installment);
+        await _installmentContext.SaveChangesAsync();
+        return installment;
     }
 
     public async Task<Installment> Remove(Installment installment)
     {
         _installmentContext.Remove(installment);
-        await _installmentContext.SaveChangesAsync();
-        return installment;
-    }
-
-    public async Task<Installment> Update(Installment installment)
-    {
-        _installmentContext.Update(installment);
         await _installmentContext.SaveChangesAsync();
         return installment;
     }
