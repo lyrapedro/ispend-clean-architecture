@@ -17,22 +17,45 @@ public class SubscriptionService : ISubscriptionService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<SubscriptionDTO>> GetSubscriptions(int creditCardId)
+    public async Task<IEnumerable<SubscriptionDTO>> GetSubscriptions(string userId)
     {
-        var subscriptions = await _subscriptionRepository.GetSubscriptions(creditCardId);
+        var subscriptions = await _subscriptionRepository.GetSubscriptions(userId);
         return _mapper.Map<IEnumerable<SubscriptionDTO>>(subscriptions);
     }
 
-    public async Task<SubscriptionDTO> GetById(int? id)
+    public async Task<IEnumerable<SubscriptionDTO>> GetSubscriptionsFromCreditCard(string userId, int creditCardId)
     {
-        var subscription = await _subscriptionRepository.GetById(id);
+        var subscription = await _subscriptionRepository.GetSubscriptionsFromCreditCard(userId, creditCardId);
+        return _mapper.Map<IEnumerable<SubscriptionDTO>>(subscription);
+    }
+
+    public async Task<SubscriptionDTO> GetById(string userId, int? id)
+    {
+        var subscription = await _subscriptionRepository.GetById(userId, id);
         return _mapper.Map<SubscriptionDTO>(subscription);
     }
 
-    public async Task<SubscriptionDTO> GetSubscriptionCreditCard(int? id)
+    public async Task<IEnumerable<SubscriptionDTO>> GetByName(string userId, string name)
     {
-        var subscription = await _subscriptionRepository.GetSubscriptionCreditCard(id);
-        return _mapper.Map<SubscriptionDTO>(subscription);
+        IEnumerable<SubscriptionDTO> subscriptions;
+
+        if (!string.IsNullOrEmpty(name))
+        {
+            var query = await _subscriptionRepository.GetByName(userId, name);
+            subscriptions = query.Select(c => _mapper.Map<SubscriptionDTO>(c)).ToList();
+        }
+        else
+        {
+            subscriptions = await GetSubscriptions(userId);
+        }
+
+        return subscriptions;
+    }
+
+    public async Task<CreditCardDTO> GetSubscriptionCreditCard(string userId, int? id)
+    {
+        var subscription = await _subscriptionRepository.GetSubscriptionCreditCard(userId, id);
+        return _mapper.Map<CreditCardDTO>(subscription);
     }
 
     public async Task Add(SubscriptionDTO subscriptionDTO)
@@ -47,9 +70,9 @@ public class SubscriptionService : ISubscriptionService
         await _subscriptionRepository.Update(subscription);
     }
 
-    public async Task Remove(int? id)
+    public async Task Remove(string userId, int? id)
     {
-        var subscription = _subscriptionRepository.GetById(id).Result;
+        var subscription = _subscriptionRepository.GetById(userId, id).Result;
         await _subscriptionRepository.Remove(subscription);
     }
 }

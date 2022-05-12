@@ -21,9 +21,16 @@ public class ExpenseRepository : IExpenseRepository
         return expense;
     }
 
-    public async Task<Expense> GetById(int? id)
+    public async Task<Expense> GetById(string userId, int? id)
     {
-        return await _expenseContext.Expenses.FindAsync(id);
+        Guid validGuid = Guid.Parse(userId);
+        return await _expenseContext.Expenses.FirstOrDefaultAsync(e => e.UserId == validGuid && e.Id == id);
+    }
+
+    public async Task<IEnumerable<Expense>> GetByName(string userId, string name)
+    {
+        Guid validGuid = Guid.Parse(userId);
+        return await _expenseContext.Expenses.Where(i => i.UserId == validGuid && i.Name.Contains(name)).ToListAsync();
     }
 
     public async Task<IEnumerable<Expense>> GetExpenses(string userId)

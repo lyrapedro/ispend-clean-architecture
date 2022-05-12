@@ -9,44 +9,44 @@ namespace iSpend.API.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class IncomeController : ControllerBase
+public class ExpenseController : ControllerBase
 {
-    private IIncomeService _incomeService;
+    private IExpenseService _expenseService;
 
-    public IncomeController(IIncomeService incomeService)
+    public ExpenseController(IExpenseService expenseService)
     {
-        _incomeService = incomeService;
+        _expenseService = expenseService;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IAsyncEnumerable<IncomeDTO>>> GetIncomes()
+    public async Task<ActionResult<IAsyncEnumerable<ExpenseDTO>>> GetExpenses()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
-            var incomes = await _incomeService.GetIncomes(userId);
-            return Ok(incomes);
+            var expenses = await _expenseService.GetExpenses(userId);
+            return Ok(expenses);
         }
         catch
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Error on getting incomes");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Error on getting expenses");
         }
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<IncomeDTO>> GetIncome(int id)
+    public async Task<ActionResult<ExpenseDTO>> GetExpense(int id)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
-            var income = await _incomeService.GetById(userId, id);
+            var expense = await _expenseService.GetById(userId, id);
 
-            if (income == null)
-                NotFound($"Not income with id {id}");
+            if (expense == null)
+                NotFound($"Not expense with id {id}");
 
-            return Ok(income);
+            return Ok(expense);
         }
         catch
         {
@@ -55,18 +55,18 @@ public class IncomeController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IAsyncEnumerable<IncomeDTO>>> GetIncomesByName([FromQuery] string name)
+    public async Task<ActionResult<IAsyncEnumerable<ExpenseDTO>>> GetExpensesByName([FromQuery] string name)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
-            var incomes = await _incomeService.GetByName(userId, name);
+            var expenses = await _expenseService.GetByName(userId, name);
 
-            if (incomes == null)
+            if (expenses == null)
                 return NotFound($"Not to show with name {name}");
 
-            return Ok(incomes);
+            return Ok(expenses);
         }
         catch
         {
@@ -75,15 +75,15 @@ public class IncomeController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create([FromBody] IncomeDTO income)
+    public async Task<ActionResult> Create([FromBody] ExpenseDTO expense)
     {
         try
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            await _incomeService.Add(income);
+            await _expenseService.Add(expense);
 
-            return CreatedAtRoute(nameof(GetIncome), new { id = income.Id }, income);
+            return CreatedAtRoute(nameof(GetExpense), new { id = expense.Id }, expense);
         }
         catch
         {
@@ -92,21 +92,21 @@ public class IncomeController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Edit(int id, [FromBody] IncomeDTO income)
+    public async Task<ActionResult> Edit(int id, [FromBody] ExpenseDTO expense)
     {
         try
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (income.Id == id)
+            if (expense.Id == id)
             {
                 Guid validGuid;
                 Guid.TryParse(userId, out validGuid);
 
-                if (validGuid == income.UserId)
+                if (validGuid == expense.UserId)
                 {
-                    await _incomeService.Update(income);
-                    return Ok($"\"{income.Name}\" successfully updated.");
+                    await _expenseService.Update(expense);
+                    return Ok($"\"{expense.Name}\" successfully updated.");
                 }
 
                 return Unauthorized("You do not have permissions to do that");
@@ -128,17 +128,17 @@ public class IncomeController : ControllerBase
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         try
         {
-            var income = await _incomeService.GetById(userId, id);
+            var expense = await _expenseService.GetById(userId, id);
 
-            if (income == null)
+            if (expense == null)
                 return NotFound($"Not exists");
 
-            if (income.UserId.ToString() == userId)
+            if (expense.UserId.ToString() == userId)
             {
-                var incomeName = income.Name;
+                var expenseName = expense.Name;
 
-                await _incomeService.Remove(userId, id);
-                return Ok($"\"{incomeName}\" successfully removed");
+                await _expenseService.Remove(userId, id);
+                return Ok($"\"{expenseName}\" successfully removed");
             }
 
             return Unauthorized("You do not have permissions to do that");

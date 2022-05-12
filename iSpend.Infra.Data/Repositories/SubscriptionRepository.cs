@@ -14,6 +14,39 @@ public class SubscriptionRepository : ISubscriptionRepository
         _subscriptionContext = context;
     }
 
+    public async Task<Subscription> GetById(string userId, int? id)
+    {
+        Guid validGuid = Guid.Parse(userId);
+        return await _subscriptionContext.Subscriptions.Include(p => p.CreditCard).FirstOrDefaultAsync(p => p.Id == id && p.CreditCard.UserId == validGuid);
+    }
+
+    public async Task<IEnumerable<Subscription>> GetSubscriptionsFromCreditCard(string userId, int creditCardId)
+    {
+        Guid validGuid = Guid.Parse(userId);
+
+        return await _subscriptionContext.Subscriptions.Include(s => s.CreditCard).Where(s => s.CreditCardId == creditCardId && s.CreditCard.UserId == validGuid).ToListAsync();
+    }
+
+    public async Task<IEnumerable<Subscription>> GetByName(string userId, string name)
+    {
+        Guid validGuid = Guid.Parse(userId);
+        return await _subscriptionContext.Subscriptions.Include(s => s.CreditCard).Where(s => s.CreditCard.UserId == validGuid && s.Name.Contains(name)).ToListAsync();
+    }
+
+    public async Task<CreditCard> GetSubscriptionCreditCard(string userId, int? id)
+    {
+        Guid validGuid = Guid.Parse(userId);
+
+        var subscription = _subscriptionContext.Subscriptions.Include(s => s.CreditCard).FirstOrDefaultAsync(s => s.CreditCard.UserId == validGuid && s.Id == id);
+        return subscription.Result.CreditCard;
+    }
+
+    public async Task<IEnumerable<Subscription>> GetSubscriptions(string userId)
+    {
+        Guid validGuid = Guid.Parse(userId);
+        return await _subscriptionContext.Subscriptions.Include(s => s.CreditCard).Where(s => s.CreditCard.UserId == validGuid).ToListAsync();
+    }
+
     public async Task<Subscription> Create(Subscription subscription)
     {
         _subscriptionContext.Add(subscription);
@@ -21,31 +54,16 @@ public class SubscriptionRepository : ISubscriptionRepository
         return subscription;
     }
 
-    public async Task<Subscription> GetById(int? id)
+    public async Task<Subscription> Update(Subscription subscription)
     {
-        return await _subscriptionContext.Subscriptions.FindAsync(id);
-    }
-
-    public async Task<Subscription> GetSubscriptionCreditCard(int? id)
-    {
-        return await _subscriptionContext.Subscriptions.Include(s => s.CreditCard).SingleOrDefaultAsync(s => s.Id == id);
-    }
-
-    public async Task<IEnumerable<Subscription>> GetSubscriptions(int creditCardId)
-    {
-        return await _subscriptionContext.Subscriptions.Where(s => s.CreditCardId == creditCardId).ToListAsync();
+        _subscriptionContext.Update(subscription);
+        await _subscriptionContext.SaveChangesAsync();
+        return subscription;
     }
 
     public async Task<Subscription> Remove(Subscription subscription)
     {
         _subscriptionContext.Remove(subscription);
-        await _subscriptionContext.SaveChangesAsync();
-        return subscription;
-    }
-
-    public async Task<Subscription> Update(Subscription subscription)
-    {
-        _subscriptionContext.Update(subscription);
         await _subscriptionContext.SaveChangesAsync();
         return subscription;
     }

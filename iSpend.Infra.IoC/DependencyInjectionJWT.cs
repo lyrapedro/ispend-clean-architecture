@@ -25,7 +25,7 @@ public static class DependencyInjectionJWT
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = configuration["JwtBearerTokenSettings:Issuer"],
                 ValidAudience = configuration["JwtBearerTokenSettings:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtBearerTokenSettings: SecretKey"])),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtBearerTokenSettings:SecretKey"])),
                 ClockSkew = TimeSpan.Zero
             };
         });

@@ -23,10 +23,27 @@ public class ExpenseService : IExpenseService
         return _mapper.Map<IEnumerable<ExpenseDTO>>(expenses);
     }
 
-    public async Task<ExpenseDTO> GetById(int? id)
+    public async Task<ExpenseDTO> GetById(string userId, int? id)
     {
-        var expense = await _expenseRepository.GetById(id);
+        var expense = await _expenseRepository.GetById(userId, id);
         return _mapper.Map<ExpenseDTO>(expense);
+    }
+
+    public async Task<IEnumerable<ExpenseDTO>> GetByName(string userId, string name)
+    {
+        IEnumerable<ExpenseDTO> expenses;
+
+        if (!string.IsNullOrEmpty(name))
+        {
+            var query = await _expenseRepository.GetByName(userId, name);
+            expenses = query.Select(c => _mapper.Map<ExpenseDTO>(c)).ToList();
+        }
+        else
+        {
+            expenses = await GetExpenses(userId);
+        }
+
+        return expenses;
     }
 
     public async Task Add(ExpenseDTO expenseDTO)
@@ -41,9 +58,9 @@ public class ExpenseService : IExpenseService
         await _expenseRepository.Update(expense);
     }
 
-    public async Task Remove(int? id)
+    public async Task Remove(string userId, int? id)
     {
-        var expense = _expenseRepository.GetById(id).Result;
+        var expense = _expenseRepository.GetById(userId, id).Result;
         await _expenseRepository.Remove(expense);
     }
 }
