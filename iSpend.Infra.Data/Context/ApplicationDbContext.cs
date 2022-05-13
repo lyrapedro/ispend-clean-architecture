@@ -24,8 +24,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         base.OnModelCreating(builder);
         builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
-        base.OnModelCreating(builder);
-
         builder.Entity<CreditCard>()
             .Property(p => p.Name).IsRequired();
         builder.Entity<CreditCard>()
@@ -34,8 +32,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .Property(p => p.ClosingDay).IsRequired();
         builder.Entity<CreditCard>()
             .Property(p => p.ExpirationDay).IsRequired();
-        builder.Entity<CreditCard>()
-            .Property(p => p.UserId).IsRequired();
 
         builder.Entity<Goal>()
             .Property(c => c.Name).IsRequired();
@@ -45,8 +41,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .Property(c => c.EndDate).IsRequired();
         builder.Entity<Goal>()
             .Property(c => c.GoalValue).IsRequired();
-        builder.Entity<Goal>()
-            .Property(c => c.UserId).IsRequired();
 
         builder.Entity<Expense>()
             .Property(c => c.Name).IsRequired();
@@ -58,8 +52,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .Property(c => c.Recurrent).IsRequired();
         builder.Entity<Expense>()
             .Property(c => c.Active).IsRequired();
-        builder.Entity<Expense>()
-            .Property(c => c.UserId).IsRequired();
 
         builder.Entity<Income>()
             .Property(c => c.Name).IsRequired();

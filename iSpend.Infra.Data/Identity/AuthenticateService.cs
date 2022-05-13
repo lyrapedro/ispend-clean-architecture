@@ -41,6 +41,17 @@ public class AuthenticateService : IAuthenticate
         return result.Succeeded;
     }
 
+    public async Task<IEnumerable<string>> GetUserNameAndId(string email)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        var nameAndId = new List<string>
+        {
+            new string(user.Name),
+            new string(user.Id)
+        };
+        return nameAndId;
+    }
+
     public async Task Logout()
     {
         await _signInManager.SignOutAsync();

@@ -21,7 +21,7 @@ public class CreditCardController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IAsyncEnumerable<CreditCardDTO>>> GetCreditCards()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
 
         try
         {

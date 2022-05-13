@@ -56,10 +56,12 @@ public class AccountController : ControllerBase
 
     private ActionResult<UserToken> GenerateToken(LoginViewModel model)
     {
+        var user = _authentication.GetUserNameAndId(model.Email);
+
         var claims = new[]
         {
-            new Claim("email", model.Email),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new Claim("Name", user.Result.First().ToString()),
+            new Claim("UserId", user.Result.Last().ToString())
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtBearerTokenSettings:SecretKey"]));

@@ -6,5 +6,7 @@ public interface IAuthenticate
 
     Task<bool> Register(string name, string email, string password);
 
+    Task<IEnumerable<string>> GetUserNameAndId(string email);
+
     Task Logout();
 }
