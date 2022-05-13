@@ -22,4 +22,6 @@ public class PurchaseDTO
     [Required(ErrorMessage = "The credt card is required")]
     public int CreditCardId { get; set; }
     public CreditCard CreditCard { get; set; }
+    public int CategoryId { get; set; }
+    public Category Category { get; set; }
 }
