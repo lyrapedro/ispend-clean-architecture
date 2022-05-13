@@ -19,7 +19,7 @@ public static class DependencyInjectionAPI
         ), b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
         services.ConfigureApplicationCookie(options =>
-                options.AccessDeniedPath = "api/Account/Login");
+                options.AccessDeniedPath = "/api/Account/Login");
 
         services.AddScoped<ICreditCardRepository, CreditCardRepository>();
         services.AddScoped<IExpenseRepository, ExpenseRepository>();
