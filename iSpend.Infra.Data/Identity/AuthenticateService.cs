@@ -22,10 +22,11 @@ public class AuthenticateService : IAuthenticate
         return result.Succeeded;
     }
 
-    public async Task<bool> Register(string email, string password)
+    public async Task<bool> Register(string name, string email, string password)
     {
         var applicationUser = new ApplicationUser
         {
+            Name = name,
             UserName = email,
             Email = email,
         };

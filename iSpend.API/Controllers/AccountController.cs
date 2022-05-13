@@ -38,9 +38,9 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost("Register")]
-    public async Task<IActionResult> Register(LoginViewModel model)
+    public async Task<IActionResult> Register(RegisterViewModel model)
     {
-        var result = await _authentication.Register(model.Email, model.Password);
+        var result = await _authentication.Register(model.Name, model.Email, model.Password);
 
         if (result)
         {
