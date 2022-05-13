@@ -54,7 +54,7 @@ public class IncomeController : ControllerBase
         }
     }
 
-    [HttpGet("find")]
+    [HttpGet("Find")]
     public async Task<ActionResult<IAsyncEnumerable<IncomeDTO>>> GetIncomesByName([FromQuery] string name)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

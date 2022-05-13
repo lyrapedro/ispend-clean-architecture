@@ -34,7 +34,7 @@ public class PurchaseController : ControllerBase
         }
     }
 
-    [HttpGet("fromcreditcard/{creditCardId:int}")]
+    [HttpGet("CreditCard/{creditCardId:int}")]
     public async Task<ActionResult<IAsyncEnumerable<PurchaseDTO>>> GetPurchasesFromCreditCard(int creditCardId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -70,7 +70,7 @@ public class PurchaseController : ControllerBase
         }
     }
 
-    [HttpGet("find")]
+    [HttpGet("Find")]
     public async Task<ActionResult<IAsyncEnumerable<PurchaseDTO>>> GetPurchasesByName([FromQuery] string name)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

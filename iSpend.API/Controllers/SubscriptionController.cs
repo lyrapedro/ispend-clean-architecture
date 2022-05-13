@@ -34,7 +34,7 @@ public class SubscriptionController : ControllerBase
         }
     }
 
-    [HttpGet("fromcreditcard/{creditCardId:int}")]
+    [HttpGet("CreditCard/{creditCardId:int}")]
     public async Task<ActionResult<IAsyncEnumerable<SubscriptionDTO>>> GetSubscriptionsFromCreditCard(int creditCardId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

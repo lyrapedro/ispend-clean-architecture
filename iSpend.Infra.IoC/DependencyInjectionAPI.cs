@@ -1,12 +1,9 @@
 ﻿using iSpend.Application.Interfaces;
 using iSpend.Application.Mappings;
 using iSpend.Application.Services;
-using iSpend.Domain.Account;
 using iSpend.Domain.Interfaces;
 using iSpend.Infra.Data.Context;
-using iSpend.Infra.Data.Identity;
 using iSpend.Infra.Data.Repositories;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,22 +19,24 @@ public static class DependencyInjectionAPI
         ), b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
         services.ConfigureApplicationCookie(options =>
-                options.AccessDeniedPath = "/Account/Login");
+                options.AccessDeniedPath = "api/Account/Login");
 
         services.AddScoped<ICreditCardRepository, CreditCardRepository>();
         services.AddScoped<IExpenseRepository, ExpenseRepository>();
         services.AddScoped<IGoalRepository, GoalRepository>();
         services.AddScoped<IIncomeRepository, IncomeRepository>();
-        services.AddScoped<IInstallmentRepository, InstallmentRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IPurchaseRepository, PurchaseRepository>();
+        services.AddScoped<IInstallmentRepository, InstallmentRepository>();
         services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 
         services.AddScoped<ICreditCardService, CreditCardService>();
         services.AddScoped<IExpenseService, ExpenseService>();
         services.AddScoped<IGoalService, GoalService>();
         services.AddScoped<IIncomeService, IncomeService>();
-        services.AddScoped<IInstallmentService, InstallmentService>();
+        services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IPurchaseService, PurchaseService>();
+        services.AddScoped<IInstallmentService, InstallmentService>();
         services.AddScoped<ISubscriptionService, SubscriptionService>();
 
         services.AddAutoMapper(typeof(DomainToDTOMappingProfile));

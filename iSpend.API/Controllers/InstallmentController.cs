@@ -34,7 +34,7 @@ public class InstallmentController : ControllerBase
         }
     }
 
-    [HttpGet("frompurchase/{purchaseId:int}")]
+    [HttpGet("Purchase/{purchaseId:int}")]
     public async Task<ActionResult<IAsyncEnumerable<InstallmentDTO>>> GetInstallmentsFromPurchase(int purchaseId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
