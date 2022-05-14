@@ -6,7 +6,6 @@ using iSpend.Domain.Interfaces;
 using iSpend.Infra.Data.Context;
 using iSpend.Infra.Data.Identity;
 using iSpend.Infra.Data.Repositories;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +27,7 @@ public static class DependencyInjection
         services.AddScoped<IExpenseRepository, ExpenseRepository>();
         services.AddScoped<IGoalRepository, GoalRepository>();
         services.AddScoped<IIncomeRepository, IncomeRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IInstallmentRepository, InstallmentRepository>();
         services.AddScoped<IPurchaseRepository, PurchaseRepository>();
         services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
@@ -36,6 +36,7 @@ public static class DependencyInjection
         services.AddScoped<IExpenseService, ExpenseService>();
         services.AddScoped<IGoalService, GoalService>();
         services.AddScoped<IIncomeService, IncomeService>();
+        services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IInstallmentService, InstallmentService>();
         services.AddScoped<IPurchaseService, PurchaseService>();
         services.AddScoped<ISubscriptionService, SubscriptionService>();

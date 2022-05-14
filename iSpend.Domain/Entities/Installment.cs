@@ -1,6 +1,4 @@
-﻿using iSpend.Domain.Validation;
-
-namespace iSpend.Domain.Entities;
+﻿namespace iSpend.Domain.Entities;
 
 public sealed class Installment
 {

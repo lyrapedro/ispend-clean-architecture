@@ -16,7 +16,7 @@ public class SeedUserRoleInitial : ISeedUserRoleInitial
 
     public void SeedUsers()
     {
-        if(_userManager.FindByEmailAsync("usuario@localhost").Result == null)
+        if (_userManager.FindByEmailAsync("usuario@localhost").Result == null)
         {
             ApplicationUser user = new ApplicationUser();
             user.UserName = "usuario@localhost";

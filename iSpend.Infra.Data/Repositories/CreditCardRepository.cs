@@ -7,7 +7,7 @@ namespace iSpend.Infra.Data.Repositories;
 
 public class CreditCardRepository : ICreditCardRepository
 {
-    ApplicationDbContext _creditCardContext; 
+    ApplicationDbContext _creditCardContext;
     public CreditCardRepository(ApplicationDbContext context)
     {
         _creditCardContext = context;
