@@ -23,20 +23,17 @@ public class ExpenseRepository : IExpenseRepository
 
     public async Task<Expense> GetById(string userId, int? id)
     {
-        Guid validGuid = Guid.Parse(userId);
-        return await _expenseContext.Expenses.FirstOrDefaultAsync(e => e.UserId == validGuid && e.Id == id);
+        return await _expenseContext.Expenses.FirstOrDefaultAsync(e => e.UserId == userId && e.Id == id);
     }
 
     public async Task<IEnumerable<Expense>> GetByName(string userId, string name)
     {
-        Guid validGuid = Guid.Parse(userId);
-        return await _expenseContext.Expenses.Where(i => i.UserId == validGuid && i.Name.Contains(name)).ToListAsync();
+        return await _expenseContext.Expenses.Where(i => i.UserId == userId && i.Name.Contains(name)).ToListAsync();
     }
 
     public async Task<IEnumerable<Expense>> GetExpenses(string userId)
     {
-        Guid validGuid = Guid.Parse(userId);
-        return await _expenseContext.Expenses.Where(e => e.UserId == validGuid).ToListAsync();
+        return await _expenseContext.Expenses.Where(e => e.UserId == userId).ToListAsync();
     }
 
     public async Task<Expense> Remove(Expense expense)

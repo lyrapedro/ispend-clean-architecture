@@ -5,7 +5,7 @@ namespace iSpend.Application.DTOs;
 public class CategoryDTO
 {
     public int Id { get; set; }
-    public Guid UserId { get; set; }
+    public string UserId { get; set; }
 
     [Required(ErrorMessage = "The name is required")]
     [MinLength(2)]

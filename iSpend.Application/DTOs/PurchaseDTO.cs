@@ -1,6 +1,7 @@
 ﻿using iSpend.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace iSpend.Application.DTOs;
 
@@ -23,5 +24,7 @@ public class PurchaseDTO
     public int CreditCardId { get; set; }
     public CreditCard CreditCard { get; set; }
     public int CategoryId { get; set; }
+
+    [JsonIgnore]
     public Category Category { get; set; }
 }

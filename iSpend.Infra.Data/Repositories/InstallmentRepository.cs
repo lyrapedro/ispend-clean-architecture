@@ -16,27 +16,23 @@ public class InstallmentRepository : IInstallmentRepository
 
     public async Task<Installment> GetById(string userId, int? id)
     {
-        Guid validGuid = Guid.Parse(userId);
-        return await _installmentContext.Installments.Include(i => i.Purchase.CreditCard).Where(i => i.Purchase.CreditCard.UserId == validGuid).FirstOrDefaultAsync(i => i.Id == id);
+        return await _installmentContext.Installments.Include(i => i.Purchase.CreditCard).Where(i => i.Purchase.CreditCard.UserId == userId).FirstOrDefaultAsync(i => i.Id == id);
     }
 
     public async Task<IEnumerable<Installment>> GetInstallments(string userId)
     {
-        Guid validGuid = Guid.Parse(userId);
-        return await _installmentContext.Installments.Include(i => i.Purchase.CreditCard).Where(i => i.Purchase.CreditCard.UserId == validGuid).ToListAsync();
+        return await _installmentContext.Installments.Include(i => i.Purchase.CreditCard).Where(i => i.Purchase.CreditCard.UserId == userId).ToListAsync();
     }
 
     public async Task<IEnumerable<Installment>> GetInstallmentsFromPurchase(string userId, int? purchaseId)
     {
-        Guid validGuid = Guid.Parse(userId);
-        return await _installmentContext.Installments.Include(i => i.Purchase.CreditCard).Where(i => i.Purchase.CreditCard.UserId == validGuid && i.Purchase.Id == purchaseId).ToListAsync();
+        return await _installmentContext.Installments.Include(i => i.Purchase.CreditCard).Where(i => i.Purchase.CreditCard.UserId == userId && i.Purchase.Id == purchaseId).ToListAsync();
     }
 
     public async Task<Purchase> GetInstallmentPurchase(string userId, int? id)
     {
-        Guid validGuid = Guid.Parse(userId);
 
-        var installment = await _installmentContext.Installments.Include(i => i.Purchase.CreditCard).FirstOrDefaultAsync(i => i.Purchase.CreditCard.UserId == validGuid && i.Id == id);
+        var installment = await _installmentContext.Installments.Include(i => i.Purchase.CreditCard).FirstOrDefaultAsync(i => i.Purchase.CreditCard.UserId == userId && i.Id == id);
         return installment.Purchase;
     }
 

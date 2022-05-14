@@ -23,20 +23,17 @@ public class IncomeRepository : IIncomeRepository
 
     public async Task<Income> GetById(string userId, int? id)
     {
-        Guid validGuid = Guid.Parse(userId);
-        return await _incomeContext.Incomes.FirstOrDefaultAsync(i => i.UserId == validGuid && i.Id == id);
+        return await _incomeContext.Incomes.FirstOrDefaultAsync(i => i.UserId == userId && i.Id == id);
     }
 
     public async Task<IEnumerable<Income>> GetByName(string userId, string name)
     {
-        Guid validGuid = Guid.Parse(userId);
-        return await _incomeContext.Incomes.Where(i => i.UserId == validGuid && i.Name.Contains(name)).ToListAsync();
+        return await _incomeContext.Incomes.Where(i => i.UserId == userId && i.Name.Contains(name)).ToListAsync();
     }
 
     public async Task<IEnumerable<Income>> GetIncomes(string userId)
     {
-        Guid validGuid = Guid.Parse(userId);
-        return await _incomeContext.Incomes.Where(i => i.UserId == validGuid).ToListAsync();
+        return await _incomeContext.Incomes.Where(i => i.UserId == userId).ToListAsync();
     }
 
     public async Task<Income> Remove(Income expense)

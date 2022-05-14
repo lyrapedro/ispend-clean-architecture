@@ -100,10 +100,8 @@ public class IncomeController : ControllerBase
 
             if (income.Id == id)
             {
-                Guid validGuid;
-                Guid.TryParse(userId, out validGuid);
 
-                if (validGuid == income.UserId)
+                if (userId == income.UserId)
                 {
                     await _incomeService.Update(income);
                     return Ok($"\"{income.Name}\" successfully updated.");

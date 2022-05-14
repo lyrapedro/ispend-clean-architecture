@@ -1,5 +1,6 @@
 ﻿using iSpend.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace iSpend.Application.DTOs;
 
@@ -21,5 +22,7 @@ public class SubscriptionDTO
 
     [Required(ErrorMessage = "The credt card is required")]
     public int CreditCardId { get; set; }
-    public CreditCard CreditCard { get; set; }
+
+    [JsonIgnore]
+    public CreditCard? CreditCard { get; set; }
 }

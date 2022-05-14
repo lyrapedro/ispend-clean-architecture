@@ -1,6 +1,7 @@
 ﻿using iSpend.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace iSpend.Application.DTOs;
 
@@ -21,5 +22,7 @@ public class InstallmentDTO
 
     [Required(ErrorMessage = "The purchase is required")]
     public int PurchaseId { get; set; }
+
+    [JsonIgnore]
     public Purchase Purchase { get; set; }
 }

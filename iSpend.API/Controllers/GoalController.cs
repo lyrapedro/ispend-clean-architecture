@@ -100,10 +100,8 @@ public class GoalController : ControllerBase
 
             if (goal.Id == id)
             {
-                Guid validGuid;
-                Guid.TryParse(userId, out validGuid);
 
-                if (validGuid == goal.UserId)
+                if (userId == goal.UserId)
                 {
                     await _goalService.Update(goal);
                     return Ok($"\"{goal.Name}\" successfully updated.");

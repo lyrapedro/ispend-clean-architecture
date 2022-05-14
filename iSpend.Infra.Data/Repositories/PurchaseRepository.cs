@@ -16,36 +16,31 @@ public class PurchaseRepository : IPurchaseRepository
 
     public async Task<Purchase> GetById(string userId, int? id)
     {
-        Guid validGuid = Guid.Parse(userId);
 
-        return await _purchaseContext.Purchases.Include(p => p.CreditCard).Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id && p.CreditCard.UserId == validGuid);
+        return await _purchaseContext.Purchases.Include(p => p.CreditCard).Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id && p.CreditCard.UserId == userId);
     }
 
     public async Task<IEnumerable<Purchase>> GetByName(string userId, string name)
     {
-        Guid validGuid = Guid.Parse(userId);
-        return await _purchaseContext.Purchases.Include(p => p.CreditCard).Include(c => c.Category).Where(p => p.CreditCard.UserId == validGuid && p.Name.Contains(name)).ToListAsync();
+        return await _purchaseContext.Purchases.Include(p => p.CreditCard).Include(c => c.Category).Where(p => p.CreditCard.UserId == userId && p.Name.Contains(name)).ToListAsync();
     }
 
     public async Task<IEnumerable<Purchase>> GetPurchases(string userId)
     {
-        Guid validGuid = Guid.Parse(userId);
 
-        return await _purchaseContext.Purchases.Include(c => c.Category).Where(p => p.CreditCard.UserId == validGuid).ToListAsync();
+        return await _purchaseContext.Purchases.Include(c => c.Category).Where(p => p.CreditCard.UserId == userId).ToListAsync();
     }
 
     public async Task<IEnumerable<Purchase>> GetPurchasesFromCreditCard(string userId, int creditCardId)
     {
-        Guid validGuid = Guid.Parse(userId);
 
-        return await _purchaseContext.Purchases.Include(p => p.CreditCard).Include(c => c.Category).Where(p => p.CreditCardId == creditCardId && p.CreditCard.UserId == validGuid).ToListAsync();
+        return await _purchaseContext.Purchases.Include(p => p.CreditCard).Include(c => c.Category).Where(p => p.CreditCardId == creditCardId && p.CreditCard.UserId == userId).ToListAsync();
     }
 
     public async Task<CreditCard> GetPurchaseCreditCard(string userId, int? id)
     {
-        Guid validGuid = Guid.Parse(userId);
 
-        var purchase = _purchaseContext.Purchases.Include(p => p.CreditCard).Include(c => c.Category).FirstOrDefaultAsync(p => p.CreditCard.UserId == validGuid && p.Id == id);
+        var purchase = _purchaseContext.Purchases.Include(p => p.CreditCard).Include(c => c.Category).FirstOrDefaultAsync(p => p.CreditCard.UserId == userId && p.Id == id);
         return purchase.Result.CreditCard;
     }
 

@@ -116,10 +116,8 @@ public class CategoryController : ControllerBase
 
             if (category.Id == id)
             {
-                Guid validGuid;
-                Guid.TryParse(userId, out validGuid);
 
-                if (validGuid == category.UserId)
+                if (userId == category.UserId)
                 {
                     await _categoryService.Update(category);
                     return Ok($"\"{category.Name}\" successfully updated.");
@@ -151,10 +149,7 @@ public class CategoryController : ControllerBase
             if (category == null)
                 return NotFound($"Not exists");
 
-            Guid validGuid;
-            Guid.TryParse(userId, out validGuid);
-
-            if (category.UserId == validGuid)
+            if (category.UserId == userId)
             {
                 var categoryName = category.Name;
 

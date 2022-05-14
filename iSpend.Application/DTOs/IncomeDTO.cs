@@ -7,8 +7,7 @@ public class IncomeDTO
 {
     public int Id { get; set; }
 
-    [Required(ErrorMessage = "The user is required")]
-    public Guid UserId { get; set; }
+    public string UserId { get; set; }
 
     [Required(ErrorMessage = "The name is required")]
     [MinLength(2)]

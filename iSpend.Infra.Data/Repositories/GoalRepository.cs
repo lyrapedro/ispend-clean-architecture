@@ -16,20 +16,17 @@ public class GoalRepository : IGoalRepository
 
     public async Task<Goal> GetById(string userId, int? id)
     {
-        Guid validGuid = Guid.Parse(userId);
-        return await _goalContext.Goals.FirstOrDefaultAsync(g => g.UserId == validGuid && g.Id == id);
+        return await _goalContext.Goals.FirstOrDefaultAsync(g => g.UserId == userId && g.Id == id);
     }
 
     public async Task<IEnumerable<Goal>> GetByName(string userId, string name)
     {
-        Guid validGuid = Guid.Parse(userId);
-        return await _goalContext.Goals.Where(g => g.UserId == validGuid && g.Name.Contains(name)).ToListAsync();
+        return await _goalContext.Goals.Where(g => g.UserId == userId && g.Name.Contains(name)).ToListAsync();
     }
 
     public async Task<IEnumerable<Goal>> GetGoals(string userId)
     {
-        Guid validGuid = Guid.Parse(userId);
-        return await _goalContext.Goals.Where(g => g.UserId == validGuid).ToListAsync();
+        return await _goalContext.Goals.Where(g => g.UserId == userId).ToListAsync();
     }
 
     public async Task<Goal> Create(Goal expense)

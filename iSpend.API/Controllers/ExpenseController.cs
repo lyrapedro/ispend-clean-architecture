@@ -100,10 +100,7 @@ public class ExpenseController : ControllerBase
 
             if (expense.Id == id)
             {
-                Guid validGuid;
-                Guid.TryParse(userId, out validGuid);
-
-                if (validGuid == expense.UserId)
+                if (userId == expense.UserId)
                 {
                     await _expenseService.Update(expense);
                     return Ok($"\"{expense.Name}\" successfully updated.");

@@ -34,7 +34,7 @@ public class CreditCardController : ControllerBase
         }
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:int}", Name = "GetCard")]
     public async Task<ActionResult<CreditCardDTO>> GetCreditCard(int id)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -79,11 +79,11 @@ public class CreditCardController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue("UserId");
 
             await _creditCardService.Add(creditCardDto);
 
-            return CreatedAtRoute(nameof(GetCreditCard), new { id = creditCardDto.Id }, creditCardDto);
+            return CreatedAtRoute("GetCard", new { id = creditCardDto.Id }, creditCardDto);
         }
         catch
         {
@@ -102,7 +102,7 @@ public class CreditCardController : ControllerBase
                 Guid validGuid;
                 Guid.TryParse(userId, out validGuid);
 
-                if (validGuid == creditCardDto.UserId)
+                if (userId == creditCardDto.UserId.ToString())
                 {
                     await _creditCardService.Update(creditCardDto);
                     return Ok($"\"{creditCardDto.Name}\" successfully updated.");

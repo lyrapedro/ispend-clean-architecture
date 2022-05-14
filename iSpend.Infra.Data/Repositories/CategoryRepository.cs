@@ -16,29 +16,24 @@ public class CategoryRepository : ICategoryRepository
 
     public async Task<Category> GetById(string userId, int? id)
     {
-        Guid validGuid = Guid.Parse(userId);
 
-        return await _categoryContext.Categories.FirstOrDefaultAsync(c => c.Id == id && c.UserId == validGuid);
+        return await _categoryContext.Categories.FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
     }
 
     public async Task<IEnumerable<Category>> GetByName(string userId, string name)
     {
-        Guid validGuid = Guid.Parse(userId);
-        return await _categoryContext.Categories.Where(c => c.UserId == validGuid && c.Name.Contains(name)).ToListAsync();
+        return await _categoryContext.Categories.Where(c => c.UserId == userId && c.Name.Contains(name)).ToListAsync();
     }
 
     public async Task<IEnumerable<Category>> GetCategories(string userId)
     {
-        Guid validGuid = Guid.Parse(userId);
 
-        return await _categoryContext.Categories.Where(c => c.UserId == validGuid).ToListAsync();
+        return await _categoryContext.Categories.Where(c => c.UserId == userId).ToListAsync();
     }
 
     public async Task<IEnumerable<Purchase>> GetPurchasesFromCategory(string userId, int categoryId)
     {
-        Guid validGuid = Guid.Parse(userId);
-
-        return await _categoryContext.Purchases.Where(p => p.CreditCard.UserId == validGuid && p.CategoryId == categoryId).ToListAsync();
+        return await _categoryContext.Purchases.Where(p => p.CreditCard.UserId == userId && p.CategoryId == categoryId).ToListAsync();
     }
 
     public async Task<Category> Create(Category category)
