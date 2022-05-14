@@ -2,9 +2,11 @@
 
 public class Category : Entity
 {
-    public string UserId { get; set; }
-    public string Name { get; set; }
-    public string Color { get; set; }
+    public string UserId { get; private set; }
+    public string Name { get; private set; }
+    public string Color { get; private set; }
 
-    public ICollection<Purchase> Purchases { get; set; }
+    public ICollection<Purchase> Purchases { get; private set; }
+    public ICollection<Income> Incomes { get; private set; }
+    public ICollection<Expense> Expenses { get; private set; }
 }

@@ -5,17 +5,16 @@ namespace iSpend.Application.DTOs;
 
 public class CreditCardDTO
 {
-    public int Id { get; set; }
+    public int Id { get; private set; }
 
     public string UserId { get; set; }
 
     [Required(ErrorMessage = "The name is required")]
     [MinLength(2)]
-    [MaxLength(50)]
+    [MaxLength(30)]
     public string Name { get; set; }
 
     [Required(ErrorMessage = "The limit is required")]
-    [Column(TypeName = "decimal(18, 2")]
     [DataType(DataType.Currency)]
     public decimal Limit { get; set; }
 

@@ -7,24 +7,37 @@ namespace iSpend.Application.DTOs;
 
 public class PurchaseDTO
 {
-    public int Id { get; set; }
+    public int Id { get; private set; }
+
+    [Required(ErrorMessage = "The credit card is required")]
+    public int CreditCardId { get; set; }
+
+    public int? CategoryId { get; set; }
 
     [Required(ErrorMessage = "The name is required")]
     [MinLength(2)]
-    [MaxLength(50)]
-    public string Name { get; private set; }
+    [MaxLength(30)]
+    public string Name { get; set; }
 
     [Required(ErrorMessage = "The price is required")]
-    [Column(TypeName = "decimal(18, 2")]
     [DataType(DataType.Currency)]
-    public decimal Price { get; private set; }
-    public DateTime PurchasedAt { get; private set; }
+    public decimal Price { get; set; }
+    public int? NumberOfInstallments { get; set; }
+    public bool? Paid { get; set; }
 
-    [Required(ErrorMessage = "The credt card is required")]
-    public int CreditCardId { get; set; }
-    public CreditCard CreditCard { get; set; }
-    public int CategoryId { get; set; }
+    [Required(ErrorMessage = "The purchase date is required")]
+    [DataType(DataType.DateTime)]
+    public DateTime PurchasedAt { get; set; }
+
+    [DataType(DataType.DateTime)]
+    public DateTime RegisteredAt { get; set; }
+
+    [DataType(DataType.DateTime)]
+    public DateTime ModifiedAt { get; set; }
 
     [JsonIgnore]
-    public Category Category { get; set; }
+    public CreditCard CreditCard { get; private set; }
+
+    [JsonIgnore]
+    public Category? Category { get; private set; }
 }

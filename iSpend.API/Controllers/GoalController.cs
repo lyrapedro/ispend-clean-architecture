@@ -21,7 +21,7 @@ public class GoalController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IAsyncEnumerable<GoalDTO>>> GetGoals()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
 
         try
         {
@@ -34,10 +34,10 @@ public class GoalController : ControllerBase
         }
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:int}", Name = "GetGoal")]
     public async Task<ActionResult<GoalDTO>> GetGoal(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
 
         try
         {
@@ -57,7 +57,7 @@ public class GoalController : ControllerBase
     [HttpGet("Find")]
     public async Task<ActionResult<IAsyncEnumerable<GoalDTO>>> GetGoalsByName([FromQuery] string name)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
 
         try
         {
@@ -79,11 +79,14 @@ public class GoalController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue("UserId");
 
-            await _goalService.Add(goal);
+            if (userId == goal.UserId)
+                await _goalService.Add(goal);
+            else
+                return Unauthorized("You do not have permissions to do that.");
 
-            return CreatedAtRoute(nameof(GetGoal), new { id = goal.Id }, goal);
+            return CreatedAtRoute("GetGoal", new { id = goal.Id }, goal);
         }
         catch
         {
@@ -96,7 +99,7 @@ public class GoalController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue("UserId");
 
             if (goal.Id == id)
             {
@@ -123,7 +126,7 @@ public class GoalController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
         try
         {
             var goal = await _goalService.GetById(userId, id);

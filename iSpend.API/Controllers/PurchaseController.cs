@@ -21,7 +21,7 @@ public class PurchaseController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IAsyncEnumerable<PurchaseDTO>>> GetPurchases()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
 
         try
         {
@@ -37,7 +37,7 @@ public class PurchaseController : ControllerBase
     [HttpGet("CreditCard/{creditCardId:int}")]
     public async Task<ActionResult<IAsyncEnumerable<PurchaseDTO>>> GetPurchasesFromCreditCard(int creditCardId)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
 
         try
         {
@@ -50,10 +50,10 @@ public class PurchaseController : ControllerBase
         }
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:int}", Name = "GetPurchase")]
     public async Task<ActionResult<PurchaseDTO>> GetPurchase(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
 
         try
         {
@@ -73,7 +73,7 @@ public class PurchaseController : ControllerBase
     [HttpGet("Find")]
     public async Task<ActionResult<IAsyncEnumerable<PurchaseDTO>>> GetPurchasesByName([FromQuery] string name)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
 
         try
         {
@@ -95,11 +95,11 @@ public class PurchaseController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue("UserId");
 
             await _purchaseService.Add(purchase);
 
-            return CreatedAtRoute(nameof(GetPurchase), new { id = purchase.Id }, purchase);
+            return CreatedAtRoute("GetPurchase", new { id = purchase.Id }, purchase);
         }
         catch
         {
@@ -112,7 +112,7 @@ public class PurchaseController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue("UserId");
 
             if (purchase.Id == id)
             {
@@ -141,7 +141,7 @@ public class PurchaseController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
         try
         {
             var purchase = await _purchaseService.GetById(userId, id);

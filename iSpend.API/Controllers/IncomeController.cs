@@ -21,7 +21,7 @@ public class IncomeController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IAsyncEnumerable<IncomeDTO>>> GetIncomes()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
 
         try
         {
@@ -34,10 +34,10 @@ public class IncomeController : ControllerBase
         }
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:int}", Name = "GetIncome")]
     public async Task<ActionResult<IncomeDTO>> GetIncome(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
 
         try
         {
@@ -57,7 +57,7 @@ public class IncomeController : ControllerBase
     [HttpGet("Find")]
     public async Task<ActionResult<IAsyncEnumerable<IncomeDTO>>> GetIncomesByName([FromQuery] string name)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
 
         try
         {
@@ -79,11 +79,14 @@ public class IncomeController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue("UserId");
 
-            await _incomeService.Add(income);
+            if (userId == income.UserId)
+                await _incomeService.Add(income);
+            else
+                return Unauthorized("You do not have permissions to do that.");
 
-            return CreatedAtRoute(nameof(GetIncome), new { id = income.Id }, income);
+            return CreatedAtRoute("GetIncome", new { id = income.Id }, income);
         }
         catch
         {
@@ -96,7 +99,7 @@ public class IncomeController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue("UserId");
 
             if (income.Id == id)
             {
@@ -123,7 +126,7 @@ public class IncomeController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
         try
         {
             var income = await _incomeService.GetById(userId, id);

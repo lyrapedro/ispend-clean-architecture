@@ -7,22 +7,22 @@ namespace iSpend.Application.DTOs;
 
 public class InstallmentDTO
 {
-    public int Id { get; set; }
-
-    public int Sequence { get; set; }
-
-    [Required(ErrorMessage = "The price is required")]
-    [Column(TypeName = "decimal(18, 2")]
-    [DataType(DataType.Currency)]
-    public decimal Price { get; private set; }
-
-    public bool Paid { get; private set; }
-
-    public DateTime ExpiresAt { get; set; }
+    public int Id { get; private set; }
 
     [Required(ErrorMessage = "The purchase is required")]
     public int PurchaseId { get; set; }
 
+    public int Order { get; set; }
+
+    [Required(ErrorMessage = "The price is required")]
+    [DataType(DataType.Currency)]
+    public decimal Price { get; set; }
+
+    public bool? Paid { get; set; }
+
+    [DataType(DataType.DateTime)]
+    public DateTime? ExpiresAt { get; set; }
+
     [JsonIgnore]
-    public Purchase Purchase { get; set; }
+    public Purchase Purchase { get; private set; }
 }

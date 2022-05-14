@@ -21,7 +21,7 @@ public class CategoryController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IAsyncEnumerable<CategoryDTO>>> GetCategories()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
 
         try
         {
@@ -37,7 +37,7 @@ public class CategoryController : ControllerBase
     [HttpGet("Purchases/{categoryId:int}")]
     public async Task<ActionResult<IAsyncEnumerable<CategoryDTO>>> GetPurchasesFromCategory(int categoryId)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
 
         try
         {
@@ -50,10 +50,10 @@ public class CategoryController : ControllerBase
         }
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:int}", Name = "GetCategory")]
     public async Task<ActionResult<CategoryDTO>> GetCategory(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
 
         try
         {
@@ -73,7 +73,7 @@ public class CategoryController : ControllerBase
     [HttpGet("Find")]
     public async Task<ActionResult<IAsyncEnumerable<CategoryDTO>>> GetCategoriesByName([FromQuery] string name)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
 
         try
         {
@@ -95,11 +95,14 @@ public class CategoryController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue("UserId");
 
-            await _categoryService.Add(category);
+            if (userId == category.UserId)
+                await _categoryService.Add(category);
+            else
+                return Unauthorized("You do not have permissions to do that.");
 
-            return CreatedAtRoute(nameof(GetCategory), new { id = category.Id }, category);
+            return CreatedAtRoute("GetCategory", new { id = category.Id }, category);
         }
         catch
         {
@@ -112,7 +115,7 @@ public class CategoryController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue("UserId");
 
             if (category.Id == id)
             {
@@ -141,7 +144,7 @@ public class CategoryController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
         try
         {
             var category = await _categoryService.GetById(userId, id);

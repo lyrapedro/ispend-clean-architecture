@@ -21,7 +21,7 @@ public class ExpenseController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IAsyncEnumerable<ExpenseDTO>>> GetExpenses()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
 
         try
         {
@@ -34,10 +34,10 @@ public class ExpenseController : ControllerBase
         }
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:int}", Name = "GetExpense")]
     public async Task<ActionResult<ExpenseDTO>> GetExpense(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
 
         try
         {
@@ -57,7 +57,7 @@ public class ExpenseController : ControllerBase
     [HttpGet("Find")]
     public async Task<ActionResult<IAsyncEnumerable<ExpenseDTO>>> GetExpensesByName([FromQuery] string name)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
 
         try
         {
@@ -79,11 +79,15 @@ public class ExpenseController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue("UserId");
 
-            await _expenseService.Add(expense);
+            if (userId == expense.UserId)
+                await _expenseService.Add(expense);
+            else
+                return Unauthorized("You do not have permissions to do that.");
 
-            return CreatedAtRoute(nameof(GetExpense), new { id = expense.Id }, expense);
+
+            return CreatedAtRoute("GetExpense", new { id = expense.Id }, expense);
         }
         catch
         {
@@ -96,7 +100,7 @@ public class ExpenseController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue("UserId");
 
             if (expense.Id == id)
             {
@@ -122,7 +126,7 @@ public class ExpenseController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
         try
         {
             var expense = await _expenseService.GetById(userId, id);

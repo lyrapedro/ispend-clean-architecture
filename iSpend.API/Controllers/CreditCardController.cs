@@ -37,7 +37,7 @@ public class CreditCardController : ControllerBase
     [HttpGet("{id:int}", Name = "GetCard")]
     public async Task<ActionResult<CreditCardDTO>> GetCreditCard(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
 
         try
         {
@@ -57,7 +57,7 @@ public class CreditCardController : ControllerBase
     [HttpGet("Find")]
     public async Task<ActionResult<IAsyncEnumerable<CreditCardDTO>>> GetCreditCardsByName([FromQuery] string name)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
 
         try
         {
@@ -81,7 +81,10 @@ public class CreditCardController : ControllerBase
         {
             var userId = User.FindFirstValue("UserId");
 
-            await _creditCardService.Add(creditCardDto);
+            if (userId == creditCardDto.UserId)
+                await _creditCardService.Add(creditCardDto);
+            else
+                return Unauthorized("You do not have permissions to do that.");
 
             return CreatedAtRoute("GetCard", new { id = creditCardDto.Id }, creditCardDto);
         }
@@ -96,7 +99,7 @@ public class CreditCardController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue("UserId");
             if (creditCardDto.Id == id)
             {
                 Guid validGuid;
@@ -124,7 +127,7 @@ public class CreditCardController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<CreditCardDTO>> Delete(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue("UserId");
         try
         {
             var creditCard = await _creditCardService.GetById(userId, id);

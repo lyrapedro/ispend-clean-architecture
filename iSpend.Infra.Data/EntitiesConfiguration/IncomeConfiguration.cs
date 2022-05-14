@@ -9,7 +9,12 @@ public class IncomeConfiguration : IEntityTypeConfiguration<Income>
     public void Configure(EntityTypeBuilder<Income> builder)
     {
         builder.HasKey(i => i.Id);
-        builder.Property(i => i.Name).HasMaxLength(25).IsRequired();
-        builder.Property(i => i.Value).HasPrecision(10, 2).IsRequired();
+        builder.Property(c => c.UserId).IsRequired();
+        builder.Property(i => i.Name).HasMaxLength(30).IsRequired();
+        builder.Property(i => i.Value).HasPrecision(18, 2).IsRequired();
+        builder.Property(i => i.Recurrent).IsRequired();
+        builder.Property(i => i.Payday).IsRequired();
+
+        builder.HasOne(i => i.Category).WithMany(c => c.Incomes).HasForeignKey(p => p.CategoryId);
     }
 }
