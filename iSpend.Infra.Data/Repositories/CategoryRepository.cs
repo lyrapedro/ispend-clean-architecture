@@ -28,7 +28,7 @@ public class CategoryRepository : ICategoryRepository
     public async Task<IEnumerable<Category>> GetCategories(string userId)
     {
 
-        return await _categoryContext.Categories.Where(c => c.UserId == userId).ToListAsync();
+        return await _categoryContext.Categories.Where(c => c.UserId == null || c.UserId == userId).ToListAsync();
     }
 
     public async Task<IEnumerable<Purchase>> GetPurchasesFromCategory(string userId, int categoryId)

@@ -28,9 +28,9 @@ public class CategoryController : ControllerBase
             var categories = await _categoryService.GetCategories(userId);
             return Ok(categories);
         }
-        catch
+        catch(Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Error on getting categories");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -44,9 +44,9 @@ public class CategoryController : ControllerBase
             var categories = await _categoryService.GetPurchasesFromCategory(userId, categoryId);
             return Ok(categories);
         }
-        catch
+        catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Error on getting categories");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -64,9 +64,9 @@ public class CategoryController : ControllerBase
 
             return Ok(category);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -84,9 +84,9 @@ public class CategoryController : ControllerBase
 
             return Ok(categories);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -104,9 +104,9 @@ public class CategoryController : ControllerBase
 
             return CreatedAtRoute("GetCategory", new { id = category.Id }, category);
         }
-        catch
+        catch(Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -135,9 +135,9 @@ public class CategoryController : ControllerBase
                 return BadRequest("Invalid request");
             }
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -162,9 +162,9 @@ public class CategoryController : ControllerBase
 
             return Unauthorized("You do not have permissions to do that");
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 }
