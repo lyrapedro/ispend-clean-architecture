@@ -28,9 +28,9 @@ public class CreditCardController : ControllerBase
             var creditCards = await _creditCardService.GetCreditCards(userId);
             return Ok(creditCards);
         }
-        catch
+        catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Error on getting credit cards");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -48,9 +48,9 @@ public class CreditCardController : ControllerBase
 
             return Ok(creditCard);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -68,9 +68,9 @@ public class CreditCardController : ControllerBase
 
             return Ok(creditCards);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -88,9 +88,9 @@ public class CreditCardController : ControllerBase
 
             return CreatedAtRoute("GetCard", new { id = creditCardDto.Id }, creditCardDto);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -118,9 +118,9 @@ public class CreditCardController : ControllerBase
                 return BadRequest("Invalid request");
             }
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -138,9 +138,9 @@ public class CreditCardController : ControllerBase
             await _creditCardService.Remove(userId, id);
             return Ok($"\"{creditCard.Name}\" successfully removed");
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 }
