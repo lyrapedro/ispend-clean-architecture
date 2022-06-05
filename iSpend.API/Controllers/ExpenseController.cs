@@ -28,9 +28,9 @@ public class ExpenseController : ControllerBase
             var expenses = await _expenseService.GetExpenses(userId);
             return Ok(expenses);
         }
-        catch
+        catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Error on getting expenses");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -48,9 +48,9 @@ public class ExpenseController : ControllerBase
 
             return Ok(expense);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -68,9 +68,9 @@ public class ExpenseController : ControllerBase
 
             return Ok(expenses);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -89,9 +89,9 @@ public class ExpenseController : ControllerBase
 
             return CreatedAtRoute("GetExpense", new { id = expense.Id }, expense);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -117,9 +117,9 @@ public class ExpenseController : ControllerBase
                 return BadRequest("Invalid request");
             }
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -144,9 +144,9 @@ public class ExpenseController : ControllerBase
 
             return Unauthorized("You do not have permissions to do that");
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 }

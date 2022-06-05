@@ -28,9 +28,9 @@ public class IncomeController : ControllerBase
             var incomes = await _incomeService.GetIncomes(userId);
             return Ok(incomes);
         }
-        catch
+        catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Error on getting incomes");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -48,9 +48,9 @@ public class IncomeController : ControllerBase
 
             return Ok(income);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -68,9 +68,9 @@ public class IncomeController : ControllerBase
 
             return Ok(incomes);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -88,9 +88,9 @@ public class IncomeController : ControllerBase
 
             return CreatedAtRoute("GetIncome", new { id = income.Id }, income);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -117,9 +117,9 @@ public class IncomeController : ControllerBase
                 return BadRequest("Invalid request");
             }
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -144,9 +144,9 @@ public class IncomeController : ControllerBase
 
             return Unauthorized("You do not have permissions to do that");
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 }

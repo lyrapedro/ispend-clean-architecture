@@ -28,9 +28,9 @@ public class PurchaseController : ControllerBase
             var purchases = await _purchaseService.GetPurchases(userId);
             return Ok(purchases);
         }
-        catch
+        catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Error on getting purchases");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -44,9 +44,9 @@ public class PurchaseController : ControllerBase
             var purchases = await _purchaseService.GetPurchasesFromCreditCard(userId, creditCardId);
             return Ok(purchases);
         }
-        catch
+        catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Error on getting purchases");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -64,9 +64,9 @@ public class PurchaseController : ControllerBase
 
             return Ok(purchase);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -84,9 +84,9 @@ public class PurchaseController : ControllerBase
 
             return Ok(purchases);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -101,9 +101,9 @@ public class PurchaseController : ControllerBase
 
             return CreatedAtRoute("GetPurchase", new { id = purchase.Id }, purchase);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -132,9 +132,9 @@ public class PurchaseController : ControllerBase
                 return BadRequest("Invalid request");
             }
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -159,9 +159,9 @@ public class PurchaseController : ControllerBase
 
             return Unauthorized("You do not have permissions to do that");
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 }

@@ -28,9 +28,9 @@ public class GoalController : ControllerBase
             var goals = await _goalService.GetGoals(userId);
             return Ok(goals);
         }
-        catch
+        catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Error on getting goals");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -48,9 +48,9 @@ public class GoalController : ControllerBase
 
             return Ok(goal);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -68,9 +68,9 @@ public class GoalController : ControllerBase
 
             return Ok(goals);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -88,9 +88,9 @@ public class GoalController : ControllerBase
 
             return CreatedAtRoute("GetGoal", new { id = goal.Id }, goal);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -117,9 +117,9 @@ public class GoalController : ControllerBase
                 return BadRequest("Invalid request");
             }
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -145,9 +145,9 @@ public class GoalController : ControllerBase
             return Unauthorized("You do not have permissions to do that");
 
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 }

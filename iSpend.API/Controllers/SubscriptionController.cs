@@ -28,9 +28,9 @@ public class SubscriptionController : ControllerBase
             var subscriptions = await _subscriptionService.GetSubscriptions(userId);
             return Ok(subscriptions);
         }
-        catch
+        catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Error on getting subscriptions");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -44,9 +44,9 @@ public class SubscriptionController : ControllerBase
             var subscriptions = await _subscriptionService.GetSubscriptionsFromCreditCard(userId, creditCardId);
             return Ok(subscriptions);
         }
-        catch
+        catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Error on getting subscriptions");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -64,9 +64,9 @@ public class SubscriptionController : ControllerBase
 
             return Ok(subscription);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -84,9 +84,9 @@ public class SubscriptionController : ControllerBase
 
             return Ok(subscriptions);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -101,9 +101,9 @@ public class SubscriptionController : ControllerBase
 
             return CreatedAtRoute("GetSubscription", new { id = subscription.Id }, subscription);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -132,9 +132,9 @@ public class SubscriptionController : ControllerBase
                 return BadRequest("Invalid request");
             }
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -159,9 +159,9 @@ public class SubscriptionController : ControllerBase
 
             return Unauthorized("You do not have permissions to do that");
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 }

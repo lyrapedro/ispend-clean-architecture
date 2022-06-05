@@ -28,9 +28,9 @@ public class InstallmentController : ControllerBase
             var installments = await _installmentService.GetInstallments(userId);
             return Ok(installments);
         }
-        catch
+        catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Error on getting installments");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -44,9 +44,9 @@ public class InstallmentController : ControllerBase
             var installments = await _installmentService.GetInstallmentsFromPurchase(userId, purchaseId);
             return Ok(installments);
         }
-        catch
+        catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Error on getting installments");
+            return BadRequest(ex.Message);
         }
     }
 
@@ -64,9 +64,9 @@ public class InstallmentController : ControllerBase
 
             return Ok(installment);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Invalid request");
+            return BadRequest(ex.Message);
         }
     }
 }
