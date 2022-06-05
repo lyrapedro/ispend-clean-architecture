@@ -14,10 +14,10 @@ public class PurchaseRepository : IPurchaseRepository
         _purchaseContext = context;
     }
 
-    public async Task<Purchase> GetById(string userId, int? id)
+    public async Task<Purchase> GetById(int id)
     {
 
-        return await _purchaseContext.Purchases.Include(p => p.CreditCard).Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id && p.CreditCard.UserId == userId);
+        return await _purchaseContext.Purchases.Include(p => p.CreditCard).Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task<IEnumerable<Purchase>> GetByName(string userId, string name)
@@ -31,10 +31,10 @@ public class PurchaseRepository : IPurchaseRepository
         return await _purchaseContext.Purchases.Include(c => c.Category).Where(p => p.CreditCard.UserId == userId).ToListAsync();
     }
 
-    public async Task<IEnumerable<Purchase>> GetPurchasesFromCreditCard(string userId, int creditCardId)
+    public async Task<IEnumerable<Purchase>> GetPurchasesFromCreditCard(int creditCardId)
     {
 
-        return await _purchaseContext.Purchases.Include(p => p.CreditCard).Include(c => c.Category).Where(p => p.CreditCardId == creditCardId && p.CreditCard.UserId == userId).ToListAsync();
+        return await _purchaseContext.Purchases.Include(p => p.CreditCard).Include(c => c.Category).Where(p => p.CreditCardId == creditCardId).ToListAsync();
     }
 
     public async Task<CreditCard> GetPurchaseCreditCard(int id)

@@ -12,10 +12,12 @@ namespace iSpend.API.Controllers;
 public class PurchaseController : ControllerBase
 {
     private IPurchaseService _purchaseService;
+    private readonly ICreditCardService _creditCardService;
 
-    public PurchaseController(IPurchaseService purchaseService)
+    public PurchaseController(IPurchaseService purchaseService, ICreditCardService creditCardService)
     {
         _purchaseService = purchaseService;
+        _creditCardService = creditCardService;
     }
 
     [HttpGet]
@@ -41,7 +43,12 @@ public class PurchaseController : ControllerBase
 
         try
         {
-            var purchases = await _purchaseService.GetPurchasesFromCreditCard(userId, creditCardId);
+            var creditCard = await _creditCardService.GetById(userId, creditCardId);
+
+            if (creditCard.UserId != userId)
+                return Unauthorized("You do not have permissions to do that.");
+
+            var purchases = await _purchaseService.GetPurchasesFromCreditCard(creditCardId);
             return Ok(purchases);
         }
         catch (Exception ex)
@@ -57,7 +64,12 @@ public class PurchaseController : ControllerBase
 
         try
         {
-            var purchase = await _purchaseService.GetById(userId, id);
+            var creditCard = await _purchaseService.GetPurchaseCreditCard(id);
+
+            if (creditCard.UserId != userId)
+                return Unauthorized("You do not have permissions to do that.");
+
+            var purchase = await _purchaseService.GetById(id);
 
             if (purchase == null)
                 NotFound($"Not purchase with id {id}");
@@ -117,15 +129,12 @@ public class PurchaseController : ControllerBase
             if (purchase.Id == id)
             {
                 var creditCard = await _purchaseService.GetPurchaseCreditCard(id);
-                if (creditCard.UserId.ToString() == userId)
-                {
-                    await _purchaseService.Update(purchase);
-                    return Ok($"\"{purchase.Name}\" successfully updated.");
-                }
-                else
-                {
-                    return Unauthorized("You do not have permissions to do that");
-                }
+
+                if (creditCard.UserId != userId)
+                    return Unauthorized("You do not have permissions to do that.");
+
+                await _purchaseService.Update(purchase);
+                return Ok($"\"{purchase.Name}\" successfully updated.");
             }
             else
             {
@@ -144,20 +153,20 @@ public class PurchaseController : ControllerBase
         var userId = User.FindFirstValue("UserId");
         try
         {
-            var purchase = await _purchaseService.GetById(userId, id);
+            var creditCard = await _purchaseService.GetPurchaseCreditCard(id);
+
+            if (creditCard.UserId != userId)
+                return Unauthorized("You do not have permissions to do that.");
+
+            var purchase = await _purchaseService.GetById(id);
 
             if (purchase == null)
                 return NotFound($"Not exists");
 
-            if (purchase.CreditCard.UserId.ToString() == userId)
-            {
-                var purchaseName = purchase.Name;
+            var purchaseName = purchase.Name;
 
-                await _purchaseService.Remove(userId, id);
-                return Ok($"\"{purchaseName}\" successfully removed");
-            }
-
-            return Unauthorized("You do not have permissions to do that");
+            await _purchaseService.Remove(id);
+            return Ok($"\"{purchaseName}\" successfully removed");
         }
         catch (Exception ex)
         {

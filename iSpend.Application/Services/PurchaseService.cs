@@ -9,7 +9,7 @@ namespace iSpend.Application.Services;
 public class PurchaseService : IPurchaseService
 {
     private IPurchaseRepository _purchaseRepository;
-    private IInstallmentRepository _installmentRepository;
+    private readonly IInstallmentRepository _installmentRepository;
     private readonly IMapper _mapper;
 
     public PurchaseService(IPurchaseRepository purchaseRepository, IMapper mapper, IInstallmentRepository installmentRepository)
@@ -25,15 +25,15 @@ public class PurchaseService : IPurchaseService
         return _mapper.Map<IEnumerable<PurchaseDTO>>(purchases);
     }
 
-    public async Task<IEnumerable<PurchaseDTO>> GetPurchasesFromCreditCard(string userId, int creditCardId)
+    public async Task<IEnumerable<PurchaseDTO>> GetPurchasesFromCreditCard(int creditCardId)
     {
-        var purchases = await _purchaseRepository.GetPurchasesFromCreditCard(userId, creditCardId);
+        var purchases = await _purchaseRepository.GetPurchasesFromCreditCard(creditCardId);
         return _mapper.Map<IEnumerable<PurchaseDTO>>(purchases);
     }
 
-    public async Task<PurchaseDTO> GetById(string userId, int? id)
+    public async Task<PurchaseDTO> GetById(int id)
     {
-        var purchase = await _purchaseRepository.GetById(userId, id);
+        var purchase = await _purchaseRepository.GetById(id);
         return _mapper.Map<PurchaseDTO>(purchase);
     }
 
@@ -41,15 +41,8 @@ public class PurchaseService : IPurchaseService
     {
         IEnumerable<PurchaseDTO> purchases;
 
-        if (!string.IsNullOrEmpty(name))
-        {
-            var query = await _purchaseRepository.GetByName(userId, name);
-            purchases = query.Select(c => _mapper.Map<PurchaseDTO>(c)).ToList();
-        }
-        else
-        {
-            purchases = await GetPurchases(userId);
-        }
+        var query = await _purchaseRepository.GetByName(userId, name);
+        purchases = query.Select(c => _mapper.Map<PurchaseDTO>(c)).ToList();
 
         return purchases;
     }
@@ -120,9 +113,9 @@ public class PurchaseService : IPurchaseService
         await _purchaseRepository.Update(purchase);
     }
 
-    public async Task Remove(string userId, int? id)
+    public async Task Remove(int id)
     {
-        var purchase = _purchaseRepository.GetById(userId, id).Result;
+        var purchase = _purchaseRepository.GetById(id).Result;
         await _purchaseRepository.Remove(purchase);
     }
 }
