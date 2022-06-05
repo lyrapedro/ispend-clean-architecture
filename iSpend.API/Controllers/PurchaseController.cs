@@ -116,7 +116,7 @@ public class PurchaseController : ControllerBase
 
             if (purchase.Id == id)
             {
-                var creditCard = await _purchaseService.GetPurchaseCreditCard(userId, id);
+                var creditCard = await _purchaseService.GetPurchaseCreditCard(id);
                 if (creditCard.UserId.ToString() == userId)
                 {
                     await _purchaseService.Update(purchase);

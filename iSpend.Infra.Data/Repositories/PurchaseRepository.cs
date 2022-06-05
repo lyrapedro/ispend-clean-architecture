@@ -37,10 +37,10 @@ public class PurchaseRepository : IPurchaseRepository
         return await _purchaseContext.Purchases.Include(p => p.CreditCard).Include(c => c.Category).Where(p => p.CreditCardId == creditCardId && p.CreditCard.UserId == userId).ToListAsync();
     }
 
-    public async Task<CreditCard> GetPurchaseCreditCard(string userId, int? id)
+    public async Task<CreditCard> GetPurchaseCreditCard(int id)
     {
 
-        var purchase = _purchaseContext.Purchases.Include(p => p.CreditCard).Include(c => c.Category).FirstOrDefaultAsync(p => p.CreditCard.UserId == userId && p.Id == id);
+        var purchase = _purchaseContext.Purchases.Include(p => p.CreditCard).Include(c => c.Category).FirstOrDefaultAsync(p => p.Id == id);
         return purchase.Result.CreditCard;
     }
 

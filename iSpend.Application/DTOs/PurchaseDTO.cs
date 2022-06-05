@@ -1,4 +1,5 @@
 ﻿using iSpend.Domain.Entities;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -6,7 +7,7 @@ namespace iSpend.Application.DTOs;
 
 public class PurchaseDTO
 {
-    public int Id { get; private set; }
+    public int Id { get; set; }
 
     [Required(ErrorMessage = "The credit card is required")]
     public int CreditCardId { get; set; }
@@ -35,8 +36,8 @@ public class PurchaseDTO
     public DateTime ModifiedAt { get; set; }
 
     [JsonIgnore]
-    public CreditCard CreditCard { get; private set; }
+    public CreditCard? CreditCard { get; set; }
 
     [JsonIgnore]
-    public Category? Category { get; private set; }
+    public Category? Category { get; set; }
 }
