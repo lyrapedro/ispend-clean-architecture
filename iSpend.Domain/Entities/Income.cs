@@ -12,17 +12,17 @@ public sealed class Income : Entity
     public decimal Value { get; private set; }
     public int Payday { get; set; }
 
-    public Income(string userId, int? categoryId, string name, bool recurrent, decimal value, int payDay)
+    public Income(string userId, int? categoryId, string name, bool recurrent, decimal value, int payday)
     {
-        ValidateDomain(userId, categoryId, name, recurrent, value, payDay);
+        ValidateDomain(userId, categoryId, name, recurrent, value, payday);
     }
 
-    public void Update(string userId, int? categoryId, string name, bool recurrent, decimal value, int payDay)
+    public void Update(string userId, int? categoryId, string name, bool recurrent, decimal value, int payday)
     {
-        ValidateDomain(userId, categoryId, name, recurrent, value, payDay);
+        ValidateDomain(userId, categoryId, name, recurrent, value, payday);
     }
 
-    private void ValidateDomain(string userId, int? categoryId, string name, bool recurrent, decimal value, int payDay)
+    private void ValidateDomain(string userId, int? categoryId, string name, bool recurrent, decimal value, int payday)
     {
         DomainExceptionValidation.When(string.IsNullOrEmpty(name),
             "Invalid name. Name is required");
@@ -36,7 +36,7 @@ public sealed class Income : Entity
         DomainExceptionValidation.When(value < 0,
             "Invalid value.");
 
-        DomainExceptionValidation.When(payDay <= 0 || payDay > 31,
+        DomainExceptionValidation.When(payday <= 0 || payday > 31,
             "Invalid billing day. Must be a day of month");
 
         UserId = userId;
@@ -44,7 +44,7 @@ public sealed class Income : Entity
         CategoryId = categoryId;
         Recurrent = recurrent;
         Value = value;
-        Payday = payDay;
+        Payday = payday;
         RegisteredAt = DateTime.Now;
         ModifiedAt = DateTime.Now;
     }
