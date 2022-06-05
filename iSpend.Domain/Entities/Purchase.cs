@@ -13,7 +13,7 @@ public sealed class Purchase : Entity
     public int? NumberOfInstallments { get; private set; }
     public bool? Paid { get; private set; }
     public DateTime PurchasedAt { get; private set; }
-    public ICollection<Purchase> Purchases { get; set; }
+    public ICollection<Installment> Installments { get; set; }
 
     public Purchase(int creditCardId, int? categoryId, string name, decimal price, int? numberOfInstallments, bool? paid, DateTime purchasedAt)
     {
