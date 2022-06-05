@@ -5,8 +5,8 @@ namespace iSpend.Domain.Entities;
 public sealed class Income : Entity
 {
     public string UserId { get; private set; }
-    public int? CategoryId { get; private set; }
-    public Category? Category { get; private set; }
+    public int? CategoryId { get; set; }
+    public Category? Category { get; set; }
     public string Name { get; private set; }
     public bool Recurrent { get; private set; }
     public decimal Value { get; private set; }
@@ -45,7 +45,7 @@ public sealed class Income : Entity
         Recurrent = recurrent;
         Value = value;
         Payday = payday;
-        RegisteredAt = DateTime.Now;
+        RegisteredAt = RegisteredAt > DateTime.MinValue ? RegisteredAt : DateTime.Now;
         ModifiedAt = DateTime.Now;
     }
 }

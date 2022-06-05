@@ -33,5 +33,5 @@ public class IncomeDTO
     public DateTime RegisteredAt { get; set; }
 
     [JsonIgnore]
-    public Category? Category { get; private set; }
+    public Category? Category { get; set; }
 }
