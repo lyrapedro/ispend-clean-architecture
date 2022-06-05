@@ -9,6 +9,7 @@ public interface IInstallmentRepository
     Task<IEnumerable<Installment>> GetInstallmentsFromPurchase(string userId, int? purchaseId);
     Task<Purchase> GetInstallmentPurchase(string userId, int? id);
     Task<Installment> Create(Installment installment);
+    Task<List<Installment>> CreateInstallments(List<Installment> installment);
     Task<Installment> Update(Installment installment);
     Task<Installment> Remove(Installment installment);
 }

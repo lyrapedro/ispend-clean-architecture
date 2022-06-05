@@ -9,11 +9,13 @@ namespace iSpend.Application.Services;
 public class PurchaseService : IPurchaseService
 {
     private IPurchaseRepository _purchaseRepository;
+    private IInstallmentRepository _installmentRepository;
     private readonly IMapper _mapper;
 
-    public PurchaseService(IPurchaseRepository purchaseRepository, IMapper mapper)
+    public PurchaseService(IPurchaseRepository purchaseRepository, IMapper mapper, IInstallmentRepository installmentRepository)
     {
         _purchaseRepository = purchaseRepository;
+        _installmentRepository = installmentRepository;
         _mapper = mapper;
     }
 
@@ -61,7 +63,47 @@ public class PurchaseService : IPurchaseService
     public async Task Add(PurchaseDTO purchaseDTO)
     {
         var purchase = _mapper.Map<Purchase>(purchaseDTO);
-        await _purchaseRepository.Create(purchase);
+        var purchaseCreated = _purchaseRepository.Create(purchase).Result;
+
+        var numberOfInstallments = purchase.NumberOfInstallments;
+        if (numberOfInstallments.HasValue)
+        {
+            await CreateInstallmentsForPurchase(numberOfInstallments.Value, purchaseCreated);
+        }
+    }
+
+    public async Task CreateInstallmentsForPurchase(int numberOfInstallments, Purchase purchase)
+    {
+        var newInstallmentsList = new List<Installment>();
+        var valueByInstallment = purchase.Price / numberOfInstallments;
+        var creditCard = purchase.CreditCard;
+        int expirationDay;
+        int expirationMonth;
+        int expirationYear = purchase.PurchasedAt.Year;
+
+        bool purchasedAfterInvoiceClosing = purchase.PurchasedAt.Day >= creditCard.ClosingDay ? true : false;
+
+        if (purchasedAfterInvoiceClosing)
+        {
+            expirationDay = creditCard.ExpirationDay;
+            expirationMonth = purchase.PurchasedAt.Month + 1;
+            ValidateMonth(expirationMonth, expirationYear);
+        }
+        else
+        {
+            expirationDay = creditCard.ExpirationDay;
+            expirationMonth = purchase.PurchasedAt.Month;
+        }
+
+        for (var i = 1; i <= purchase.NumberOfInstallments; i++)
+        {
+            var installmentExpiresDate = new DateTime(expirationYear, expirationMonth, expirationDay);
+            newInstallmentsList.Add(new Installment(purchase.Id, i, valueByInstallment, false, installmentExpiresDate));
+            expirationMonth += 1;
+            ValidateMonth(expirationMonth, expirationYear);
+        }
+
+        await _installmentRepository.CreateInstallments(newInstallmentsList);
     }
 
     public async Task Update(PurchaseDTO purchaseDTO)
@@ -74,5 +116,14 @@ public class PurchaseService : IPurchaseService
     {
         var purchase = _purchaseRepository.GetById(userId, id).Result;
         await _purchaseRepository.Remove(purchase);
+    }
+
+    public static void ValidateMonth(int expirationMonth, int expirationYear)
+    {
+        if (expirationMonth > 12)
+        {
+            expirationMonth = 1;
+            expirationYear += 1;
+        }
     }
 }

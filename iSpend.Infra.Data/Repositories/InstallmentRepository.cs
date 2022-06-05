@@ -43,6 +43,13 @@ public class InstallmentRepository : IInstallmentRepository
         return installment;
     }
 
+    public async Task<List<Installment>> CreateInstallments(List<Installment> installment)
+    {
+        _installmentContext.AddRange(installment);
+        await _installmentContext.SaveChangesAsync();
+        return installment;
+    }
+
     public async Task<Installment> Update(Installment installment)
     {
         _installmentContext.Update(installment);
