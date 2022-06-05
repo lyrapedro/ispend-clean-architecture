@@ -44,7 +44,7 @@ public sealed class CreditCard : Entity
         Name = name;
         Limit = limit;
         ExpirationDay = expirationDay;
-        ClosingDay = ClosingDay;
+        ClosingDay = closingDay;
         RegisteredAt = DateTime.Now;
         ModifiedAt = DateTime.Now;
     }
