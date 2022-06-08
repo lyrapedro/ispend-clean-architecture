@@ -12,10 +12,12 @@ namespace iSpend.API.Controllers;
 public class SubscriptionController : ControllerBase
 {
     private ISubscriptionService _subscriptionService;
+    private ICreditCardService _creditCardService;
 
-    public SubscriptionController(ISubscriptionService subscriptionService)
+    public SubscriptionController(ISubscriptionService subscriptionService, ICreditCardService creditCardService)
     {
         _subscriptionService = subscriptionService;
+        _creditCardService = creditCardService;
     }
 
     [HttpGet]
@@ -41,7 +43,11 @@ public class SubscriptionController : ControllerBase
 
         try
         {
-            var subscriptions = await _subscriptionService.GetSubscriptionsFromCreditCard(userId, creditCardId);
+            var creditCard = await _creditCardService.GetById(userId, creditCardId);
+            if (creditCard.UserId != userId)
+                return Unauthorized();
+
+            var subscriptions = await _subscriptionService.GetSubscriptionsFromCreditCard(creditCardId);
             return Ok(subscriptions);
         }
         catch (Exception ex)
@@ -57,7 +63,10 @@ public class SubscriptionController : ControllerBase
 
         try
         {
-            var subscription = await _subscriptionService.GetById(userId, id);
+            var subscription = await _subscriptionService.GetById(id);
+
+            if (subscription.CreditCard.UserId != userId)
+                return Unauthorized();
 
             if (subscription == null)
                 NotFound($"Not subscription with id {id}");
@@ -116,8 +125,8 @@ public class SubscriptionController : ControllerBase
 
             if (subscription.Id == id)
             {
-                var creditCard = await _subscriptionService.GetSubscriptionCreditCard(userId, id);
-                if (creditCard.UserId.ToString() == userId)
+                var creditCard = await _subscriptionService.GetSubscriptionCreditCard(id);
+                if (creditCard.UserId == userId)
                 {
                     await _subscriptionService.Update(subscription);
                     return Ok($"\"{subscription.Name}\" successfully updated.");
@@ -144,16 +153,16 @@ public class SubscriptionController : ControllerBase
         var userId = User.FindFirstValue("UserId");
         try
         {
-            var subscription = await _subscriptionService.GetById(userId, id);
+            var subscription = await _subscriptionService.GetById(id);
 
             if (subscription == null)
                 return NotFound($"Not exists");
 
-            if (subscription.CreditCard.UserId.ToString() == userId)
+            if (subscription.CreditCard.UserId == userId)
             {
                 var subscriptionName = subscription.Name;
 
-                await _subscriptionService.Remove(userId, id);
+                await _subscriptionService.Remove(id);
                 return Ok($"\"{subscriptionName}\" successfully removed");
             }
 
