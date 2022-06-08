@@ -8,7 +8,6 @@ public interface ISubscriptionRepository
     Task<IEnumerable<Subscription>> GetSubscriptionsFromCreditCard(int creditCardId);
     Task<Subscription> GetById(int id);
     Task<IEnumerable<Subscription>> GetByName(string userId, string name);
-    Task<CreditCard> GetSubscriptionCreditCard(int id);
     Task<Subscription> Create(Subscription subscription);
     Task<Subscription> Update(Subscription subscription);
     Task<Subscription> Remove(Subscription subscription);

@@ -57,7 +57,7 @@ public class InstallmentController : ControllerBase
 
         try
         {
-            var installment = await _installmentService.GetById(userId, id);
+            var installment = await _installmentService.GetById(id);
 
             if (installment == null)
                 NotFound($"Not installment with id {id}");

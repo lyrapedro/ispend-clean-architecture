@@ -14,9 +14,9 @@ public class InstallmentRepository : IInstallmentRepository
         _installmentContext = context;
     }
 
-    public async Task<Installment> GetById(string userId, int? id)
+    public async Task<Installment> GetById(int id)
     {
-        return await _installmentContext.Installments.Include(i => i.Purchase.CreditCard).Where(i => i.Purchase.CreditCard.UserId == userId).FirstOrDefaultAsync(i => i.Id == id);
+        return await _installmentContext.Installments.Include(i => i.Purchase.CreditCard).FirstOrDefaultAsync(i => i.Id == id);
     }
 
     public async Task<IEnumerable<Installment>> GetInstallments(string userId)
@@ -24,16 +24,9 @@ public class InstallmentRepository : IInstallmentRepository
         return await _installmentContext.Installments.Include(i => i.Purchase.CreditCard).Where(i => i.Purchase.CreditCard.UserId == userId).ToListAsync();
     }
 
-    public async Task<IEnumerable<Installment>> GetInstallmentsFromPurchase(string userId, int? purchaseId)
+    public async Task<IEnumerable<Installment>> GetInstallmentsFromPurchase(string userId, int purchaseId)
     {
         return await _installmentContext.Installments.Include(i => i.Purchase.CreditCard).Where(i => i.Purchase.CreditCard.UserId == userId && i.Purchase.Id == purchaseId).ToListAsync();
-    }
-
-    public async Task<Purchase> GetInstallmentPurchase(string userId, int? id)
-    {
-
-        var installment = await _installmentContext.Installments.Include(i => i.Purchase.CreditCard).FirstOrDefaultAsync(i => i.Purchase.CreditCard.UserId == userId && i.Id == id);
-        return installment.Purchase;
     }
 
     public async Task<Installment> Create(Installment installment)

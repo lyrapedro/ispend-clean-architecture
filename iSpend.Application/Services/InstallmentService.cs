@@ -23,22 +23,16 @@ public class InstallmentService : IInstallmentService
         return _mapper.Map<IEnumerable<InstallmentDTO>>(installments);
     }
 
-    public async Task<InstallmentDTO> GetById(string userId, int? id)
+    public async Task<InstallmentDTO> GetById(int id)
     {
-        var installment = await _installmentRepository.GetById(userId, id);
+        var installment = await _installmentRepository.GetById(id);
         return _mapper.Map<InstallmentDTO>(installment);
     }
 
-    public async Task<IEnumerable<InstallmentDTO>> GetInstallmentsFromPurchase(string userId, int? purchaseId)
+    public async Task<IEnumerable<InstallmentDTO>> GetInstallmentsFromPurchase(string userId, int purchaseId)
     {
         var installment = await _installmentRepository.GetInstallmentsFromPurchase(userId, purchaseId);
         return _mapper.Map<IEnumerable<InstallmentDTO>>(installment);
-    }
-
-    public async Task<InstallmentDTO> GetInstallmentPurchase(string userId, int? id)
-    {
-        var installment = await _installmentRepository.GetInstallmentPurchase(userId, id);
-        return _mapper.Map<InstallmentDTO>(installment);
     }
 
     public async Task Add(InstallmentDTO installmentDTO)

@@ -23,15 +23,9 @@ public class CategoryService : ICategoryService
         return _mapper.Map<IEnumerable<CategoryDTO>>(categories);
     }
 
-    public async Task<IEnumerable<PurchaseDTO>> GetPurchasesFromCategory(string userId, int purchaseId)
+    public async Task<CategoryDTO> GetById(int id)
     {
-        var purchases = await _categoryRepository.GetPurchasesFromCategory(userId, purchaseId);
-        return _mapper.Map<IEnumerable<PurchaseDTO>>(purchases);
-    }
-
-    public async Task<CategoryDTO> GetById(string userId, int? id)
-    {
-        var category = await _categoryRepository.GetById(userId, id);
+        var category = await _categoryRepository.GetById(id);
         return _mapper.Map<CategoryDTO>(category);
     }
 

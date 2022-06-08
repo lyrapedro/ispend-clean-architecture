@@ -52,12 +52,6 @@ public class SubscriptionService : ISubscriptionService
         return subscriptions;
     }
 
-    public async Task<CreditCardDTO> GetSubscriptionCreditCard(int id)
-    {
-        var subscription = await _subscriptionRepository.GetSubscriptionCreditCard(id);
-        return _mapper.Map<CreditCardDTO>(subscription);
-    }
-
     public async Task Add(SubscriptionDTO subscriptionDTO)
     {
         var subscription = _mapper.Map<Subscription>(subscriptionDTO);

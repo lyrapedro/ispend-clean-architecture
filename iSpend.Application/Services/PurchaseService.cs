@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using iSpend.Application.DTOs;
 using iSpend.Application.Interfaces;
+using iSpend.Application.Utils;
 using iSpend.Domain.Entities;
 using iSpend.Domain.Interfaces;
 
@@ -10,13 +11,17 @@ public class PurchaseService : IPurchaseService
 {
     private IPurchaseRepository _purchaseRepository;
     private readonly IInstallmentRepository _installmentRepository;
+    private readonly ICreditCardRepository _creditCardRepository;
+    private readonly ServicesUtils _utils;
     private readonly IMapper _mapper;
 
-    public PurchaseService(IPurchaseRepository purchaseRepository, IMapper mapper, IInstallmentRepository installmentRepository)
+    public PurchaseService(IPurchaseRepository purchaseRepository, IInstallmentRepository installmentRepository, ICreditCardRepository creditCardRepository, IMapper mapper, ServicesUtils utils)
     {
         _purchaseRepository = purchaseRepository;
         _installmentRepository = installmentRepository;
+        _creditCardRepository = creditCardRepository;
         _mapper = mapper;
+        _utils = utils;
     }
 
     public async Task<IEnumerable<PurchaseDTO>> GetPurchases(string userId)
@@ -47,64 +52,18 @@ public class PurchaseService : IPurchaseService
         return purchases;
     }
 
-    public async Task<CreditCardDTO> GetPurchaseCreditCard(int id)
-    {
-        var creditCard = await _purchaseRepository.GetPurchaseCreditCard(id);
-        return _mapper.Map<CreditCardDTO>(creditCard);
-    }
-
     public async Task Add(PurchaseDTO purchaseDTO)
     {
         var purchase = _mapper.Map<Purchase>(purchaseDTO);
         var purchaseCreated = _purchaseRepository.Create(purchase).Result;
-        var creditCard = await _purchaseRepository.GetPurchaseCreditCard(purchaseCreated.Id);
+        var creditCard = await _creditCardRepository.GetById(purchaseCreated.CreditCardId);
 
         var numberOfInstallments = purchase.NumberOfInstallments;
         if (numberOfInstallments.HasValue)
         {
-            await CreateInstallmentsForPurchase(numberOfInstallments.Value, creditCard, purchaseCreated);
+            var newInstallmentsList = _utils.GenerateListOfInstallmentsForPurchase(numberOfInstallments.Value, creditCard, purchaseCreated);
+            await _installmentRepository.CreateInstallments(newInstallmentsList);
         }
-    }
-
-    public async Task CreateInstallmentsForPurchase(int numberOfInstallments, CreditCard creditCard, Purchase purchase)
-    {
-        var newInstallmentsList = new List<Installment>();
-        var valueByInstallment = purchase.Price / numberOfInstallments;
-        int expirationDay;
-        int expirationMonth;
-        int expirationYear = purchase.PurchasedAt.Year;
-
-        bool purchasedAfterInvoiceClosing = purchase.PurchasedAt.Day >= creditCard.ClosingDay ? true : false;
-
-        if (purchasedAfterInvoiceClosing)
-        {
-            expirationDay = creditCard.ExpirationDay;
-            expirationMonth = purchase.PurchasedAt.Month + 1;
-            if (expirationMonth > 12)
-            {
-                expirationMonth = 1;
-                expirationYear += 1;
-            }
-        }
-        else
-        {
-            expirationDay = creditCard.ExpirationDay;
-            expirationMonth = purchase.PurchasedAt.Month;
-        }
-
-        for (var i = 1; i <= purchase.NumberOfInstallments; i++)
-        {
-            var installmentExpiresDate = new DateTime(expirationYear, expirationMonth, expirationDay);
-            newInstallmentsList.Add(new Installment(purchase.Id, i, valueByInstallment, false, installmentExpiresDate));
-            expirationMonth += 1;
-            if (expirationMonth > 12)
-            {
-                expirationMonth = 1;
-                expirationYear += 1;
-            }
-        }
-
-        await _installmentRepository.CreateInstallments(newInstallmentsList);
     }
 
     public async Task Update(PurchaseDTO purchaseDTO)

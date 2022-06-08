@@ -14,16 +14,9 @@ public class ExpenseRepository : IExpenseRepository
         _expenseContext = context;
     }
 
-    public async Task<Expense> Create(Expense expense)
+    public async Task<Expense> GetById(int id)
     {
-        _expenseContext.Add(expense);
-        await _expenseContext.SaveChangesAsync();
-        return expense;
-    }
-
-    public async Task<Expense> GetById(string userId, int? id)
-    {
-        return await _expenseContext.Expenses.FirstOrDefaultAsync(e => e.UserId == userId && e.Id == id);
+        return await _expenseContext.Expenses.FirstOrDefaultAsync(e => e.Id == id);
     }
 
     public async Task<IEnumerable<Expense>> GetByName(string userId, string name)
@@ -36,9 +29,9 @@ public class ExpenseRepository : IExpenseRepository
         return await _expenseContext.Expenses.Where(e => e.UserId == userId).ToListAsync();
     }
 
-    public async Task<Expense> Remove(Expense expense)
+    public async Task<Expense> Create(Expense expense)
     {
-        _expenseContext.Remove(expense);
+        _expenseContext.Add(expense);
         await _expenseContext.SaveChangesAsync();
         return expense;
     }
@@ -46,6 +39,13 @@ public class ExpenseRepository : IExpenseRepository
     public async Task<Expense> Update(Expense expense)
     {
         _expenseContext.Update(expense);
+        await _expenseContext.SaveChangesAsync();
+        return expense;
+    }
+
+    public async Task<Expense> Remove(Expense expense)
+    {
+        _expenseContext.Remove(expense);
         await _expenseContext.SaveChangesAsync();
         return expense;
     }

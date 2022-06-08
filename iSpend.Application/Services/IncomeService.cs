@@ -23,9 +23,9 @@ public class IncomeService : IIncomeService
         return _mapper.Map<IEnumerable<IncomeDTO>>(incomes);
     }
 
-    public async Task<IncomeDTO> GetById(string userId, int? id)
+    public async Task<IncomeDTO> GetById(int id)
     {
-        var income = await _incomeRepository.GetById(userId, id);
+        var income = await _incomeRepository.GetById(id);
         return _mapper.Map<IncomeDTO>(income);
     }
 

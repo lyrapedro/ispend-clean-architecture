@@ -46,6 +46,18 @@ public class CreditCardService : ICreditCardService
         return creditCards;
     }
 
+    public async Task<CreditCardDTO> GetCreditCardFromSubscription(int subscriptionId)
+    {
+        var subscription = await _creditCardRepository.GetCreditCardFromSubscription(subscriptionId);
+        return _mapper.Map<CreditCardDTO>(subscription);
+    }
+
+    public async Task<CreditCardDTO> GetCreditCardFromPurchase(int purchaseId)
+    {
+        var purchase = await _creditCardRepository.GetCreditCardFromPurchase(purchaseId);
+        return _mapper.Map<CreditCardDTO>(purchase);
+    }
+
     public async Task Add(CreditCardDTO creditCardDTO)
     {
         var creditCard = _mapper.Map<CreditCard>(creditCardDTO);

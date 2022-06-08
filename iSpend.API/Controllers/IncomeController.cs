@@ -41,10 +41,13 @@ public class IncomeController : ControllerBase
 
         try
         {
-            var income = await _incomeService.GetById(userId, id);
+            var income = await _incomeService.GetById(id);
 
             if (income == null)
                 NotFound($"Not income with id {id}");
+
+            if (income.UserId != userId)
+                return Unauthorized();
 
             return Ok(income);
         }
@@ -127,7 +130,7 @@ public class IncomeController : ControllerBase
         var userId = User.FindFirstValue("UserId");
         try
         {
-            var income = await _incomeService.GetById(userId, id);
+            var income = await _incomeService.GetById(id);
 
             if (income == null)
                 return NotFound($"Not exists");

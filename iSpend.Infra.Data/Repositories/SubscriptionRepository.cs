@@ -30,13 +30,6 @@ public class SubscriptionRepository : ISubscriptionRepository
         return await _subscriptionContext.Subscriptions.Include(s => s.CreditCard).Where(s => s.CreditCard.UserId == userId && s.Name.Contains(name)).ToListAsync();
     }
 
-    public async Task<CreditCard> GetSubscriptionCreditCard(int id)
-    {
-
-        var subscription = _subscriptionContext.Subscriptions.Include(s => s.CreditCard).FirstOrDefaultAsync(s => s.Id == id);
-        return subscription.Result.CreditCard;
-    }
-
     public async Task<IEnumerable<Subscription>> GetSubscriptions(string userId)
     {
         return await _subscriptionContext.Subscriptions.Include(s => s.CreditCard).Where(s => s.CreditCard.UserId == userId).ToListAsync();

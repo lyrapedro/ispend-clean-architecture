@@ -34,22 +34,6 @@ public class CategoryController : ControllerBase
         }
     }
 
-    [HttpGet("Purchases/{categoryId:int}")]
-    public async Task<ActionResult<IAsyncEnumerable<CategoryDTO>>> GetPurchasesFromCategory(int categoryId)
-    {
-        var userId = User.FindFirstValue("UserId");
-
-        try
-        {
-            var categories = await _categoryService.GetPurchasesFromCategory(userId, categoryId);
-            return Ok(categories);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
     [HttpGet("{id:int}", Name = "GetCategory")]
     public async Task<ActionResult<CategoryDTO>> GetCategory(int id)
     {
@@ -57,10 +41,13 @@ public class CategoryController : ControllerBase
 
         try
         {
-            var category = await _categoryService.GetById(userId, id);
+            var category = await _categoryService.GetById(id);
 
             if (category == null)
                 NotFound($"Not category with id {id}");
+
+            if (category.UserId != null && category.UserId != userId)
+                return Unauthorized();
 
             return Ok(category);
         }
@@ -143,12 +130,12 @@ public class CategoryController : ControllerBase
         var userId = User.FindFirstValue("UserId");
         try
         {
-            var category = await _categoryService.GetById(userId, id);
+            var category = await _categoryService.GetById(id);
 
             if (category == null)
                 return NotFound($"Not exists");
 
-            if (category.UserId != userId)
+            if (category.UserId == null || category.UserId != userId)
                 return Unauthorized();
 
             var categoryName = category.Name;

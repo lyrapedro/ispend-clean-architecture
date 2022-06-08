@@ -41,10 +41,13 @@ public class ExpenseController : ControllerBase
 
         try
         {
-            var expense = await _expenseService.GetById(userId, id);
+            var expense = await _expenseService.GetById(id);
 
             if (expense == null)
                 NotFound($"Not expense with id {id}");
+
+            if (expense.UserId != userId)
+                return Unauthorized();
 
             return Ok(expense);
         }
@@ -126,7 +129,7 @@ public class ExpenseController : ControllerBase
         var userId = User.FindFirstValue("UserId");
         try
         {
-            var expense = await _expenseService.GetById(userId, id);
+            var expense = await _expenseService.GetById(id);
 
             if (expense == null)
                 return NotFound($"Not exists");

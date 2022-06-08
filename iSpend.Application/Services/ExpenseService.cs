@@ -23,9 +23,9 @@ public class ExpenseService : IExpenseService
         return _mapper.Map<IEnumerable<ExpenseDTO>>(expenses);
     }
 
-    public async Task<ExpenseDTO> GetById(string userId, int? id)
+    public async Task<ExpenseDTO> GetById(int id)
     {
-        var expense = await _expenseRepository.GetById(userId, id);
+        var expense = await _expenseRepository.GetById(id);
         return _mapper.Map<ExpenseDTO>(expense);
     }
 

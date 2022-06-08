@@ -5,7 +5,7 @@ namespace iSpend.Application.Interfaces;
 public interface IExpenseService
 {
     Task<IEnumerable<ExpenseDTO>> GetExpenses(string userId);
-    Task<ExpenseDTO> GetById(string userId, int? id);
+    Task<ExpenseDTO> GetById(int id);
     Task<IEnumerable<ExpenseDTO>> GetByName(string userId, string name);
     Task Add(ExpenseDTO expenseDTO);
     Task Update(ExpenseDTO expenseDTO);

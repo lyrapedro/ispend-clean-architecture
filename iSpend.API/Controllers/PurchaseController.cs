@@ -126,7 +126,7 @@ public class PurchaseController : ControllerBase
 
             if (purchase.Id == id)
             {
-                var creditCard = await _purchaseService.GetPurchaseCreditCard(id);
+                var creditCard = _purchaseService.GetById(id).Result.CreditCard;
 
                 if (creditCard.UserId != userId)
                     return Unauthorized();

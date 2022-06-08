@@ -30,6 +30,26 @@ public class CreditCardRepository : ICreditCardRepository
         return await _creditCardContext.CreditCards.Where(c => c.UserId == userId && c.Name.Contains(name)).ToListAsync();
     }
 
+    public async Task<CreditCard> GetCreditCardFromSubscription(int subscriptionId)
+    {
+        var subscription = await _creditCardContext.Subscriptions.Include(s => s.CreditCard).FirstOrDefaultAsync(s => s.Id == subscriptionId);
+
+        if (subscription == null)
+            return null;
+
+        return subscription.CreditCard;
+    }
+
+    public async Task<CreditCard> GetCreditCardFromPurchase(int purchaseId)
+    {
+        var purchase = await _creditCardContext.Purchases.Include(s => s.CreditCard).FirstOrDefaultAsync(s => s.Id == purchaseId);
+
+        if (purchase == null)
+            return null;
+
+        return purchase.CreditCard;
+    }
+
     public async Task<IEnumerable<CreditCard>> GetCreditCards(string userId)
     {
         return await _creditCardContext.CreditCards.Where(c => c.UserId == userId).ToListAsync();

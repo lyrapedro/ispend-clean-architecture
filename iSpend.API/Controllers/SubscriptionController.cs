@@ -125,7 +125,7 @@ public class SubscriptionController : ControllerBase
 
             if (subscription.Id == id)
             {
-                var creditCard = await _subscriptionService.GetSubscriptionCreditCard(id);
+                var creditCard = _subscriptionService.GetById(id).Result.CreditCard;
 
                 if (creditCard.UserId != userId)
                     return Unauthorized();
