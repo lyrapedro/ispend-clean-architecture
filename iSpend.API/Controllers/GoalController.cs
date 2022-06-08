@@ -41,10 +41,13 @@ public class GoalController : ControllerBase
 
         try
         {
-            var goal = await _goalService.GetById(userId, id);
+            var goal = await _goalService.GetById(id);
 
             if (goal == null)
                 NotFound($"Not goal with id {id}");
+
+            if (goal.UserId != userId)
+                return Unauthorized();
 
             return Ok(goal);
         }
@@ -129,16 +132,16 @@ public class GoalController : ControllerBase
         var userId = User.FindFirstValue("UserId");
         try
         {
-            var goal = await _goalService.GetById(userId, id);
+            var goal = await _goalService.GetById(id);
 
             if (goal == null)
                 return NotFound($"Not exists");
 
-            if (goal.UserId.ToString() == userId)
+            if (goal.UserId == userId)
             {
                 var goalName = goal.Name;
 
-                await _goalService.Remove(userId, id);
+                await _goalService.Remove(goal);
                 return Ok($"\"{goalName}\" successfully removed");
             }
 

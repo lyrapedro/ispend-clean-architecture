@@ -14,9 +14,9 @@ public class GoalRepository : IGoalRepository
         _goalContext = context;
     }
 
-    public async Task<Goal> GetById(string userId, int? id)
+    public async Task<Goal> GetById(int id)
     {
-        return await _goalContext.Goals.FirstOrDefaultAsync(g => g.UserId == userId && g.Id == id);
+        return await _goalContext.Goals.FirstOrDefaultAsync(g => g.Id == id);
     }
 
     public async Task<IEnumerable<Goal>> GetByName(string userId, string name)
