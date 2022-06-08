@@ -81,10 +81,10 @@ public class IncomeController : ControllerBase
         {
             var userId = User.FindFirstValue("UserId");
 
-            if (userId == income.UserId)
-                await _incomeService.Add(income);
-            else
-                return Unauthorized("You do not have permissions to do that.");
+            if (userId != income.UserId)
+                return Unauthorized();
+
+            await _incomeService.Add(income);
 
             return CreatedAtRoute("GetIncome", new { id = income.Id }, income);
         }
@@ -104,13 +104,11 @@ public class IncomeController : ControllerBase
             if (income.Id == id)
             {
 
-                if (userId == income.UserId)
-                {
-                    await _incomeService.Update(income);
-                    return Ok($"\"{income.Name}\" successfully updated.");
-                }
+                if (userId != income.UserId)
+                    return Unauthorized();
 
-                return Unauthorized("You do not have permissions to do that");
+                await _incomeService.Update(income);
+                return Ok($"\"{income.Name}\" successfully updated.");
             }
             else
             {
@@ -134,15 +132,13 @@ public class IncomeController : ControllerBase
             if (income == null)
                 return NotFound($"Not exists");
 
-            if (income.UserId.ToString() == userId)
-            {
-                var incomeName = income.Name;
+            if (income.UserId != userId)
+                return Unauthorized();
 
-                await _incomeService.Remove(userId, id);
-                return Ok($"\"{incomeName}\" successfully removed");
-            }
+            var incomeName = income.Name;
 
-            return Unauthorized("You do not have permissions to do that");
+            await _incomeService.Remove(income);
+            return Ok($"\"{incomeName}\" successfully removed");
         }
         catch (Exception ex)
         {

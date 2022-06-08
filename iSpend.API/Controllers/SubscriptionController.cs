@@ -126,15 +126,12 @@ public class SubscriptionController : ControllerBase
             if (subscription.Id == id)
             {
                 var creditCard = await _subscriptionService.GetSubscriptionCreditCard(id);
-                if (creditCard.UserId == userId)
-                {
-                    await _subscriptionService.Update(subscription);
-                    return Ok($"\"{subscription.Name}\" successfully updated.");
-                }
-                else
-                {
-                    return Unauthorized("You do not have permissions to do that");
-                }
+
+                if (creditCard.UserId != userId)
+                    return Unauthorized();
+
+                await _subscriptionService.Update(subscription);
+                return Ok($"\"{subscription.Name}\" successfully updated.");
             }
             else
             {
@@ -158,15 +155,13 @@ public class SubscriptionController : ControllerBase
             if (subscription == null)
                 return NotFound($"Not exists");
 
-            if (subscription.CreditCard.UserId == userId)
-            {
-                var subscriptionName = subscription.Name;
+            if (subscription.CreditCard.UserId != userId)
+                return Unauthorized();
 
-                await _subscriptionService.Remove(id);
-                return Ok($"\"{subscriptionName}\" successfully removed");
-            }
+            var subscriptionName = subscription.Name;
 
-            return Unauthorized("You do not have permissions to do that");
+            await _subscriptionService.Remove(subscription);
+            return Ok($"\"{subscriptionName}\" successfully removed");
         }
         catch (Exception ex)
         {

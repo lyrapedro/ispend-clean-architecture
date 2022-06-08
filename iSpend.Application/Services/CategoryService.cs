@@ -64,9 +64,9 @@ public class CategoryService : ICategoryService
         await _categoryRepository.Update(category);
     }
 
-    public async Task Remove(string userId, int? id)
+    public async Task Remove(CategoryDTO categoryDTO)
     {
-        var category = _categoryRepository.GetById(userId, id).Result;
+        var category = _mapper.Map<Category>(categoryDTO);
         await _categoryRepository.Remove(category);
     }
 }

@@ -9,7 +9,7 @@ public interface IPurchaseService
     Task<PurchaseDTO> GetById(int id);
     Task<IEnumerable<PurchaseDTO>> GetByName(string userId, string name);
     Task<CreditCardDTO> GetPurchaseCreditCard(int id);
-    Task Add(PurchaseDTO installmentDTO);
-    Task Update(PurchaseDTO installmentDTO);
-    Task Remove(int id);
+    Task Add(PurchaseDTO purchaseDTO);
+    Task Update(PurchaseDTO purchaseDTO);
+    Task Remove(PurchaseDTO purchaseDTO);
 }

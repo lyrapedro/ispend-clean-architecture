@@ -58,9 +58,9 @@ public class IncomeService : IIncomeService
         await _incomeRepository.Update(income);
     }
 
-    public async Task Remove(string userId, int? id)
+    public async Task Remove(IncomeDTO incomeDTO)
     {
-        var income = _incomeRepository.GetById(userId, id).Result;
+        var income = _mapper.Map<Income>(incomeDTO);
         await _incomeRepository.Remove(income);
     }
 }

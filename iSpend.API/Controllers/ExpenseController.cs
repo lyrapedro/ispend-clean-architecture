@@ -81,11 +81,10 @@ public class ExpenseController : ControllerBase
         {
             var userId = User.FindFirstValue("UserId");
 
-            if (userId == expense.UserId)
-                await _expenseService.Add(expense);
-            else
-                return Unauthorized("You do not have permissions to do that.");
+            if (userId != expense.UserId)
+                return Unauthorized();
 
+            await _expenseService.Add(expense);
 
             return CreatedAtRoute("GetExpense", new { id = expense.Id }, expense);
         }
@@ -104,13 +103,11 @@ public class ExpenseController : ControllerBase
 
             if (expense.Id == id)
             {
-                if (userId == expense.UserId)
-                {
-                    await _expenseService.Update(expense);
-                    return Ok($"\"{expense.Name}\" successfully updated.");
-                }
+                if (userId != expense.UserId)
+                    return Unauthorized();
 
-                return Unauthorized("You do not have permissions to do that");
+                await _expenseService.Update(expense);
+                return Ok($"\"{expense.Name}\" successfully updated.");
             }
             else
             {
@@ -134,15 +131,13 @@ public class ExpenseController : ControllerBase
             if (expense == null)
                 return NotFound($"Not exists");
 
-            if (expense.UserId.ToString() == userId)
-            {
-                var expenseName = expense.Name;
+            if (expense.UserId != userId)
+                return Unauthorized();
 
-                await _expenseService.Remove(userId, id);
-                return Ok($"\"{expenseName}\" successfully removed");
-            }
+            var expenseName = expense.Name;
 
-            return Unauthorized("You do not have permissions to do that");
+            await _expenseService.Remove(expense);
+            return Ok($"\"{expenseName}\" successfully removed");
         }
         catch (Exception ex)
         {

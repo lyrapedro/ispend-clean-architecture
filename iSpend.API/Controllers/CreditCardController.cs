@@ -84,10 +84,10 @@ public class CreditCardController : ControllerBase
         {
             var userId = User.FindFirstValue("UserId");
 
-            if (userId == creditCardDto.UserId)
-                await _creditCardService.Add(creditCardDto);
-            else
-                return Unauthorized("You do not have permissions to do that.");
+            if (userId != creditCardDto.UserId)
+                return Unauthorized();
+
+            await _creditCardService.Add(creditCardDto);
 
             return CreatedAtRoute("GetCard", new { id = creditCardDto.Id }, creditCardDto);
         }
@@ -105,16 +105,11 @@ public class CreditCardController : ControllerBase
             var userId = User.FindFirstValue("UserId");
             if (creditCardDto.Id == id)
             {
-                Guid validGuid;
-                Guid.TryParse(userId, out validGuid);
+                if (userId != creditCardDto.UserId)
+                    return Unauthorized();
 
-                if (userId == creditCardDto.UserId.ToString())
-                {
-                    await _creditCardService.Update(creditCardDto);
-                    return Ok($"\"{creditCardDto.Name}\" successfully updated.");
-                }
-
-                return Unauthorized("You do not have permissions to do that");
+                await _creditCardService.Update(creditCardDto);
+                return Ok($"\"{creditCardDto.Name}\" successfully updated.");
             }
             else
             {
@@ -141,7 +136,7 @@ public class CreditCardController : ControllerBase
             if (creditCard.UserId != userId)
                 return Unauthorized();
 
-            await _creditCardService.Remove(id);
+            await _creditCardService.Remove(creditCard);
             return Ok($"\"{creditCard.Name}\" successfully removed");
         }
         catch (Exception ex)

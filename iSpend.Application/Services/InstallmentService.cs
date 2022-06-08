@@ -53,9 +53,9 @@ public class InstallmentService : IInstallmentService
         await _installmentRepository.Update(installment);
     }
 
-    public async Task Remove(string userId, int? id)
+    public async Task Remove(InstallmentDTO installmentDTO)
     {
-        var installment = _installmentRepository.GetById(userId, id).Result;
+        var installment = _mapper.Map<Installment>(installmentDTO);
         await _installmentRepository.Remove(installment);
     }
 }

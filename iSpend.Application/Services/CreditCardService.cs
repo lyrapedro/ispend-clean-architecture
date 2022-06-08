@@ -58,9 +58,9 @@ public class CreditCardService : ICreditCardService
         await _creditCardRepository.Update(creditCard);
     }
 
-    public async Task Remove(int id)
+    public async Task Remove(CreditCardDTO creditCardDTO)
     {
-        var creditCard = _creditCardRepository.GetById(id).Result;
+        var creditCard = _mapper.Map<CreditCard>(creditCardDTO);
         await _creditCardRepository.Remove(creditCard);
     }
 }

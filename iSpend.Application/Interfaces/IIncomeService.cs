@@ -9,5 +9,5 @@ public interface IIncomeService
     Task<IEnumerable<IncomeDTO>> GetByName(string userId, string name);
     Task Add(IncomeDTO incomeDTO);
     Task Update(IncomeDTO incomeDTO);
-    Task Remove(string userId, int? id);
+    Task Remove(IncomeDTO incomeDTO);
 }

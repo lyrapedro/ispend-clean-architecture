@@ -58,9 +58,9 @@ public class ExpenseService : IExpenseService
         await _expenseRepository.Update(expense);
     }
 
-    public async Task Remove(string userId, int? id)
+    public async Task Remove(ExpenseDTO expenseDTO)
     {
-        var expense = _expenseRepository.GetById(userId, id).Result;
+        var expense = _mapper.Map<Expense>(expenseDTO);
         await _expenseRepository.Remove(expense);
     }
 }

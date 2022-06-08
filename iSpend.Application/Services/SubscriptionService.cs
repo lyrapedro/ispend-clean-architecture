@@ -70,9 +70,9 @@ public class SubscriptionService : ISubscriptionService
         await _subscriptionRepository.Update(subscription);
     }
 
-    public async Task Remove(int id)
+    public async Task Remove(SubscriptionDTO subscriptionDTO)
     {
-        var subscription = _subscriptionRepository.GetById(id).Result;
+        var subscription = _mapper.Map<Subscription>(subscriptionDTO);
         await _subscriptionRepository.Remove(subscription);
     }
 }

@@ -9,5 +9,5 @@ public interface ICreditCardService
     Task<IEnumerable<CreditCardDTO>> GetByName(string userId, string name);
     Task Add(CreditCardDTO creditCardDTO);
     Task Update(CreditCardDTO creditCardDTO);
-    Task Remove(int id);
+    Task Remove(CreditCardDTO creditCardDTO);
 }

@@ -97,10 +97,10 @@ public class CategoryController : ControllerBase
         {
             var userId = User.FindFirstValue("UserId");
 
-            if (userId == category.UserId)
-                await _categoryService.Add(category);
-            else
-                return Unauthorized("You do not have permissions to do that.");
+            if (userId != category.UserId)
+                return Unauthorized();
+
+            await _categoryService.Add(category);
 
             return CreatedAtRoute("GetCategory", new { id = category.Id }, category);
         }
@@ -120,15 +120,11 @@ public class CategoryController : ControllerBase
             if (category.Id == id)
             {
 
-                if (userId == category.UserId)
-                {
-                    await _categoryService.Update(category);
-                    return Ok($"\"{category.Name}\" successfully updated.");
-                }
-                else
-                {
-                    return Unauthorized("You do not have permissions to do that");
-                }
+                if (userId != category.UserId)
+                    return Unauthorized();
+
+                await _categoryService.Update(category);
+                return Ok($"\"{category.Name}\" successfully updated.");
             }
             else
             {
@@ -152,15 +148,13 @@ public class CategoryController : ControllerBase
             if (category == null)
                 return NotFound($"Not exists");
 
-            if (category.UserId == userId)
-            {
-                var categoryName = category.Name;
+            if (category.UserId != userId)
+                return Unauthorized();
 
-                await _categoryService.Remove(userId, id);
-                return Ok($"\"{categoryName}\" successfully removed");
-            }
+            var categoryName = category.Name;
 
-            return Unauthorized("You do not have permissions to do that");
+            await _categoryService.Remove(category);
+            return Ok($"\"{categoryName}\" successfully removed");
         }
         catch (Exception ex)
         {

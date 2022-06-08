@@ -10,5 +10,5 @@ public interface IInstallmentService
     Task<InstallmentDTO> GetInstallmentPurchase(string userId, int? id);
     Task Add(InstallmentDTO installmentDTO);
     Task Update(InstallmentDTO installmentDTO);
-    Task Remove(string userId, int? id);
+    Task Remove(InstallmentDTO installmentDTO);
 }

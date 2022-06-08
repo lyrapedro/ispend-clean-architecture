@@ -10,5 +10,5 @@ public interface ICategoryService
     Task<IEnumerable<CategoryDTO>> GetByName(string userId, string name);
     Task Add(CategoryDTO categoryDTO);
     Task Update(CategoryDTO categoryDTO);
-    Task Remove(string userId, int? id);
+    Task Remove(CategoryDTO categoryDTO);
 }

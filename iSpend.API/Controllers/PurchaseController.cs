@@ -46,7 +46,7 @@ public class PurchaseController : ControllerBase
             var creditCard = await _creditCardService.GetById(creditCardId);
 
             if (creditCard.UserId != userId)
-                return Unauthorized("You do not have permissions to do that.");
+                return Unauthorized();
 
             var purchases = await _purchaseService.GetPurchasesFromCreditCard(creditCardId);
             return Ok(purchases);
@@ -64,15 +64,13 @@ public class PurchaseController : ControllerBase
 
         try
         {
-            var creditCard = await _purchaseService.GetPurchaseCreditCard(id);
-
-            if (creditCard.UserId != userId)
-                return Unauthorized("You do not have permissions to do that.");
-
             var purchase = await _purchaseService.GetById(id);
 
             if (purchase == null)
                 NotFound($"Not purchase with id {id}");
+
+            if (purchase.CreditCard.UserId != userId)
+                return Unauthorized();
 
             return Ok(purchase);
         }
@@ -131,7 +129,7 @@ public class PurchaseController : ControllerBase
                 var creditCard = await _purchaseService.GetPurchaseCreditCard(id);
 
                 if (creditCard.UserId != userId)
-                    return Unauthorized("You do not have permissions to do that.");
+                    return Unauthorized();
 
                 await _purchaseService.Update(purchase);
                 return Ok($"\"{purchase.Name}\" successfully updated.");
@@ -153,19 +151,17 @@ public class PurchaseController : ControllerBase
         var userId = User.FindFirstValue("UserId");
         try
         {
-            var creditCard = await _purchaseService.GetPurchaseCreditCard(id);
-
-            if (creditCard.UserId != userId)
-                return Unauthorized("You do not have permissions to do that.");
-
             var purchase = await _purchaseService.GetById(id);
 
             if (purchase == null)
                 return NotFound($"Not exists");
 
+            if (purchase.CreditCard.UserId != userId)
+                return Unauthorized();
+
             var purchaseName = purchase.Name;
 
-            await _purchaseService.Remove(id);
+            await _purchaseService.Remove(purchase);
             return Ok($"\"{purchaseName}\" successfully removed");
         }
         catch (Exception ex)

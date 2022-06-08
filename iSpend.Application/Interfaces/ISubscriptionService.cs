@@ -11,5 +11,5 @@ public interface ISubscriptionService
     Task<CreditCardDTO> GetSubscriptionCreditCard(int id);
     Task Add(SubscriptionDTO subscriptionDTO);
     Task Update(SubscriptionDTO subscriptionDTO);
-    Task Remove(int id);
+    Task Remove(SubscriptionDTO subscriptionDTO);
 }

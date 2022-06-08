@@ -85,9 +85,9 @@ public class GoalController : ControllerBase
             var userId = User.FindFirstValue("UserId");
 
             if (userId == goal.UserId)
-                await _goalService.Add(goal);
-            else
-                return Unauthorized("You do not have permissions to do that.");
+                return Unauthorized();
+
+            await _goalService.Add(goal);
 
             return CreatedAtRoute("GetGoal", new { id = goal.Id }, goal);
         }
@@ -106,14 +106,11 @@ public class GoalController : ControllerBase
 
             if (goal.Id == id)
             {
+                if (userId != goal.UserId)
+                    return Unauthorized();
 
-                if (userId == goal.UserId)
-                {
-                    await _goalService.Update(goal);
-                    return Ok($"\"{goal.Name}\" successfully updated.");
-                }
-
-                return Unauthorized("You do not have permissions to do that");
+                await _goalService.Update(goal);
+                return Ok($"\"{goal.Name}\" successfully updated.");
             }
             else
             {
@@ -137,15 +134,13 @@ public class GoalController : ControllerBase
             if (goal == null)
                 return NotFound($"Not exists");
 
-            if (goal.UserId == userId)
-            {
-                var goalName = goal.Name;
+            if (goal.UserId != userId)
+                return Unauthorized();
 
-                await _goalService.Remove(goal);
-                return Ok($"\"{goalName}\" successfully removed");
-            }
+            var goalName = goal.Name;
 
-            return Unauthorized("You do not have permissions to do that");
+            await _goalService.Remove(goal);
+            return Ok($"\"{goalName}\" successfully removed");
 
         }
         catch (Exception ex)

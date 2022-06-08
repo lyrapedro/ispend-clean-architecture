@@ -113,9 +113,9 @@ public class PurchaseService : IPurchaseService
         await _purchaseRepository.Update(purchase);
     }
 
-    public async Task Remove(int id)
+    public async Task Remove(PurchaseDTO purchaseDTO)
     {
-        var purchase = _purchaseRepository.GetById(id).Result;
+        var purchase = _mapper.Map<Purchase>(purchaseDTO);
         await _purchaseRepository.Remove(purchase);
     }
 }
