@@ -43,7 +43,7 @@ public class PurchaseController : ControllerBase
 
         try
         {
-            var creditCard = await _creditCardService.GetById(userId, creditCardId);
+            var creditCard = await _creditCardService.GetById(creditCardId);
 
             if (creditCard.UserId != userId)
                 return Unauthorized("You do not have permissions to do that.");

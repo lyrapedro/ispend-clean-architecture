@@ -41,10 +41,13 @@ public class CreditCardController : ControllerBase
 
         try
         {
-            var creditCard = await _creditCardService.GetById(userId, id);
+            var creditCard = await _creditCardService.GetById(id);
 
             if (creditCard == null)
                 return NotFound($"Not credit card with id {id}");
+
+            if (creditCard.UserId != userId)
+                return Unauthorized();
 
             return Ok(creditCard);
         }
@@ -130,12 +133,15 @@ public class CreditCardController : ControllerBase
         var userId = User.FindFirstValue("UserId");
         try
         {
-            var creditCard = await _creditCardService.GetById(userId, id);
+            var creditCard = await _creditCardService.GetById(id);
 
             if (creditCard == null)
                 return NotFound($"Not exists");
 
-            await _creditCardService.Remove(userId, id);
+            if (creditCard.UserId != userId)
+                return Unauthorized();
+
+            await _creditCardService.Remove(id);
             return Ok($"\"{creditCard.Name}\" successfully removed");
         }
         catch (Exception ex)

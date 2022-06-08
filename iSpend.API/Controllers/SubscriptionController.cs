@@ -43,7 +43,7 @@ public class SubscriptionController : ControllerBase
 
         try
         {
-            var creditCard = await _creditCardService.GetById(userId, creditCardId);
+            var creditCard = await _creditCardService.GetById(creditCardId);
             if (creditCard.UserId != userId)
                 return Unauthorized();
 
