@@ -84,8 +84,7 @@ public class ExpenseController : ControllerBase
         {
             var userId = User.FindFirstValue("UserId");
 
-            if (userId != expense.UserId)
-                return Unauthorized();
+            expense.UserId = userId;
 
             await _expenseService.Add(expense);
 

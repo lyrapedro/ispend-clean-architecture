@@ -84,8 +84,7 @@ public class IncomeController : ControllerBase
         {
             var userId = User.FindFirstValue("UserId");
 
-            if (userId != income.UserId)
-                return Unauthorized();
+            income.UserId = userId;
 
             await _incomeService.Add(income);
 

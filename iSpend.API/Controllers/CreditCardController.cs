@@ -84,8 +84,7 @@ public class CreditCardController : ControllerBase
         {
             var userId = User.FindFirstValue("UserId");
 
-            if (userId != creditCardDto.UserId)
-                return Unauthorized();
+            creditCardDto.UserId = userId;
 
             await _creditCardService.Add(creditCardDto);
 

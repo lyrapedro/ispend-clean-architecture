@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace iSpend.Application.DTOs;
 
 public class CategoryDTO
 {
     public int Id { get; private set; }
-    public string UserId { get; set; }
+    public string? UserId { get; set; }
 
     [Required(ErrorMessage = "The name is required")]
     [MinLength(2)]

@@ -84,8 +84,7 @@ public class CategoryController : ControllerBase
         {
             var userId = User.FindFirstValue("UserId");
 
-            if (userId != category.UserId)
-                return Unauthorized();
+            category.UserId = userId;
 
             await _categoryService.Add(category);
 

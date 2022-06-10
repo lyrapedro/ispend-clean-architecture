@@ -84,8 +84,7 @@ public class GoalController : ControllerBase
         {
             var userId = User.FindFirstValue("UserId");
 
-            if (userId == goal.UserId)
-                return Unauthorized();
+            goal.UserId = userId;
 
             await _goalService.Add(goal);
 

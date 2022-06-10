@@ -6,7 +6,7 @@ public class CreditCardDTO
 {
     public int Id { get; private set; }
 
-    public string UserId { get; set; }
+    public string? UserId { get; set; }
 
     [Required(ErrorMessage = "The name is required")]
     [MinLength(2)]

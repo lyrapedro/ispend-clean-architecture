@@ -18,6 +18,29 @@ public class InstallmentController : ControllerBase
         _installmentService = installmentService;
     }
 
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<InstallmentDTO>> GetInstallment(int id)
+    {
+        var userId = User.FindFirstValue("UserId");
+
+        try
+        {
+            var installment = await _installmentService.GetById(id);
+
+            if (installment == null)
+                NotFound($"Not installment with id {id}");
+
+            if (installment.Purchase.CreditCard.UserId != userId)
+                return Unauthorized();
+
+            return Ok(installment);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
     [HttpGet]
     public async Task<ActionResult<IAsyncEnumerable<InstallmentDTO>>> GetInstallments()
     {
@@ -43,26 +66,6 @@ public class InstallmentController : ControllerBase
         {
             var installments = await _installmentService.GetInstallmentsFromPurchase(userId, purchaseId);
             return Ok(installments);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<InstallmentDTO>> GetInstallment(int id)
-    {
-        var userId = User.FindFirstValue("UserId");
-
-        try
-        {
-            var installment = await _installmentService.GetById(id);
-
-            if (installment == null)
-                NotFound($"Not installment with id {id}");
-
-            return Ok(installment);
         }
         catch (Exception ex)
         {

@@ -8,7 +8,7 @@ public class ExpenseDTO
 {
     public int Id { get; private set; }
 
-    public string UserId { get; set; }
+    public string? UserId { get; set; }
 
     public int? CategoryId { get; set; }
 

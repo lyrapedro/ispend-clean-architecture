@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using iSpend.Application.DTOs;
 using iSpend.Application.Interfaces;
-using iSpend.Application.Utils;
 using iSpend.Domain.Entities;
 using iSpend.Domain.Interfaces;
 
@@ -12,16 +11,14 @@ public class PurchaseService : IPurchaseService
     private IPurchaseRepository _purchaseRepository;
     private readonly IInstallmentRepository _installmentRepository;
     private readonly ICreditCardRepository _creditCardRepository;
-    private readonly ServicesUtils _utils;
     private readonly IMapper _mapper;
 
-    public PurchaseService(IPurchaseRepository purchaseRepository, IInstallmentRepository installmentRepository, ICreditCardRepository creditCardRepository, IMapper mapper, ServicesUtils utils)
+    public PurchaseService(IPurchaseRepository purchaseRepository, IInstallmentRepository installmentRepository, ICreditCardRepository creditCardRepository, IMapper mapper)
     {
         _purchaseRepository = purchaseRepository;
         _installmentRepository = installmentRepository;
         _creditCardRepository = creditCardRepository;
         _mapper = mapper;
-        _utils = utils;
     }
 
     public async Task<IEnumerable<PurchaseDTO>> GetPurchases(string userId)
@@ -61,7 +58,7 @@ public class PurchaseService : IPurchaseService
         var numberOfInstallments = purchase.NumberOfInstallments;
         if (numberOfInstallments.HasValue)
         {
-            var newInstallmentsList = _utils.GenerateListOfInstallmentsForPurchase(numberOfInstallments.Value, creditCard, purchaseCreated);
+            var newInstallmentsList = GenerateListOfInstallmentsForPurchase(numberOfInstallments.Value, creditCard, purchaseCreated).Result;
             await _installmentRepository.CreateInstallments(newInstallmentsList);
         }
     }
@@ -77,4 +74,47 @@ public class PurchaseService : IPurchaseService
         var purchase = _mapper.Map<Purchase>(purchaseDTO);
         await _purchaseRepository.Remove(purchase);
     }
+
+#region Util
+    public async Task<List<Installment>> GenerateListOfInstallmentsForPurchase(int numberOfInstallments, CreditCard creditCard, Purchase purchase)
+    {
+        var newInstallmentsList = new List<Installment>();
+        var valueByInstallment = Decimal.Round(purchase.Price / numberOfInstallments, 2);
+        int expirationDay;
+        int expirationMonth;
+        int expirationYear = purchase.PurchasedAt.Year;
+
+        bool purchasedAfterInvoiceClosing = purchase.PurchasedAt.Day >= creditCard.ClosingDay ? true : false;
+
+        if (purchasedAfterInvoiceClosing)
+        {
+            expirationDay = creditCard.ExpirationDay;
+            expirationMonth = purchase.PurchasedAt.Month + 1;
+            if (expirationMonth > 12)
+            {
+                expirationMonth = 1;
+                expirationYear += 1;
+            }
+        }
+        else
+        {
+            expirationDay = creditCard.ExpirationDay;
+            expirationMonth = purchase.PurchasedAt.Month;
+        }
+
+        for (var i = 1; i <= purchase.NumberOfInstallments; i++)
+        {
+            var installmentExpiresDate = new DateTime(expirationYear, expirationMonth, expirationDay);
+            newInstallmentsList.Add(new Installment(purchase.Id, i, valueByInstallment, false, installmentExpiresDate));
+            expirationMonth += 1;
+            if (expirationMonth > 12)
+            {
+                expirationMonth = 1;
+                expirationYear += 1;
+            }
+        }
+
+        return newInstallmentsList;
+    }
 }
+#endregion
