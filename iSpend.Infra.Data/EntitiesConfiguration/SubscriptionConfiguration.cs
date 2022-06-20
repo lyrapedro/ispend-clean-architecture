@@ -12,7 +12,7 @@ public class SubscriptionConfiguration : IEntityTypeConfiguration<Subscription>
         builder.Property(c => c.CreditCardId).IsRequired();
         builder.Property(s => s.Name).HasMaxLength(30).IsRequired();
         builder.Property(s => s.Price).HasPrecision(18, 2).IsRequired();
-        builder.Property(s => s.PaymentAt).IsRequired();
+        builder.Property(s => s.BillingDay).IsRequired();
         builder.Property(s => s.Active).IsRequired();
         builder.Property(s => s.CreditCardId).IsRequired();
 

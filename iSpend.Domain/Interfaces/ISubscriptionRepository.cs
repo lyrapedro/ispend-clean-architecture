@@ -11,4 +11,5 @@ public interface ISubscriptionRepository
     Task<Subscription> Create(Subscription subscription);
     Task<Subscription> Update(Subscription subscription);
     Task<Subscription> Remove(Subscription subscription);
+    Task<IEnumerable<SubscriptionPaid>> GetAlreadyPaid(int subscriptionId);
 }

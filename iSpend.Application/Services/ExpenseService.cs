@@ -20,13 +20,26 @@ public class ExpenseService : IExpenseService
     public async Task<IEnumerable<ExpenseDTO>> GetExpenses(string userId)
     {
         var expenses = await _expenseRepository.GetExpenses(userId);
-        return _mapper.Map<IEnumerable<ExpenseDTO>>(expenses);
+
+        var expensesDto = _mapper.Map<IEnumerable<ExpenseDTO>>(expenses);
+
+        foreach (var dto in expensesDto)
+        {
+            dto.Late = await HasPendingPayment(dto.Id, dto.BillingDay);
+        }
+
+        return expensesDto;
     }
 
     public async Task<ExpenseDTO> GetById(int id)
     {
         var expense = await _expenseRepository.GetById(id);
-        return _mapper.Map<ExpenseDTO>(expense);
+        bool hasPendingPayment = await HasPendingPayment(id, expense.BillingDay);
+
+        var expenseDto = _mapper.Map<ExpenseDTO>(expense);
+        expenseDto.Late = hasPendingPayment;
+
+        return expenseDto;
     }
 
     public async Task<IEnumerable<ExpenseDTO>> GetByName(string userId, string name)
@@ -41,6 +54,11 @@ public class ExpenseService : IExpenseService
         else
         {
             expenses = await GetExpenses(userId);
+        }
+
+        foreach (var expense in expenses)
+        {
+            expense.Late = await HasPendingPayment(expense.Id, expense.BillingDay);
         }
 
         return expenses;
@@ -63,4 +81,26 @@ public class ExpenseService : IExpenseService
         var expense = _mapper.Map<Expense>(expenseDTO);
         await _expenseRepository.Remove(expense);
     }
+
+    #region Util
+    public async Task<bool> HasPendingPayment(int expenseId, int billingDay)
+    {
+        var todayDate = DateTime.Now;
+        var paymentDate = new DateTime(todayDate.Year, todayDate.Month, billingDay);
+        var alreadyPaid = await _expenseRepository.GetAlreadyPaid(expenseId);
+
+        var lastPayment = alreadyPaid.OrderBy(x => x.Date).FirstOrDefault();
+
+        if (lastPayment != null)
+        {
+            if (lastPayment.Date.Month == todayDate.Month && lastPayment.Date.Year == todayDate.Year)
+                return false;
+        }
+
+        if (todayDate.Date <= paymentDate.Date)
+            return false;
+
+        return true;
+    }
+    #endregion
 }

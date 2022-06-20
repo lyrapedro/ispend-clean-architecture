@@ -20,7 +20,15 @@ public class SubscriptionService : ISubscriptionService
     public async Task<IEnumerable<SubscriptionDTO>> GetSubscriptions(string userId)
     {
         var subscriptions = await _subscriptionRepository.GetSubscriptions(userId);
-        return _mapper.Map<IEnumerable<SubscriptionDTO>>(subscriptions);
+
+        var subscriptionsDto = _mapper.Map<IEnumerable<SubscriptionDTO>>(subscriptions);
+
+        foreach (var dto in subscriptionsDto)
+        {
+            dto.Late = await HasPendingPayment(dto.Id, dto.BillingDay);
+        }
+
+        return subscriptionsDto;
     }
 
     public async Task<IEnumerable<SubscriptionDTO>> GetSubscriptionsFromCreditCard(int creditCardId)
@@ -32,7 +40,12 @@ public class SubscriptionService : ISubscriptionService
     public async Task<SubscriptionDTO> GetById(int id)
     {
         var subscription = await _subscriptionRepository.GetById(id);
-        return _mapper.Map<SubscriptionDTO>(subscription);
+        bool hasPendingPayment = await HasPendingPayment(id, subscription.BillingDay);
+
+        var subscriptionDto = _mapper.Map<SubscriptionDTO>(subscription);
+        subscriptionDto.Late = hasPendingPayment;
+
+        return subscriptionDto;
     }
 
     public async Task<IEnumerable<SubscriptionDTO>> GetByName(string userId, string name)
@@ -47,6 +60,11 @@ public class SubscriptionService : ISubscriptionService
         else
         {
             subscriptions = await GetSubscriptions(userId);
+        }
+
+        foreach (var subscription in subscriptions)
+        {
+            subscription.Late = await HasPendingPayment(subscription.Id, subscription.BillingDay);
         }
 
         return subscriptions;
@@ -69,4 +87,26 @@ public class SubscriptionService : ISubscriptionService
         var subscription = _mapper.Map<Subscription>(subscriptionDTO);
         await _subscriptionRepository.Remove(subscription);
     }
+
+    #region Util
+    public async Task<bool> HasPendingPayment(int subscriptionId, int billingDay)
+    {
+        var todayDate = DateTime.Now;
+        var paymentDate = new DateTime(todayDate.Year, todayDate.Month, billingDay);
+        var alreadyPaid = await _subscriptionRepository.GetAlreadyPaid(subscriptionId);
+
+        var lastPayment = alreadyPaid.OrderBy(x => x.Date).FirstOrDefault();
+
+        if(lastPayment != null)
+        {
+            if (lastPayment.Date.Month == todayDate.Month && lastPayment.Date.Year == todayDate.Year)
+                return false;
+        }
+
+        if (todayDate.Date <= paymentDate.Date)
+            return false;
+
+        return true;
+    }
+    #endregion
 }

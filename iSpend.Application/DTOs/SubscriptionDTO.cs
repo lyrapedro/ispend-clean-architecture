@@ -20,7 +20,7 @@ public class SubscriptionDTO
     public decimal Price { get; set; }
 
     [Required(ErrorMessage = "The payment date is required")]
-    public DateTime PaymentAt { get; set; }
+    public int BillingDay { get; set; }
 
     [Required(ErrorMessage = "The active field is required")]
     public bool Active { get; set; }
