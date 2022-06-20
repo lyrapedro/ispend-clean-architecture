@@ -10,7 +10,6 @@ public sealed class Expense : Entity
     public string Name { get; private set; }
     public decimal Value { get; private set; }
     public bool Recurrent { get; private set; }
-    public bool Paid { get; private set; }
     public int BillingDay { get; private set; }
 
     public Expense(string userId, int? categoryId, string name, decimal value, bool recurrent, int billingDay)
