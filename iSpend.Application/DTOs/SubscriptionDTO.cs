@@ -28,5 +28,8 @@ public class SubscriptionDTO
     public DateTime RegisteredAt { get; set; }
 
     [JsonIgnore]
+    public bool Late { get; set; }
+
+    [JsonIgnore]
     public CreditCard? CreditCard { get; set; }
 }

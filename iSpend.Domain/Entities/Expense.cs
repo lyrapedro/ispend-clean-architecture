@@ -10,7 +10,8 @@ public sealed class Expense : Entity
     public string Name { get; private set; }
     public decimal Value { get; private set; }
     public bool Recurrent { get; private set; }
-    public int BillingDay { get; set; }
+    public bool Paid { get; private set; }
+    public int BillingDay { get; private set; }
 
     public Expense(string userId, int? categoryId, string name, decimal value, bool recurrent, int billingDay)
     {
@@ -47,5 +48,27 @@ public sealed class Expense : Entity
         BillingDay = billingDay;
         RegisteredAt = DateTime.Now;
         ModifiedAt = DateTime.Now;
+    }
+}
+
+public sealed class ExpensePaid
+{
+    public int Id { get; protected set; }
+    public int ExpenseId { get; set; }
+    public Expense Expense { get; set; }
+    public DateTime Date { get; private set; }
+
+    public ExpensePaid(int expenseId, DateTime date)
+    {
+        ValidateDomain(expenseId, date);
+    }
+
+    private void ValidateDomain(int expenseId, DateTime date)
+    {
+        DomainExceptionValidation.When(expenseId < 0,
+            "Invalid expense.");
+
+        ExpenseId = expenseId;
+        Date = date;
     }
 }

@@ -35,5 +35,8 @@ public class ExpenseDTO
     public DateTime RegisteredAt { get; set; }
 
     [JsonIgnore]
+    public bool Late { get; set; }
+
+    [JsonIgnore]
     public Category? Category { get; private set; }
 }
