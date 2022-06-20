@@ -6,8 +6,4 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="DevExtreme.Web" Version="21.2.8" />
-  </ItemGroup>
-
 </Project>
