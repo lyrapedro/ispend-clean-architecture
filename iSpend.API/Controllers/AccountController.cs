@@ -1,9 +1,11 @@
 ﻿using iSpend.API.ViewModels;
 using iSpend.Domain.Account;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace iSpend.API.Controllers;
@@ -22,13 +24,33 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost("Login")]
-    public async Task<ActionResult<UserToken>> Login(LoginViewModel model)
+    public async Task<IActionResult> Login(LoginViewModel model)
     {
         var result = await _authentication.Authenticate(model.Email, model.Password);
 
         if (result)
         {
-            return GenerateToken(model);
+            var user = _authentication.GetUserNameAndId(model.Email);
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Result.ElementAt(0).ToString()),
+                new Claim(ClaimTypes.Email, user.Result.ElementAt(1).ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, user.Result.ElementAt(2).ToString()),
+            };
+
+            var token = GenerateToken(claims);
+            var refreshToken = GenerateRefreshToken();
+            _ = int.TryParse(_configuration["JwtBearerTokenSettings:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
+
+            await _authentication.UpdateAsync(model.Email, refreshToken, refreshTokenValidityInDays);
+
+            return Ok(new
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                RefreshToken = refreshToken,
+                Expiration = token.ValidTo
+            });
         }
         else
         {
@@ -54,21 +76,72 @@ public class AccountController : ControllerBase
 
     }
 
-    private ActionResult<UserToken> GenerateToken(LoginViewModel model)
+    [Authorize]
+    [HttpPost]
+    [Route("Revoke/{email}")]
+    public async Task<IActionResult> Revoke(string email)
     {
-        var user = _authentication.GetUserNameAndId(model.Email);
+        var user = await _authentication.GetUser(email);
+        if (user == null) return BadRequest("Invalid user name");
 
-        var claims = new[]
+        _ = int.TryParse(_configuration["JwtBearerTokenSettings:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
+        await _authentication.UpdateAsync(email, null, refreshTokenValidityInDays);
+
+        return NoContent();
+    }
+
+    [HttpPost]
+    [Route("RefreshToken")]
+    public async Task<IActionResult> RefreshToken(UserToken tokenModel)
+    {
+        if (tokenModel is null)
         {
-            new Claim("Name", user.Result.First().ToString()),
-            new Claim("UserId", user.Result.Last().ToString())
-        };
+            return BadRequest("Invalid client request");
+        }
 
+        string? accessToken = tokenModel.Token;
+        string? refreshToken = tokenModel.RefreshToken;
+
+        var principal = GetPrincipalFromExpiredToken(accessToken);
+        if (principal == null)
+        {
+            return BadRequest("Invalid access token or refresh token");
+        }
+
+        string username = principal.FindFirstValue(ClaimTypes.Email);
+
+        var user = _authentication.GetUser(username);
+
+        var userRefToken = user.Result.ElementAt(2);
+        _ = DateTime.TryParse(user.Result.ElementAt(3), out DateTime userRefTokenExpiryTime);
+
+        if (user == null || userRefToken != refreshToken || userRefTokenExpiryTime <= DateTime.Now)
+        {
+            return BadRequest("Invalid access token or refresh token");
+        }
+
+        var newAccessToken = GenerateToken(principal.Claims.ToList());
+        var newRefreshToken = GenerateRefreshToken();
+        _ = int.TryParse(_configuration["JwtBearerTokenSettings:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
+
+        await _authentication.UpdateAsync(username, newRefreshToken, refreshTokenValidityInDays);
+
+        return new ObjectResult(new
+        {
+            accessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
+            refreshToken = newRefreshToken
+        });
+    }
+
+    private JwtSecurityToken GenerateToken(List<Claim> claims)
+    {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtBearerTokenSettings:SecretKey"]));
+
+        _ = int.TryParse(_configuration["JwtBearerTokenSettings:TokenValidityInMinutes"], out int tokenValidityInMinutes);
 
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var expiration = DateTime.UtcNow.AddMinutes(15);
+        var expiration = DateTime.Now.AddMinutes(tokenValidityInMinutes);
 
         JwtSecurityToken token = new JwtSecurityToken(
             issuer: _configuration["JwtBearerTokenSettings:Issuer"],
@@ -77,10 +150,34 @@ public class AccountController : ControllerBase
             expires: expiration,
             signingCredentials: creds);
 
-        return new UserToken()
+        return token;
+    }
+
+    private static string GenerateRefreshToken()
+    {
+        var randomNumber = new byte[64];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomNumber);
+        return Convert.ToBase64String(randomNumber);
+    }
+
+    private ClaimsPrincipal? GetPrincipalFromExpiredToken(string? token)
+    {
+        var tokenValidationParameters = new TokenValidationParameters
         {
-            Token = new JwtSecurityTokenHandler().WriteToken(token),
-            Expiration = expiration,
+            ValidateAudience = false,
+            ValidateIssuer = false,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtBearerTokenSettings:SecretKey"])),
+            ValidateLifetime = false
         };
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+        if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+            throw new SecurityTokenException("Invalid token");
+
+        return principal;
+
     }
 }

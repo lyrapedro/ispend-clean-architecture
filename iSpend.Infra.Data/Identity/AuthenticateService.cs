@@ -47,9 +47,30 @@ public class AuthenticateService : IAuthenticate
         var nameAndId = new List<string>
         {
             new string(user.Name),
+            new string(user.Email),
             new string(user.Id)
         };
         return nameAndId;
+    }
+
+    public async Task<IEnumerable<string>> GetUser(string email)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        return new List<string>
+        {
+            new string(user.Name),
+            new string(user.Email),
+            new string(user.RefreshToken),
+            new string(user.RefreshTokenExpiryTime.ToString())
+        };
+    }
+
+    public async Task UpdateAsync(string email, string refreshToken, int refreshTokenValidityInDays)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        user.RefreshToken = refreshToken;
+        user.RefreshTokenExpiryTime = DateTime.Now.AddDays(refreshTokenValidityInDays);
+        await _userManager.UpdateAsync(user);
     }
 
     public async Task Logout()
