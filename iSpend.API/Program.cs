@@ -79,7 +79,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     builder.Services.AddCors();
-    app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000"));
+    app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:3000"));
     app.UseSwagger();
     app.UseSwaggerUI();
 }

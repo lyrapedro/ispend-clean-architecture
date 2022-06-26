@@ -47,7 +47,7 @@ public class AccountController : ControllerBase
 
             return Ok(new
             {
-                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
                 RefreshToken = refreshToken,
                 Expiration = token.ValidTo
             });
@@ -99,7 +99,7 @@ public class AccountController : ControllerBase
             return BadRequest("Invalid client request");
         }
 
-        string? accessToken = tokenModel.Token;
+        string? accessToken = tokenModel.AccessToken;
         string? refreshToken = tokenModel.RefreshToken;
 
         var principal = GetPrincipalFromExpiredToken(accessToken);
