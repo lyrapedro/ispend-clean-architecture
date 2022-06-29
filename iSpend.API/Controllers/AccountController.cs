@@ -32,24 +32,25 @@ public class AccountController : ControllerBase
         {
             var user = _authentication.GetUserNameAndId(model.Email);
 
+            var name = user.Result.ElementAt(0).ToString();
+
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Result.ElementAt(0).ToString()),
+                new Claim(ClaimTypes.Name, name),
                 new Claim(ClaimTypes.Email, user.Result.ElementAt(1).ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, user.Result.ElementAt(2).ToString()),
             };
 
             var token = GenerateToken(claims);
-            var refreshToken = GenerateRefreshToken();
-            _ = int.TryParse(_configuration["JwtBearerTokenSettings:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
+            //var refreshToken = GenerateRefreshToken();
+            //_ = int.TryParse(_configuration["JwtBearerTokenSettings:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
 
-            await _authentication.UpdateAsync(model.Email, refreshToken, refreshTokenValidityInDays);
+            //await _authentication.UpdateAsync(model.Email, refreshToken, refreshTokenValidityInDays);
 
             return Ok(new
             {
-                AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
-                RefreshToken = refreshToken,
-                Expiration = token.ValidTo
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                name = name
             });
         }
         else
@@ -137,11 +138,11 @@ public class AccountController : ControllerBase
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtBearerTokenSettings:SecretKey"]));
 
-        _ = int.TryParse(_configuration["JwtBearerTokenSettings:TokenValidityInMinutes"], out int tokenValidityInMinutes);
+        //_ = int.TryParse(_configuration["JwtBearerTokenSettings:TokenValidityInMinutes"], out int tokenValidityInMinutes);
 
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var expiration = DateTime.Now.AddMinutes(tokenValidityInMinutes);
+        var expiration = DateTime.Now.AddMinutes(15);
 
         JwtSecurityToken token = new JwtSecurityToken(
             issuer: _configuration["JwtBearerTokenSettings:Issuer"],

@@ -2,6 +2,7 @@
 using iSpend.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace iSpend.API.Controllers;
@@ -21,7 +22,7 @@ public class IncomeController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IAsyncEnumerable<IncomeDTO>>> GetIncomes()
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Jti);
 
         try
         {
@@ -37,7 +38,7 @@ public class IncomeController : ControllerBase
     [HttpGet("{id:int}", Name = "GetIncome")]
     public async Task<ActionResult<IncomeDTO>> GetIncome(int id)
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Jti);
 
         try
         {
@@ -60,7 +61,7 @@ public class IncomeController : ControllerBase
     [HttpGet("Find")]
     public async Task<ActionResult<IAsyncEnumerable<IncomeDTO>>> GetIncomesByName([FromQuery] string name)
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Jti);
 
         try
         {
@@ -82,7 +83,7 @@ public class IncomeController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue("UserId");
+            var userId = User.FindFirstValue(JwtRegisteredClaimNames.Jti);
 
             income.UserId = userId;
 
@@ -101,7 +102,7 @@ public class IncomeController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue("UserId");
+            var userId = User.FindFirstValue(JwtRegisteredClaimNames.Jti);
 
             if (income.Id == id)
             {
@@ -126,7 +127,7 @@ public class IncomeController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Jti);
         try
         {
             var income = await _incomeService.GetById(id);
