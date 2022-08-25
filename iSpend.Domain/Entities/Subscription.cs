@@ -9,19 +9,20 @@ public sealed class Subscription : Entity
     public string Name { get; private set; }
     public decimal Price { get; private set; }
     public int BillingDay { get; private set; }
-    public bool Active { get; private set; }
 
-    public Subscription(int creditCardId, string name, decimal price, int billingDay, bool active)
+    public ICollection<SubscriptionNode> SubscriptionNodes { get; private set; }
+
+    public Subscription(int creditCardId, string name, decimal price, int billingDay)
     {
-        ValidateDomain(creditCardId, name, price, billingDay, active);
+        ValidateDomain(creditCardId, name, price, billingDay);
     }
 
-    public void Update(int creditCardId, string name, decimal price, int billingDay, bool active)
+    public void Update(int creditCardId, string name, decimal price, int billingDay)
     {
-        ValidateDomain(creditCardId, name, price, billingDay, active);
+        ValidateDomain(creditCardId, name, price, billingDay);
     }
 
-    private void ValidateDomain(int creditCardId, string name, decimal price, int billingDay, bool active)
+    private void ValidateDomain(int creditCardId, string name, decimal price, int billingDay)
     {
         DomainExceptionValidation.When(price < 0,
             "Invalid price.");
@@ -39,30 +40,30 @@ public sealed class Subscription : Entity
         Name = name;
         Price = price;
         BillingDay = billingDay;
-        Active = active;
         RegisteredAt = RegisteredAt > DateTime.MinValue ? RegisteredAt : DateTime.Now;
         ModifiedAt = DateTime.Now;
     }
 }
 
-public sealed class SubscriptionPaid
+public sealed class SubscriptionNode
 {
     public int Id { get; protected set; }
     public int SubscriptionId { get; set; }
     public Subscription Subscription { get; set; }
-    public DateTime Date { get; private set; }
+    public bool Paid { get; set; }
+    public DateOnly ReferenceDate { get; private set; }
 
-    public SubscriptionPaid(int subscriptionId, DateTime date)
+    public SubscriptionNode(int subscriptionId, DateOnly referenceDate)
     {
-        ValidateDomain(subscriptionId, date);
+        ValidateDomain(subscriptionId, referenceDate);
     }
 
-    private void ValidateDomain(int subscriptionId, DateTime date)
+    private void ValidateDomain(int subscriptionId, DateOnly referenceDate)
     {
         DomainExceptionValidation.When(subscriptionId < 0,
             "Invalid subscription.");
 
         SubscriptionId = subscriptionId;
-        Date = date;
+        ReferenceDate = referenceDate;
     }
 }

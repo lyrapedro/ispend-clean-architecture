@@ -18,3 +18,16 @@ public class IncomeConfiguration : IEntityTypeConfiguration<Income>
         builder.HasOne(i => i.Category).WithMany(c => c.Incomes).HasForeignKey(p => p.CategoryId);
     }
 }
+
+public class IncomeNodeConfiguration : IEntityTypeConfiguration<IncomeNode>
+{
+    public void Configure(EntityTypeBuilder<IncomeNode> builder)
+    {
+        builder.ToTable("Income_Node");
+        builder.HasKey(i => i.Id);
+        builder.Property(i => i.IncomeId).IsRequired();
+        builder.Property(i => i.ReferenceDate).IsRequired();
+
+        builder.HasOne(i => i.Income).WithMany(c => c.IncomeNodes).HasForeignKey(p => p.IncomeId);
+    }
+}

@@ -35,9 +35,9 @@ public class SubscriptionRepository : ISubscriptionRepository
         return await _subscriptionContext.Subscriptions.Include(s => s.CreditCard).Where(s => s.CreditCard.UserId == userId).ToListAsync();
     }
 
-    public async Task<IEnumerable<SubscriptionPaid>> GetAlreadyPaid(int subscriptionId)
+    public async Task<IEnumerable<SubscriptionNode>> GetAlreadyPaid(int subscriptionId)
     {
-        return await _subscriptionContext.SubscriptionsPaid.Include(s => s.Subscription).Where(s => s.SubscriptionId == subscriptionId).ToListAsync();
+        return await _subscriptionContext.SubscriptionNodes.Include(s => s.Subscription).Where(s => s.SubscriptionId == subscriptionId && s.Paid == true).ToListAsync();
     }
 
     public async Task<Subscription> Create(Subscription subscription)

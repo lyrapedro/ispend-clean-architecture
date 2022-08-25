@@ -95,11 +95,11 @@ public class SubscriptionService : ISubscriptionService
         var paymentDate = new DateTime(todayDate.Year, todayDate.Month, billingDay);
         var alreadyPaid = await _subscriptionRepository.GetAlreadyPaid(subscriptionId);
 
-        var lastPayment = alreadyPaid.OrderBy(x => x.Date).FirstOrDefault();
+        var lastPayment = alreadyPaid.OrderBy(x => x.ReferenceDate).FirstOrDefault();
 
         if(lastPayment != null)
         {
-            if (lastPayment.Date.Month == todayDate.Month && lastPayment.Date.Year == todayDate.Year)
+            if (lastPayment.ReferenceDate.Month == todayDate.Month && lastPayment.ReferenceDate.Year == todayDate.Year)
                 return false;
         }
 

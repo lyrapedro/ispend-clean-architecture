@@ -10,5 +10,5 @@ public interface IExpenseRepository
     Task<Expense> Create(Expense expense);
     Task<Expense> Update(Expense expense);
     Task<Expense> Remove(Expense expense);
-    Task<IEnumerable<ExpensePaid>> GetAlreadyPaid(int expenseId);
+    Task<IEnumerable<ExpenseNode>> GetAlreadyPaid(int expenseId);
 }

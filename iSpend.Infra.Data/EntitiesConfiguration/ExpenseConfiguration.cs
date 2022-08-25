@@ -18,3 +18,17 @@ public class ExpenseConfiguration : IEntityTypeConfiguration<Expense>
         builder.HasOne(e => e.Category).WithMany(c => c.Expenses).HasForeignKey(e => e.CategoryId);
     }
 }
+
+public class ExpenseNodeConfiguration : IEntityTypeConfiguration<ExpenseNode>
+{
+    public void Configure(EntityTypeBuilder<ExpenseNode> builder)
+    {
+        builder.ToTable("Expense_Node");
+        builder.HasKey(e => e.Id);
+        builder.Property(e => e.ExpenseId).IsRequired();
+        builder.Property(e => e.ReferenceDate).IsRequired();
+
+        builder.HasOne(e => e.Expense).WithMany(c => c.ExpenseNodes).HasForeignKey(e => e.ExpenseId);
+    }
+}
+

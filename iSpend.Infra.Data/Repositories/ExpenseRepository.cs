@@ -29,9 +29,9 @@ public class ExpenseRepository : IExpenseRepository
         return await _expenseContext.Expenses.Where(e => e.UserId == userId).ToListAsync();
     }
 
-    public async Task<IEnumerable<ExpensePaid>> GetAlreadyPaid(int expenseId)
+    public async Task<IEnumerable<ExpenseNode>> GetAlreadyPaid(int expenseId)
     {
-        return await _expenseContext.ExpensesPaid.Include(s => s.Expense).Where(s => s.ExpenseId == expenseId).ToListAsync();
+        return await _expenseContext.ExpenseNodes.Include(s => s.Expense).Where(s => s.ExpenseId == expenseId && s.Paid == true).ToListAsync();
     }
 
     public async Task<Expense> Create(Expense expense)

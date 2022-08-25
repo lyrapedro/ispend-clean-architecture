@@ -1,4 +1,5 @@
 ﻿using iSpend.Domain.Validation;
+using System.ComponentModel;
 
 namespace iSpend.Domain.Entities;
 
@@ -10,7 +11,24 @@ public sealed class Expense : Entity
     public string Name { get; private set; }
     public decimal Value { get; private set; }
     public bool Recurrent { get; private set; }
+    public int? NumberOfRecurrences { get; set; }
+    public ExpenseType? Type { get; private set; }
     public int BillingDay { get; private set; }
+    public bool Paid { get; private set; }
+
+    public ICollection<ExpenseNode> ExpenseNodes { get; private set; }
+
+    public enum ExpenseType
+    {
+        [Description("Daily")]
+        Daily = 0,
+        [Description("Weekly")]
+        Weekly = 1,
+        [Description("Monthly")]
+        Monthly = 2,
+        [Description("Yearly")]
+        Yearly = 3
+    }
 
     public Expense(string userId, int? categoryId, string name, decimal value, bool recurrent, int billingDay)
     {
@@ -50,24 +68,25 @@ public sealed class Expense : Entity
     }
 }
 
-public sealed class ExpensePaid
+public sealed class ExpenseNode
 {
-    public int Id { get; protected set; }
-    public int ExpenseId { get; set; }
-    public Expense Expense { get; set; }
-    public DateTime Date { get; private set; }
+    public int Id { get; private set; }
+    public int ExpenseId { get; private set; }
+    public Expense Expense { get; private set; }
+    public bool Paid { get; private set; }
+    public DateOnly ReferenceDate { get; private set; }
 
-    public ExpensePaid(int expenseId, DateTime date)
+    public ExpenseNode(int expenseId, DateOnly referenceDate)
     {
-        ValidateDomain(expenseId, date);
+        ValidateDomain(expenseId, referenceDate);
     }
 
-    private void ValidateDomain(int expenseId, DateTime date)
+    private void ValidateDomain(int expenseId, DateOnly referenceDate)
     {
         DomainExceptionValidation.When(expenseId < 0,
             "Invalid expense.");
 
         ExpenseId = expenseId;
-        Date = date;
+        ReferenceDate = referenceDate;
     }
 }
