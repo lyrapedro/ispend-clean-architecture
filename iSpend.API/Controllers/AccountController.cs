@@ -42,15 +42,16 @@ public class AccountController : ControllerBase
             };
 
             var token = GenerateToken(claims);
-            //var refreshToken = GenerateRefreshToken();
-            //_ = int.TryParse(_configuration["JwtBearerTokenSettings:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
+            var refreshToken = GenerateRefreshToken();
+            _ = int.TryParse(_configuration["JwtBearerTokenSettings:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
 
-            //await _authentication.UpdateAsync(model.Email, refreshToken, refreshTokenValidityInDays);
+            await _authentication.UpdateAsync(model.Email, refreshToken, refreshTokenValidityInDays);
 
             return Ok(new
             {
-                token = new JwtSecurityTokenHandler().WriteToken(token),
-                name = name
+                AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
+                RefreshToken = refreshToken,
+                Expiration = token.ValidTo
             });
         }
         else
@@ -138,11 +139,11 @@ public class AccountController : ControllerBase
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtBearerTokenSettings:SecretKey"]));
 
-        //_ = int.TryParse(_configuration["JwtBearerTokenSettings:TokenValidityInMinutes"], out int tokenValidityInMinutes);
+        _ = int.TryParse(_configuration["JwtBearerTokenSettings:TokenValidityInMinutes"], out int tokenValidityInMinutes);
 
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var expiration = DateTime.Now.AddMinutes(15);
+        var expiration = DateTime.Now.AddMinutes(tokenValidityInMinutes);
 
         JwtSecurityToken token = new JwtSecurityToken(
             issuer: _configuration["JwtBearerTokenSettings:Issuer"],
