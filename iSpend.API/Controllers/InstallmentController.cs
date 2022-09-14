@@ -30,7 +30,7 @@ public class InstallmentController : ControllerBase
             if (installment == null)
                 NotFound($"Not installment with id {id}");
 
-            if (installment.Purchase.CreditCard.UserId != userId)
+            if (installment?.Purchase.CreditCard.UserId != userId)
                 return Unauthorized();
 
             return Ok(installment);

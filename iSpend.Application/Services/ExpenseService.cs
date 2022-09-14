@@ -25,7 +25,7 @@ public class ExpenseService : IExpenseService
 
         foreach (var dto in expensesDto)
         {
-            dto.Late = await HasPendingPayment(dto.Id, dto.BillingDay);
+            dto.Late = await HasLatePayment(dto.Id, dto.BillingDay);
         }
 
         return expensesDto;
@@ -34,7 +34,7 @@ public class ExpenseService : IExpenseService
     public async Task<ExpenseDTO> GetById(int id)
     {
         var expense = await _expenseRepository.GetById(id);
-        bool hasPendingPayment = await HasPendingPayment(id, expense.BillingDay);
+        bool hasPendingPayment = await HasLatePayment(id, expense.BillingDay);
 
         var expenseDto = _mapper.Map<ExpenseDTO>(expense);
         expenseDto.Late = hasPendingPayment;
@@ -58,7 +58,7 @@ public class ExpenseService : IExpenseService
 
         foreach (var expense in expenses)
         {
-            expense.Late = await HasPendingPayment(expense.Id, expense.BillingDay);
+            expense.Late = await HasLatePayment(expense.Id, expense.BillingDay);
         }
 
         return expenses;
@@ -83,22 +83,23 @@ public class ExpenseService : IExpenseService
     }
 
     #region Util
-    public async Task<bool> HasPendingPayment(int expenseId, int billingDay)
+    public async Task<bool> HasLatePayment(int expenseId, int billingDay)
     {
         var todayDate = DateTime.Now;
         var paymentDate = new DateTime(todayDate.Year, todayDate.Month, billingDay);
-        var alreadyPaid = await _expenseRepository.GetAlreadyPaid(expenseId);
 
+        if (todayDate.Date <= paymentDate.Date)
+            return false;
+
+        var alreadyPaid = await _expenseRepository.GetAlreadyPaid(expenseId);
         var lastPayment = alreadyPaid.OrderBy(x => x.ReferenceDate).FirstOrDefault();
 
         if (lastPayment != null)
         {
-            if (lastPayment.ReferenceDate.Month == todayDate.Month && lastPayment.ReferenceDate.Year == todayDate.Year)
+            var lastPaymentWasThisMonth = (lastPayment.ReferenceDate.Month == todayDate.Month && lastPayment.ReferenceDate.Year == todayDate.Year);
+            if (lastPaymentWasThisMonth)
                 return false;
         }
-
-        if (todayDate.Date <= paymentDate.Date)
-            return false;
 
         return true;
     }

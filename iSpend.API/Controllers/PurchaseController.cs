@@ -69,7 +69,7 @@ public class PurchaseController : ControllerBase
             if (purchase == null)
                 NotFound($"Not purchase with id {id}");
 
-            if (purchase.CreditCard.UserId != userId)
+            if (purchase?.CreditCard?.UserId != userId)
                 return Unauthorized();
 
             return Ok(purchase);
@@ -128,7 +128,7 @@ public class PurchaseController : ControllerBase
             {
                 var creditCard = _purchaseService.GetById(id).Result.CreditCard;
 
-                if (creditCard.UserId != userId)
+                if (creditCard?.UserId != userId)
                     return Unauthorized();
 
                 await _purchaseService.Update(purchase);
@@ -156,7 +156,7 @@ public class PurchaseController : ControllerBase
             if (purchase == null)
                 return NotFound($"Not exists");
 
-            if (purchase.CreditCard.UserId != userId)
+            if (purchase?.CreditCard?.UserId != userId)
                 return Unauthorized();
 
             var purchaseName = purchase.Name;
