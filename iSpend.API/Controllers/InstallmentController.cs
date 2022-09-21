@@ -21,7 +21,7 @@ public class InstallmentController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<InstallmentDTO>> GetInstallment(int id)
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
@@ -46,7 +46,7 @@ public class InstallmentController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue("UserId");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var installments = await _installmentService.GetInstallments(userId);
             return Ok(installments);
@@ -60,7 +60,7 @@ public class InstallmentController : ControllerBase
     [HttpGet("Purchase/{purchaseId:int}")]
     public async Task<ActionResult<IAsyncEnumerable<InstallmentDTO>>> GetInstallmentsFromPurchase(int purchaseId)
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {

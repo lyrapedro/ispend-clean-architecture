@@ -25,7 +25,7 @@ public class SubscriptionController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue("UserId");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var subscriptions = await _subscriptionService.GetSubscriptions(userId);
             return Ok(subscriptions);
@@ -39,7 +39,7 @@ public class SubscriptionController : ControllerBase
     [HttpGet("CreditCard/{creditCardId:int}")]
     public async Task<ActionResult<IAsyncEnumerable<SubscriptionDTO>>> GetSubscriptionsFromCreditCard(int creditCardId)
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
@@ -59,7 +59,7 @@ public class SubscriptionController : ControllerBase
     [HttpGet("{id:int}", Name = "GetSubscription")]
     public async Task<ActionResult<SubscriptionDTO>> GetSubscription(int id)
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
@@ -82,7 +82,7 @@ public class SubscriptionController : ControllerBase
     [HttpGet("find")]
     public async Task<ActionResult<IAsyncEnumerable<SubscriptionDTO>>> GetSubscriptionsByName([FromQuery] string name)
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
@@ -104,7 +104,7 @@ public class SubscriptionController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue("UserId");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             await _subscriptionService.Add(subscription);
 
@@ -121,7 +121,7 @@ public class SubscriptionController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue("UserId");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (subscription.Id == id)
             {
@@ -147,7 +147,7 @@ public class SubscriptionController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         try
         {
             var subscription = await _subscriptionService.GetById(id);

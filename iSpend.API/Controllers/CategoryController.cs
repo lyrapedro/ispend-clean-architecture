@@ -21,7 +21,7 @@ public class CategoryController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IAsyncEnumerable<CategoryDTO>>> GetCategories()
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
@@ -37,7 +37,7 @@ public class CategoryController : ControllerBase
     [HttpGet("{id:int}", Name = "GetCategory")]
     public async Task<ActionResult<CategoryDTO>> GetCategory(int id)
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
@@ -60,7 +60,7 @@ public class CategoryController : ControllerBase
     [HttpGet("Find")]
     public async Task<ActionResult<IAsyncEnumerable<CategoryDTO>>> GetCategoriesByName([FromQuery] string name)
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
@@ -82,7 +82,7 @@ public class CategoryController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue("UserId");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             category.UserId = userId;
 
@@ -101,7 +101,7 @@ public class CategoryController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue("UserId");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (category.Id == id)
             {
@@ -126,7 +126,7 @@ public class CategoryController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         try
         {
             var category = await _categoryService.GetById(id);

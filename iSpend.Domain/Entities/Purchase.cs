@@ -50,3 +50,55 @@ public sealed class Purchase : Entity
         ModifiedAt = DateTime.Now;
     }
 }
+
+public static class PurchaseExtensions
+{
+    public static List<Installment> GenerateListOfInstallments(this Purchase purchase, CreditCard creditCard)
+    {
+        //AQUI FALTA TRATAMENTO PRA QUANDO O MÊS NÃO TEM O DIA x
+        var newInstallmentsList = new List<Installment>();
+        var numberOfInstallments = purchase.NumberOfInstallments.GetValueOrDefault();
+        var valueByInstallment = Decimal.Round(purchase.Price / numberOfInstallments, 2);
+        int expirationDay;
+        int expirationMonth;
+        int expirationYear = purchase.PurchasedAt.Year;
+
+        bool purchasedAfterInvoiceClosing = purchase.PurchasedAt.Day >= creditCard.ClosingDay ? true : false;
+
+        if (purchasedAfterInvoiceClosing)
+        {
+            //post to the next invoice
+            expirationDay = creditCard.ExpirationDay;
+            expirationMonth = purchase.PurchasedAt.Month + 1;
+            int lastMonthOfTheYear = 12;
+            //if the next invoice is in the following year, adjust the expiration date
+            if (expirationMonth > lastMonthOfTheYear)
+            {
+                expirationMonth = 1;
+                expirationYear += 1;
+            }
+        }
+        else
+        {
+            expirationDay = creditCard.ExpirationDay;
+            expirationMonth = purchase.PurchasedAt.Month;
+        }
+
+        for (var i = 1; i <= purchase.NumberOfInstallments; i++)
+        {
+            var installmentExpiresDate = new DateTime(expirationYear, expirationMonth, expirationDay);
+            newInstallmentsList.Add(new Installment(purchase.Id, i, valueByInstallment, false, installmentExpiresDate));
+            expirationMonth += 1;
+            int lastMonthOfTheYear = 12;
+            if (expirationMonth > lastMonthOfTheYear)
+            {
+                expirationMonth = 1;
+                expirationYear += 1;
+            }
+        }
+
+        return newInstallmentsList;
+    }
+
+
+}

@@ -21,7 +21,7 @@ public class ExpenseController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IAsyncEnumerable<ExpenseDTO>>> GetExpenses()
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
@@ -37,7 +37,7 @@ public class ExpenseController : ControllerBase
     [HttpGet("{id:int}", Name = "GetExpense")]
     public async Task<ActionResult<ExpenseDTO>> GetExpense(int id)
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
@@ -60,7 +60,7 @@ public class ExpenseController : ControllerBase
     [HttpGet("Find")]
     public async Task<ActionResult<IAsyncEnumerable<ExpenseDTO>>> GetExpensesByName([FromQuery] string name)
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
@@ -82,7 +82,7 @@ public class ExpenseController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue("UserId");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             expense.UserId = userId;
 
@@ -101,7 +101,7 @@ public class ExpenseController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue("UserId");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (expense.Id == id)
             {
@@ -125,7 +125,7 @@ public class ExpenseController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         try
         {
             var expense = await _expenseService.GetById(id);

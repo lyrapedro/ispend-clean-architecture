@@ -55,10 +55,10 @@ public class PurchaseService : IPurchaseService
         var purchaseCreated = _purchaseRepository.Create(purchase).Result;
         var creditCard = await _creditCardRepository.GetById(purchaseCreated.CreditCardId);
 
-        var numberOfInstallments = purchase.NumberOfInstallments;
-        if (numberOfInstallments.HasValue)
+        var purchaseInInstallments = purchase.NumberOfInstallments.HasValue;
+        if (purchaseInInstallments)
         {
-            var newInstallmentsList = GenerateListOfInstallmentsForPurchase(numberOfInstallments.Value, creditCard, purchaseCreated).Result;
+            var newInstallmentsList = purchaseCreated.GenerateListOfInstallments(creditCard);
             await _installmentRepository.CreateInstallments(newInstallmentsList);
         }
     }
@@ -75,46 +75,6 @@ public class PurchaseService : IPurchaseService
         await _purchaseRepository.Remove(purchase);
     }
 
-#region Util
-    public async Task<List<Installment>> GenerateListOfInstallmentsForPurchase(int numberOfInstallments, CreditCard creditCard, Purchase purchase)
-    {
-        var newInstallmentsList = new List<Installment>();
-        var valueByInstallment = Decimal.Round(purchase.Price / numberOfInstallments, 2);
-        int expirationDay;
-        int expirationMonth;
-        int expirationYear = purchase.PurchasedAt.Year;
-
-        bool purchasedAfterInvoiceClosing = purchase.PurchasedAt.Day >= creditCard.ClosingDay ? true : false;
-
-        if (purchasedAfterInvoiceClosing)
-        {
-            expirationDay = creditCard.ExpirationDay;
-            expirationMonth = purchase.PurchasedAt.Month + 1;
-            if (expirationMonth > 12)
-            {
-                expirationMonth = 1;
-                expirationYear += 1;
-            }
-        }
-        else
-        {
-            expirationDay = creditCard.ExpirationDay;
-            expirationMonth = purchase.PurchasedAt.Month;
-        }
-
-        for (var i = 1; i <= purchase.NumberOfInstallments; i++)
-        {
-            var installmentExpiresDate = new DateTime(expirationYear, expirationMonth, expirationDay);
-            newInstallmentsList.Add(new Installment(purchase.Id, i, valueByInstallment, false, installmentExpiresDate));
-            expirationMonth += 1;
-            if (expirationMonth > 12)
-            {
-                expirationMonth = 1;
-                expirationYear += 1;
-            }
-        }
-
-        return newInstallmentsList;
-    }
+    #region Util
+    #endregion
 }
-#endregion

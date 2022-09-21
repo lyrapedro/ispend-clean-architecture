@@ -33,11 +33,6 @@ public class AuthenticateService : IAuthenticate
 
         var result = await _userManager.CreateAsync(applicationUser, password);
 
-        if (result.Succeeded)
-        {
-            await _signInManager.SignInAsync(applicationUser, isPersistent: false);
-        }
-
         return result.Succeeded;
     }
 

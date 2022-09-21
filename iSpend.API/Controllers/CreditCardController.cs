@@ -21,7 +21,7 @@ public class CreditCardController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IAsyncEnumerable<CreditCardDTO>>> GetCreditCards()
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
@@ -37,7 +37,7 @@ public class CreditCardController : ControllerBase
     [HttpGet("{id:int}", Name = "GetCard")]
     public async Task<ActionResult<CreditCardDTO>> GetCreditCard(int id)
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
@@ -60,7 +60,7 @@ public class CreditCardController : ControllerBase
     [HttpGet("Find")]
     public async Task<ActionResult<IAsyncEnumerable<CreditCardDTO>>> GetCreditCardsByName([FromQuery] string name)
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
@@ -82,7 +82,7 @@ public class CreditCardController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue("UserId");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             creditCardDto.UserId = userId;
 
@@ -101,7 +101,7 @@ public class CreditCardController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue("UserId");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (creditCardDto.Id == id)
             {
                 if (userId != creditCardDto.UserId)
@@ -124,7 +124,7 @@ public class CreditCardController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<CreditCardDTO>> Delete(int id)
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         try
         {
             var creditCard = await _creditCardService.GetById(id);

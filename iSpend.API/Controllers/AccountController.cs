@@ -38,7 +38,7 @@ public class AccountController : ControllerBase
             {
                 new Claim(ClaimTypes.Name, name),
                 new Claim(ClaimTypes.Email, user.Result.ElementAt(1).ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti, user.Result.ElementAt(2).ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Result.ElementAt(2).ToString()),
             };
 
             var token = GenerateToken(claims);
@@ -64,18 +64,24 @@ public class AccountController : ControllerBase
     [HttpPost("Register")]
     public async Task<IActionResult> Register(RegisterViewModel model)
     {
-        var result = await _authentication.Register(model.Name, model.Email, model.Password);
-
-        if (result)
+        try
         {
-            return Ok($"Succesfully registered");
-        }
-        else
-        {
-            ModelState.AddModelError(string.Empty, "Invalid register attempt.");
-            return BadRequest(ModelState);
-        }
+            var result = await _authentication.Register(model.Name, model.Email, model.Password);
 
+            if (result)
+            {
+                return Ok($"Succesfully registered");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid register attempt.");
+                return BadRequest(ModelState);
+            }
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [Authorize]

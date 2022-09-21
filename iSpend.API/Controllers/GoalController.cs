@@ -21,7 +21,7 @@ public class GoalController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IAsyncEnumerable<GoalDTO>>> GetGoals()
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
@@ -37,7 +37,7 @@ public class GoalController : ControllerBase
     [HttpGet("{id:int}", Name = "GetGoal")]
     public async Task<ActionResult<GoalDTO>> GetGoal(int id)
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
@@ -60,7 +60,7 @@ public class GoalController : ControllerBase
     [HttpGet("Find")]
     public async Task<ActionResult<IAsyncEnumerable<GoalDTO>>> GetGoalsByName([FromQuery] string name)
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         try
         {
@@ -82,7 +82,7 @@ public class GoalController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue("UserId");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             goal.UserId = userId;
 
@@ -101,7 +101,7 @@ public class GoalController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue("UserId");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (goal.Id == id)
             {
@@ -125,7 +125,7 @@ public class GoalController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
-        var userId = User.FindFirstValue("UserId");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         try
         {
             var goal = await _goalService.GetById(id);
