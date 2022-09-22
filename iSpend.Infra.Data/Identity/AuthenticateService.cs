@@ -15,11 +15,14 @@ public class AuthenticateService : IAuthenticate
         _userManager = userManager;
     }
 
-    public async Task<bool> Authenticate(string email, string password)
+    public async Task<AuthenticateResponse> Authenticate(string email, string password)
     {
         var result = await _signInManager.PasswordSignInAsync(email, password, false, lockoutOnFailure: false);
 
-        return result.Succeeded;
+        if (result.Succeeded)
+            return new AuthenticateResponse(true);
+
+        return new AuthenticateResponse(false);
     }
 
     public async Task<AuthenticateResponse> Register(string name, string email, string password)
@@ -34,7 +37,7 @@ public class AuthenticateService : IAuthenticate
         var result = await _userManager.CreateAsync(applicationUser, password);
 
         if (result.Succeeded)
-            return new AuthenticateResponse(result.Succeeded);
+            return new AuthenticateResponse(true);
 
         var errors = result.Errors.Select(x => x.Description).ToList();
 

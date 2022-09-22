@@ -28,7 +28,7 @@ public class AccountController : ControllerBase
     {
         var result = await _authentication.Authenticate(model.Email, model.Password);
 
-        if (result)
+        if (result.Succeded)
         {
             var user = _authentication.GetUserNameAndId(model.Email);
 
@@ -56,8 +56,7 @@ public class AccountController : ControllerBase
         }
         else
         {
-            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-            return BadRequest(ModelState);
+            return BadRequest("Wrong email or password");
         }
     }
 

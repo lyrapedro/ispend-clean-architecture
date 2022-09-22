@@ -2,7 +2,7 @@
 
 public interface IAuthenticate
 {
-    Task<bool> Authenticate(string email, string password);
+    Task<AuthenticateResponse> Authenticate(string email, string password);
     Task<AuthenticateResponse> Register(string name, string email, string password);
     Task<IEnumerable<string>> GetUserNameAndId(string email);
     Task<IEnumerable<string>> GetUser(string email);
