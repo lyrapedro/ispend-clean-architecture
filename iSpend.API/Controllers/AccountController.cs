@@ -68,14 +68,14 @@ public class AccountController : ControllerBase
         {
             var result = await _authentication.Register(model.Name, model.Email, model.Password);
 
-            if (result)
+            if (result.Succeded)
             {
                 return Ok($"Succesfully registered");
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Invalid register attempt.");
-                return BadRequest(ModelState);
+                var message = result.Errors?.First();
+                return BadRequest(message);
             }
         }
         catch (Exception ex)

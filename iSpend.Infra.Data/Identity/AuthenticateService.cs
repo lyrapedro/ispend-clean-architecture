@@ -22,7 +22,7 @@ public class AuthenticateService : IAuthenticate
         return result.Succeeded;
     }
 
-    public async Task<bool> Register(string name, string email, string password)
+    public async Task<AuthenticateResponse> Register(string name, string email, string password)
     {
         var applicationUser = new ApplicationUser
         {
@@ -33,7 +33,12 @@ public class AuthenticateService : IAuthenticate
 
         var result = await _userManager.CreateAsync(applicationUser, password);
 
-        return result.Succeeded;
+        if (result.Succeeded)
+            return new AuthenticateResponse(result.Succeeded);
+
+        var errors = result.Errors.Select(x => x.Description).ToList();
+
+        return new AuthenticateResponse(result.Succeeded, errors);
     }
 
     public async Task<IEnumerable<string>> GetUserNameAndId(string email)
