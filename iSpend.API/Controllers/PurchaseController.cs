@@ -23,11 +23,11 @@ public class PurchaseController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IAsyncEnumerable<PurchaseDTO>>> GetPurchases()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var purchases = await _purchaseService.GetPurchases(userId);
+
             return Ok(purchases);
         }
         catch (Exception ex)
@@ -39,16 +39,16 @@ public class PurchaseController : ControllerBase
     [HttpGet("CreditCard/{creditCardId:int}")]
     public async Task<ActionResult<IAsyncEnumerable<PurchaseDTO>>> GetPurchasesFromCreditCard(int creditCardId)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var creditCard = await _creditCardService.GetById(creditCardId);
 
             if (creditCard.UserId != userId)
                 return Unauthorized();
 
             var purchases = await _purchaseService.GetPurchasesFromCreditCard(creditCardId);
+
             return Ok(purchases);
         }
         catch (Exception ex)
@@ -60,13 +60,12 @@ public class PurchaseController : ControllerBase
     [HttpGet("{id:int}", Name = "GetPurchase")]
     public async Task<ActionResult<PurchaseDTO>> GetPurchase(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var purchase = await _purchaseService.GetById(id);
 
-            if (purchase == null)
+            if (purchase is null)
                 NotFound($"Not purchase with id {id}");
 
             if (purchase?.CreditCard?.UserId != userId)
@@ -83,13 +82,12 @@ public class PurchaseController : ControllerBase
     [HttpGet("Find")]
     public async Task<ActionResult<IAsyncEnumerable<PurchaseDTO>>> GetPurchasesByName([FromQuery] string name)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var purchases = await _purchaseService.GetByName(userId, name);
 
-            if (purchases == null)
+            if (purchases is null)
                 return NotFound($"Not to show with name {name}");
 
             return Ok(purchases);
@@ -105,7 +103,8 @@ public class PurchaseController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (purchase is null)
+                return BadRequest("Invalid request");
 
             await _purchaseService.Add(purchase);
 
@@ -122,22 +121,22 @@ public class PurchaseController : ControllerBase
     {
         try
         {
+            if (purchase is null)
+                return BadRequest("Invalid request");
+
+            if (purchase.Id != id)
+                return BadRequest("Invalid request");
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (purchase.Id == id)
-            {
-                var creditCard = _purchaseService.GetById(id).Result.CreditCard;
+            var creditCard = _purchaseService.GetById(id).Result.CreditCard;
 
-                if (creditCard?.UserId != userId)
-                    return Unauthorized();
+            if (creditCard?.UserId != userId)
+                return Unauthorized();
 
-                await _purchaseService.Update(purchase);
-                return Ok($"\"{purchase.Name}\" successfully updated.");
-            }
-            else
-            {
-                return BadRequest("Invalid request");
-            }
+            await _purchaseService.Update(purchase);
+
+            return Ok($"\"{purchase.Name}\" successfully updated.");
         }
         catch (Exception ex)
         {
@@ -148,12 +147,12 @@ public class PurchaseController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var purchase = await _purchaseService.GetById(id);
 
-            if (purchase == null)
+            if (purchase is null)
                 return NotFound($"Not exists");
 
             if (purchase?.CreditCard?.UserId != userId)
@@ -162,6 +161,7 @@ public class PurchaseController : ControllerBase
             var purchaseName = purchase.Name;
 
             await _purchaseService.Remove(purchase);
+
             return Ok($"\"{purchaseName}\" successfully removed");
         }
         catch (Exception ex)

@@ -21,11 +21,11 @@ public class CategoryController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IAsyncEnumerable<CategoryDTO>>> GetCategories()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var categories = await _categoryService.GetCategories(userId);
+
             return Ok(categories);
         }
         catch(Exception ex)
@@ -37,16 +37,15 @@ public class CategoryController : ControllerBase
     [HttpGet("{id:int}", Name = "GetCategory")]
     public async Task<ActionResult<CategoryDTO>> GetCategory(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var category = await _categoryService.GetById(id);
 
-            if (category == null)
+            if (category is null)
                 NotFound($"Not category with id {id}");
 
-            if (category.UserId != null && category.UserId != userId)
+            if (category.UserId is not null && category.UserId != userId)
                 return Unauthorized();
 
             return Ok(category);
@@ -60,13 +59,12 @@ public class CategoryController : ControllerBase
     [HttpGet("Find")]
     public async Task<ActionResult<IAsyncEnumerable<CategoryDTO>>> GetCategoriesByName([FromQuery] string name)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var categories = await _categoryService.GetByName(userId, name);
 
-            if (categories == null)
+            if (categories is null)
                 return NotFound($"Not to show with name {name}");
 
             return Ok(categories);
@@ -82,6 +80,9 @@ public class CategoryController : ControllerBase
     {
         try
         {
+            if (category is null)
+                return BadRequest("Invalid request");
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             category.UserId = userId;
@@ -101,21 +102,20 @@ public class CategoryController : ControllerBase
     {
         try
         {
+            if (category is null)
+                return BadRequest("Invalid request");
+
+            if (category.Id != id)
+                return BadRequest("Invalid request");
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (category.Id == id)
-            {
+            if (userId != category.UserId)
+                return Unauthorized();
 
-                if (userId != category.UserId)
-                    return Unauthorized();
+            await _categoryService.Update(category);
 
-                await _categoryService.Update(category);
-                return Ok($"\"{category.Name}\" successfully updated.");
-            }
-            else
-            {
-                return BadRequest("Invalid request");
-            }
+            return Ok($"\"{category.Name}\" successfully updated.");
         }
         catch (Exception ex)
         {
@@ -126,9 +126,9 @@ public class CategoryController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var category = await _categoryService.GetById(id);
 
             if (category == null)
@@ -140,6 +140,7 @@ public class CategoryController : ControllerBase
             var categoryName = category.Name;
 
             await _categoryService.Remove(category);
+
             return Ok($"\"{categoryName}\" successfully removed");
         }
         catch (Exception ex)

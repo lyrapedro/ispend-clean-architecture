@@ -21,11 +21,11 @@ public class ExpenseController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IAsyncEnumerable<ExpenseDTO>>> GetExpenses()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var expenses = await _expenseService.GetExpenses(userId);
+
             return Ok(expenses);
         }
         catch (Exception ex)
@@ -37,10 +37,9 @@ public class ExpenseController : ControllerBase
     [HttpGet("{id:int}", Name = "GetExpense")]
     public async Task<ActionResult<ExpenseDTO>> GetExpense(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var expense = await _expenseService.GetById(id);
 
             if (expense == null)
@@ -60,10 +59,9 @@ public class ExpenseController : ControllerBase
     [HttpGet("Find")]
     public async Task<ActionResult<IAsyncEnumerable<ExpenseDTO>>> GetExpensesByName([FromQuery] string name)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var expenses = await _expenseService.GetByName(userId, name);
 
             if (expenses == null)
@@ -82,6 +80,9 @@ public class ExpenseController : ControllerBase
     {
         try
         {
+            if (expense is null)
+                return BadRequest("Invalid request");
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             expense.UserId = userId;
@@ -101,20 +102,20 @@ public class ExpenseController : ControllerBase
     {
         try
         {
+            if (expense is null)
+                return BadRequest("Invalid request");
+
+            if (expense.Id != id)
+                return BadRequest("Invalid request");
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (expense.Id == id)
-            {
-                if (userId != expense.UserId)
-                    return Unauthorized();
+            if (userId != expense.UserId)
+                return Unauthorized();
 
-                await _expenseService.Update(expense);
-                return Ok($"\"{expense.Name}\" successfully updated.");
-            }
-            else
-            {
-                return BadRequest("Invalid request");
-            }
+            await _expenseService.Update(expense);
+
+            return Ok($"\"{expense.Name}\" successfully updated.");
         }
         catch (Exception ex)
         {
@@ -125,9 +126,9 @@ public class ExpenseController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var expense = await _expenseService.GetById(id);
 
             if (expense == null)
@@ -139,6 +140,7 @@ public class ExpenseController : ControllerBase
             var expenseName = expense.Name;
 
             await _expenseService.Remove(expense);
+
             return Ok($"\"{expenseName}\" successfully removed");
         }
         catch (Exception ex)

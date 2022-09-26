@@ -21,11 +21,11 @@ public class CreditCardController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IAsyncEnumerable<CreditCardDTO>>> GetCreditCards()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var creditCards = await _creditCardService.GetCreditCards(userId);
+
             return Ok(creditCards);
         }
         catch (Exception ex)
@@ -37,13 +37,12 @@ public class CreditCardController : ControllerBase
     [HttpGet("{id:int}", Name = "GetCard")]
     public async Task<ActionResult<CreditCardDTO>> GetCreditCard(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var creditCard = await _creditCardService.GetById(id);
 
-            if (creditCard == null)
+            if (creditCard is null)
                 return NotFound($"Not credit card with id {id}");
 
             if (creditCard.UserId != userId)
@@ -60,13 +59,12 @@ public class CreditCardController : ControllerBase
     [HttpGet("Find")]
     public async Task<ActionResult<IAsyncEnumerable<CreditCardDTO>>> GetCreditCardsByName([FromQuery] string name)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var creditCards = await _creditCardService.GetByName(userId, name);
 
-            if (creditCards == null)
+            if (creditCards is null)
                 return NotFound($"Not to show with name {name}");
 
             return Ok(creditCards);
@@ -78,17 +76,20 @@ public class CreditCardController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create([FromBody] CreditCardDTO creditCardDto)
+    public async Task<ActionResult> Create([FromBody] CreditCardDTO creditCard)
     {
         try
         {
+            if (creditCard is null)
+                return BadRequest("Invalid request");
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            creditCardDto.UserId = userId;
+            creditCard.UserId = userId;
 
-            await _creditCardService.Add(creditCardDto);
+            await _creditCardService.Add(creditCard);
 
-            return CreatedAtRoute("GetCard", new { id = creditCardDto.Id }, creditCardDto);
+            return CreatedAtRoute("GetCreditCard", new { id = creditCard.Id }, creditCard);
         }
         catch (Exception ex)
         {
@@ -97,23 +98,24 @@ public class CreditCardController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Edit(int id, [FromBody] CreditCardDTO creditCardDto)
+    public async Task<ActionResult> Edit(int id, [FromBody] CreditCardDTO creditCard)
     {
         try
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (creditCardDto.Id == id)
-            {
-                if (userId != creditCardDto.UserId)
-                    return Unauthorized();
-
-                await _creditCardService.Update(creditCardDto);
-                return Ok($"\"{creditCardDto.Name}\" successfully updated.");
-            }
-            else
-            {
+            if (creditCard is null)
                 return BadRequest("Invalid request");
-            }
+
+            if (creditCard.Id != id)
+                return BadRequest("Invalid request");
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId != creditCard.UserId)
+                return Unauthorized();
+
+            await _creditCardService.Update(creditCard);
+
+            return Ok($"\"{creditCard.Name}\" successfully updated.");
         }
         catch (Exception ex)
         {
@@ -124,18 +126,19 @@ public class CreditCardController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<CreditCardDTO>> Delete(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var creditCard = await _creditCardService.GetById(id);
 
-            if (creditCard == null)
+            if (creditCard is null)
                 return NotFound($"Not exists");
 
             if (creditCard.UserId != userId)
                 return Unauthorized();
 
             await _creditCardService.Remove(creditCard);
+
             return Ok($"\"{creditCard.Name}\" successfully removed");
         }
         catch (Exception ex)

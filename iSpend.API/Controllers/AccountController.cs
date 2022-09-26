@@ -28,36 +28,32 @@ public class AccountController : ControllerBase
     {
         var result = await _authentication.Authenticate(model.Email, model.Password);
 
-        if (result.Succeded)
-        {
-            var user = _authentication.GetUserNameAndId(model.Email);
+        if (result.Succeded is false)
+            return BadRequest("Wrong email or password");
 
-            var name = user.Result.ElementAt(0).ToString();
+        var user = _authentication.GetUserNameAndId(model.Email);
 
-            var claims = new List<Claim>
+        var name = user.Result.ElementAt(0).ToString();
+
+        var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, name),
                 new Claim(ClaimTypes.Email, user.Result.ElementAt(1).ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.Result.ElementAt(2).ToString()),
             };
 
-            var token = GenerateToken(claims);
-            var refreshToken = GenerateRefreshToken();
-            _ = int.TryParse(_configuration["JwtBearerTokenSettings:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
+        var token = GenerateToken(claims);
+        var refreshToken = GenerateRefreshToken();
+        _ = int.TryParse(_configuration["JwtBearerTokenSettings:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
 
-            await _authentication.UpdateAsync(model.Email, refreshToken, refreshTokenValidityInDays);
+        await _authentication.UpdateAsync(model.Email, refreshToken, refreshTokenValidityInDays);
 
-            return Ok(new
-            {
-                AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
-                RefreshToken = refreshToken,
-                Expiration = token.ValidTo
-            });
-        }
-        else
+        return Ok(new
         {
-            return BadRequest("Wrong email or password");
-        }
+            AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
+            RefreshToken = refreshToken,
+            Expiration = token.ValidTo
+        });
     }
 
     [HttpPost("Register")]
@@ -67,15 +63,13 @@ public class AccountController : ControllerBase
         {
             var result = await _authentication.Register(model.Name, model.Email, model.Password);
 
-            if (result.Succeded)
-            {
-                return Ok($"Succesfully registered");
-            }
-            else
+            if (result.Succeded is false)
             {
                 var message = result.Errors?.First();
                 return BadRequest(message);
             }
+
+            return Ok($"Succesfully registered");
         }
         catch (Exception ex)
         {

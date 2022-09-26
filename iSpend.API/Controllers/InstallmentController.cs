@@ -21,13 +21,12 @@ public class InstallmentController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<InstallmentDTO>> GetInstallment(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var installment = await _installmentService.GetById(id);
 
-            if (installment == null)
+            if (installment is null)
                 NotFound($"Not installment with id {id}");
 
             if (installment?.Purchase.CreditCard.UserId != userId)
@@ -47,8 +46,8 @@ public class InstallmentController : ControllerBase
         try
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             var installments = await _installmentService.GetInstallments(userId);
+
             return Ok(installments);
         }
         catch (Exception ex)
@@ -60,11 +59,11 @@ public class InstallmentController : ControllerBase
     [HttpGet("Purchase/{purchaseId:int}")]
     public async Task<ActionResult<IAsyncEnumerable<InstallmentDTO>>> GetInstallmentsFromPurchase(int purchaseId)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var installments = await _installmentService.GetInstallmentsFromPurchase(userId, purchaseId);
+
             return Ok(installments);
         }
         catch (Exception ex)

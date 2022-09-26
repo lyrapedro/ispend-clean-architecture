@@ -21,11 +21,11 @@ public class GoalController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IAsyncEnumerable<GoalDTO>>> GetGoals()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var goals = await _goalService.GetGoals(userId);
+
             return Ok(goals);
         }
         catch (Exception ex)
@@ -37,14 +37,13 @@ public class GoalController : ControllerBase
     [HttpGet("{id:int}", Name = "GetGoal")]
     public async Task<ActionResult<GoalDTO>> GetGoal(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var goal = await _goalService.GetById(id);
 
-            if (goal == null)
-                NotFound($"Not goal with id {id}");
+            if (goal is null)
+                return NotFound($"Not goal with id {id}");
 
             if (goal.UserId != userId)
                 return Unauthorized();
@@ -60,10 +59,9 @@ public class GoalController : ControllerBase
     [HttpGet("Find")]
     public async Task<ActionResult<IAsyncEnumerable<GoalDTO>>> GetGoalsByName([FromQuery] string name)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var goals = await _goalService.GetByName(userId, name);
 
             if (goals == null)
@@ -82,6 +80,9 @@ public class GoalController : ControllerBase
     {
         try
         {
+            if (goal is null)
+                return BadRequest("Invalid request");
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             goal.UserId = userId;
@@ -101,20 +102,20 @@ public class GoalController : ControllerBase
     {
         try
         {
+            if (goal is null)
+                return BadRequest("Invalid request");
+
+            if (goal.Id != id)
+                return BadRequest("Invalid request");
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (goal.Id == id)
-            {
-                if (userId != goal.UserId)
-                    return Unauthorized();
+            if (userId != goal.UserId)
+                return Unauthorized();
 
-                await _goalService.Update(goal);
-                return Ok($"\"{goal.Name}\" successfully updated.");
-            }
-            else
-            {
-                return BadRequest("Invalid request");
-            }
+            await _goalService.Update(goal);
+
+            return Ok($"\"{goal.Name}\" successfully updated.");
         }
         catch (Exception ex)
         {
@@ -125,9 +126,9 @@ public class GoalController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var goal = await _goalService.GetById(id);
 
             if (goal == null)
@@ -139,6 +140,7 @@ public class GoalController : ControllerBase
             var goalName = goal.Name;
 
             await _goalService.Remove(goal);
+
             return Ok($"\"{goalName}\" successfully removed");
 
         }
