@@ -19,7 +19,7 @@ public class GoalController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IAsyncEnumerable<GoalDTO>>> GetGoals()
+    public async Task<ActionResult<IAsyncEnumerable<GoalDto>>> GetGoals()
     {
         try
         {
@@ -35,7 +35,7 @@ public class GoalController : ControllerBase
     }
 
     [HttpGet("{id:int}", Name = "GetGoal")]
-    public async Task<ActionResult<GoalDTO>> GetGoal(int id)
+    public async Task<ActionResult<GoalDto>> GetGoal(int id)
     {
         try
         {
@@ -57,7 +57,7 @@ public class GoalController : ControllerBase
     }
 
     [HttpGet("Find")]
-    public async Task<ActionResult<IAsyncEnumerable<GoalDTO>>> GetGoalsByName([FromQuery] string name)
+    public async Task<ActionResult<IAsyncEnumerable<GoalDto>>> GetGoalsByName([FromQuery] string name)
     {
         try
         {
@@ -76,7 +76,7 @@ public class GoalController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create([FromBody] GoalDTO goal)
+    public async Task<ActionResult> Create([FromBody] GoalDto goal)
     {
         try
         {
@@ -98,7 +98,7 @@ public class GoalController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Edit(int id, [FromBody] GoalDTO goal)
+    public async Task<ActionResult> Edit(int id, [FromBody] GoalDto goal)
     {
         try
         {

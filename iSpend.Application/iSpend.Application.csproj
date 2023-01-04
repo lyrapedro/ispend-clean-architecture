@@ -7,11 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.0" />
+    <ProjectReference Include="..\iSpend.Domain\iSpend.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\iSpend.Domain\iSpend.Domain.csproj" />
+    <Compile Remove="Mappings\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Mappings\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Mappings\**" />
   </ItemGroup>
 
 </Project>

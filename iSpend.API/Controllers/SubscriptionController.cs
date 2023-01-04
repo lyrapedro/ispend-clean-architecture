@@ -21,7 +21,7 @@ public class SubscriptionController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IAsyncEnumerable<SubscriptionDTO>>> GetSubscriptions()
+    public async Task<ActionResult<IAsyncEnumerable<SubscriptionDto>>> GetSubscriptions()
     {
         try
         {
@@ -37,7 +37,7 @@ public class SubscriptionController : ControllerBase
     }
 
     [HttpGet("CreditCard/{creditCardId:int}")]
-    public async Task<ActionResult<IAsyncEnumerable<SubscriptionDTO>>> GetSubscriptionsFromCreditCard(int creditCardId)
+    public async Task<ActionResult<IAsyncEnumerable<SubscriptionDto>>> GetSubscriptionsFromCreditCard(int creditCardId)
     {
         try
         {
@@ -59,7 +59,7 @@ public class SubscriptionController : ControllerBase
     }
 
     [HttpGet("{id:int}", Name = "GetSubscription")]
-    public async Task<ActionResult<SubscriptionDTO>> GetSubscription(int id)
+    public async Task<ActionResult<SubscriptionDto>> GetSubscription(int id)
     {
         try
         {
@@ -81,7 +81,7 @@ public class SubscriptionController : ControllerBase
     }
 
     [HttpGet("find")]
-    public async Task<ActionResult<IAsyncEnumerable<SubscriptionDTO>>> GetSubscriptionsByName([FromQuery] string name)
+    public async Task<ActionResult<IAsyncEnumerable<SubscriptionDto>>> GetSubscriptionsByName([FromQuery] string name)
     {
         try
         {
@@ -100,7 +100,7 @@ public class SubscriptionController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create([FromBody] SubscriptionDTO subscription)
+    public async Task<ActionResult> Create([FromBody] SubscriptionDto subscription)
     {
         try
         {
@@ -118,7 +118,7 @@ public class SubscriptionController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Edit(int id, [FromBody] SubscriptionDTO subscription)
+    public async Task<ActionResult> Edit(int id, [FromBody] SubscriptionDto subscription)
     {
         try
         {

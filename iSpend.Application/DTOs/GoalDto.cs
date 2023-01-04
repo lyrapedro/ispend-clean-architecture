@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using iSpend.Domain.Entities;
 
 namespace iSpend.Application.DTOs;
 
-public class GoalDTO
+public class GoalDto
 {
     public int Id { get; private set; }
 
@@ -37,4 +38,26 @@ public class GoalDTO
 
     [DataType(DataType.DateTime)]
     public DateTime RegisteredAt { get; set; }
+
+    public static explicit operator GoalDto(Goal goal)
+    {
+        return new GoalDto
+        {
+            Id = goal.Id,
+            UserId = goal.UserId,
+            Name = goal.Name,
+            Description = goal.Description,
+            GoalValue = goal.GoalValue,
+            ValueSaved = goal.ValueSaved,
+            StartDate = goal.StartDate,
+            EndDate = goal.EndDate,
+            ModifiedAt = goal.ModifiedAt,
+            RegisteredAt = goal.RegisteredAt
+        };
+    }
+
+    public static explicit operator Goal(GoalDto goal)
+    {
+        return new Goal(goal.UserId, goal.Name, goal.Description, goal.GoalValue, goal.ValueSaved, goal.StartDate, goal.EndDate);
+    }
 }

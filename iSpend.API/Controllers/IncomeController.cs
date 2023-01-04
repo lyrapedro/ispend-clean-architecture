@@ -20,7 +20,7 @@ public class IncomeController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IAsyncEnumerable<IncomeDTO>>> GetIncomes()
+    public async Task<ActionResult<IAsyncEnumerable<IncomeDto>>> GetIncomes()
     {
         try
         {
@@ -36,7 +36,7 @@ public class IncomeController : ControllerBase
     }
 
     [HttpGet("{id:int}", Name = "GetIncome")]
-    public async Task<ActionResult<IncomeDTO>> GetIncome(int id)
+    public async Task<ActionResult<IncomeDto>> GetIncome(int id)
     {
         try
         {
@@ -58,7 +58,7 @@ public class IncomeController : ControllerBase
     }
 
     [HttpGet("Find")]
-    public async Task<ActionResult<IAsyncEnumerable<IncomeDTO>>> GetIncomesByName([FromQuery] string name)
+    public async Task<ActionResult<IAsyncEnumerable<IncomeDto>>> GetIncomesByName([FromQuery] string name)
     {
         try
         {
@@ -77,7 +77,7 @@ public class IncomeController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create([FromBody] IncomeDTO income)
+    public async Task<ActionResult> Create([FromBody] IncomeDto income)
     {
         try
         {
@@ -99,7 +99,7 @@ public class IncomeController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Edit(int id, [FromBody] IncomeDTO income)
+    public async Task<ActionResult> Edit(int id, [FromBody] IncomeDto income)
     {
         try
         {

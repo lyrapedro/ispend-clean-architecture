@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using iSpend.Application.DTOs;
+﻿using iSpend.Application.DTOs;
 using iSpend.Application.Interfaces;
 using iSpend.Domain.Entities;
 using iSpend.Domain.Interfaces;

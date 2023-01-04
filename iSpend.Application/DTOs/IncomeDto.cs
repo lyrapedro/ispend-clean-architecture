@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace iSpend.Application.DTOs;
 
-public class IncomeDTO
+public class IncomeDto
 {
     public int Id { get; private set; }
 
@@ -32,6 +32,26 @@ public class IncomeDTO
 
     public DateTime RegisteredAt { get; set; }
 
-    [JsonIgnore]
-    public Category? Category { get; set; }
+    [JsonIgnore] public Category? Category { get; set; }
+
+    public static explicit operator IncomeDto(Income income)
+    {
+        return new IncomeDto
+        {
+            Id = income.Id,
+            UserId = income.UserId,
+            CategoryId = income.CategoryId,
+            Name = income.Name,
+            Recurrent = income.Recurrent,
+            Value = income.Value,
+            Payday = income.Payday,
+            ModifiedAt = income.ModifiedAt,
+            RegisteredAt = income.RegisteredAt
+        };
+    }
+
+    public static explicit operator Income(IncomeDto income)
+    {
+        return new Income(income.UserId, income.CategoryId, income.Name, income.Recurrent, income.Value, income.Payday);
+    }
 }

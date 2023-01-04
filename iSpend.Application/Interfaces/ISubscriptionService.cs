@@ -4,11 +4,11 @@ namespace iSpend.Application.Interfaces;
 
 public interface ISubscriptionService
 {
-    Task<IEnumerable<SubscriptionDTO>> GetSubscriptions(string userId);
-    Task<IEnumerable<SubscriptionDTO>> GetSubscriptionsFromCreditCard(int creditCardId);
-    Task<SubscriptionDTO> GetById(int id);
-    Task<IEnumerable<SubscriptionDTO>> GetByName(string userId, string name);
-    Task Add(SubscriptionDTO subscriptionDTO);
-    Task Update(SubscriptionDTO subscriptionDTO);
-    Task Remove(SubscriptionDTO subscriptionDTO);
+    Task<IEnumerable<SubscriptionDto>> GetSubscriptions(string userId);
+    Task<IEnumerable<SubscriptionDto>> GetSubscriptionsFromCreditCard(int creditCardId);
+    Task<SubscriptionDto> GetById(int id);
+    Task<IEnumerable<SubscriptionDto>> GetByName(string userId, string name);
+    Task Add(SubscriptionDto subscriptionDTO);
+    Task Update(SubscriptionDto subscriptionDTO);
+    Task Remove(SubscriptionDto subscriptionDTO);
 }

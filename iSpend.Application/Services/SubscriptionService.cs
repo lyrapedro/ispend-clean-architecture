@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using iSpend.Application.DTOs;
+﻿using iSpend.Application.DTOs;
 using iSpend.Application.Interfaces;
 using iSpend.Domain.Entities;
 using iSpend.Domain.Interfaces;
@@ -9,19 +8,17 @@ namespace iSpend.Application.Services;
 public class SubscriptionService : ISubscriptionService
 {
     private ISubscriptionRepository _subscriptionRepository;
-    private readonly IMapper _mapper;
 
-    public SubscriptionService(ISubscriptionRepository subscriptionRepository, IMapper mapper)
+    public SubscriptionService(ISubscriptionRepository subscriptionRepository)
     {
         _subscriptionRepository = subscriptionRepository;
-        _mapper = mapper;
     }
 
-    public async Task<IEnumerable<SubscriptionDTO>> GetSubscriptions(string userId)
+    public async Task<IEnumerable<SubscriptionDto>> GetSubscriptions(string userId)
     {
         var subscriptions = await _subscriptionRepository.GetSubscriptions(userId);
 
-        var subscriptionsDto = _mapper.Map<IEnumerable<SubscriptionDTO>>(subscriptions);
+        var subscriptionsDto = subscriptions.Select(s => (SubscriptionDto)s);
 
         foreach (var dto in subscriptionsDto)
         {
@@ -31,31 +28,31 @@ public class SubscriptionService : ISubscriptionService
         return subscriptionsDto;
     }
 
-    public async Task<IEnumerable<SubscriptionDTO>> GetSubscriptionsFromCreditCard(int creditCardId)
+    public async Task<IEnumerable<SubscriptionDto>> GetSubscriptionsFromCreditCard(int creditCardId)
     {
-        var subscription = await _subscriptionRepository.GetSubscriptionsFromCreditCard(creditCardId);
-        return _mapper.Map<IEnumerable<SubscriptionDTO>>(subscription);
+        var subscriptions = await _subscriptionRepository.GetSubscriptionsFromCreditCard(creditCardId);
+        return subscriptions.Select(s => (SubscriptionDto)s);
     }
 
-    public async Task<SubscriptionDTO> GetById(int id)
+    public async Task<SubscriptionDto> GetById(int id)
     {
         var subscription = await _subscriptionRepository.GetById(id);
         bool hasPendingPayment = await HasLatePayment(id, subscription.BillingDay);
 
-        var subscriptionDto = _mapper.Map<SubscriptionDTO>(subscription);
+        var subscriptionDto = (SubscriptionDto)subscription;
         subscriptionDto.Late = hasPendingPayment;
 
         return subscriptionDto;
     }
 
-    public async Task<IEnumerable<SubscriptionDTO>> GetByName(string userId, string name)
+    public async Task<IEnumerable<SubscriptionDto>> GetByName(string userId, string name)
     {
-        IEnumerable<SubscriptionDTO> subscriptions;
+        IEnumerable<SubscriptionDto> subscriptions;
 
         if (!string.IsNullOrEmpty(name))
         {
             var query = await _subscriptionRepository.GetByName(userId, name);
-            subscriptions = query.Select(c => _mapper.Map<SubscriptionDTO>(c)).ToList();
+            subscriptions = query.Select(s => (SubscriptionDto)s);
         }
         else
         {
@@ -70,25 +67,26 @@ public class SubscriptionService : ISubscriptionService
         return subscriptions;
     }
 
-    public async Task Add(SubscriptionDTO subscriptionDTO)
+    public async Task Add(SubscriptionDto subscriptionDto)
     {
-        var subscription = _mapper.Map<Subscription>(subscriptionDTO);
+        var subscription = (Subscription)subscriptionDto;
         await _subscriptionRepository.Create(subscription);
     }
 
-    public async Task Update(SubscriptionDTO subscriptionDTO)
+    public async Task Update(SubscriptionDto subscriptionDto)
     {
-        var subscription = _mapper.Map<Subscription>(subscriptionDTO);
+        var subscription = (Subscription)subscriptionDto;
         await _subscriptionRepository.Update(subscription);
     }
 
-    public async Task Remove(SubscriptionDTO subscriptionDTO)
+    public async Task Remove(SubscriptionDto subscriptionDto)
     {
-        var subscription = _mapper.Map<Subscription>(subscriptionDTO);
+        var subscription = (Subscription)subscriptionDto;
         await _subscriptionRepository.Remove(subscription);
     }
 
     #region Util
+
     public async Task<bool> HasLatePayment(int subscriptionId, int billingDay)
     {
         var todayDate = DateTime.Now;
@@ -102,12 +100,14 @@ public class SubscriptionService : ISubscriptionService
 
         if (lastPayment != null)
         {
-            var lastPaymentWasThisMonth = (lastPayment.ReferenceDate.Month == todayDate.Month && lastPayment.ReferenceDate.Year == todayDate.Year);
+            var lastPaymentWasThisMonth = (lastPayment.ReferenceDate.Month == todayDate.Month &&
+                                           lastPayment.ReferenceDate.Year == todayDate.Year);
             if (lastPaymentWasThisMonth)
                 return false;
         }
 
         return true;
     }
+
     #endregion
 }

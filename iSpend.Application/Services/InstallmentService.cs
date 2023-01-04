@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using iSpend.Application.DTOs;
+﻿using iSpend.Application.DTOs;
 using iSpend.Application.Interfaces;
 using iSpend.Domain.Entities;
 using iSpend.Domain.Interfaces;
@@ -9,47 +8,45 @@ namespace iSpend.Application.Services;
 public class InstallmentService : IInstallmentService
 {
     private IInstallmentRepository _installmentRepository;
-    private readonly IMapper _mapper;
 
-    public InstallmentService(IInstallmentRepository installmentRepository, IMapper mapper)
+    public InstallmentService(IInstallmentRepository installmentRepository)
     {
         _installmentRepository = installmentRepository;
-        _mapper = mapper;
     }
 
-    public async Task<IEnumerable<InstallmentDTO>> GetInstallments(string userId)
+    public async Task<IEnumerable<InstallmentDto>> GetInstallments(string userId)
     {
         var installments = await _installmentRepository.GetInstallments(userId);
-        return _mapper.Map<IEnumerable<InstallmentDTO>>(installments);
+        return installments.Select(i => (InstallmentDto)i);
     }
 
-    public async Task<InstallmentDTO> GetById(int id)
+    public async Task<InstallmentDto> GetById(int id)
     {
         var installment = await _installmentRepository.GetById(id);
-        return _mapper.Map<InstallmentDTO>(installment);
+        return (InstallmentDto)installment;
     }
 
-    public async Task<IEnumerable<InstallmentDTO>> GetInstallmentsFromPurchase(string userId, int purchaseId)
+    public async Task<IEnumerable<InstallmentDto>> GetInstallmentsFromPurchase(string userId, int purchaseId)
     {
-        var installment = await _installmentRepository.GetInstallmentsFromPurchase(userId, purchaseId);
-        return _mapper.Map<IEnumerable<InstallmentDTO>>(installment);
+        var installments = await _installmentRepository.GetInstallmentsFromPurchase(userId, purchaseId);
+        return installments.Select(i => (InstallmentDto)i);
     }
 
-    public async Task Add(InstallmentDTO installmentDTO)
+    public async Task Add(InstallmentDto installmentDto)
     {
-        var installment = _mapper.Map<Installment>(installmentDTO);
+        var installment = (Installment)installmentDto;
         await _installmentRepository.Create(installment);
     }
 
-    public async Task Update(InstallmentDTO installmentDTO)
+    public async Task Update(InstallmentDto installmentDto)
     {
-        var installment = _mapper.Map<Installment>(installmentDTO);
+        var installment = (Installment)installmentDto;
         await _installmentRepository.Update(installment);
     }
 
-    public async Task Remove(InstallmentDTO installmentDTO)
+    public async Task Remove(InstallmentDto installmentDto)
     {
-        var installment = _mapper.Map<Installment>(installmentDTO);
+        var installment = (Installment)installmentDto;
         await _installmentRepository.Remove(installment);
     }
 }

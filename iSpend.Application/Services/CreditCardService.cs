@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using iSpend.Application.DTOs;
+﻿using iSpend.Application.DTOs;
 using iSpend.Application.Interfaces;
 using iSpend.Domain.Entities;
 using iSpend.Domain.Interfaces;
@@ -9,24 +8,22 @@ namespace iSpend.Application.Services;
 public class CreditCardService : ICreditCardService
 {
     private ICreditCardRepository _creditCardRepository;
-    private readonly IMapper _mapper;
 
-    public CreditCardService(ICreditCardRepository creditCardRepository, IMapper mapper)
+    public CreditCardService(ICreditCardRepository creditCardRepository)
     {
         _creditCardRepository = creditCardRepository;
-        _mapper = mapper;
     }
 
     public async Task<IEnumerable<CreditCardDto>> GetCreditCards(string userId)
     {
         var creditCards = await _creditCardRepository.GetCreditCards(userId);
-        return _mapper.Map<IEnumerable<CreditCardDto>>(creditCards);
+        return creditCards.Select(c => (CreditCardDto)c);
     }
 
     public async Task<CreditCardDto> GetById(int id)
     {
         var creditCard = await _creditCardRepository.GetById(id);
-        return _mapper.Map<CreditCardDto>(creditCard);
+        return (CreditCardDto)creditCard;
     }
 
     public async Task<IEnumerable<CreditCardDto>> GetByName(string userId, string name)
@@ -36,7 +33,7 @@ public class CreditCardService : ICreditCardService
         if (!string.IsNullOrEmpty(name))
         {
             var query = await _creditCardRepository.GetByName(userId, name);
-            creditCards = query.Select(c => _mapper.Map<CreditCardDto>(c)).ToList();
+            creditCards = query.Select(c => (CreditCardDto)c);
         }
         else
         {
@@ -48,14 +45,14 @@ public class CreditCardService : ICreditCardService
 
     public async Task<CreditCardDto> GetCreditCardFromSubscription(int subscriptionId)
     {
-        var subscription = await _creditCardRepository.GetCreditCardFromSubscription(subscriptionId);
-        return _mapper.Map<CreditCardDto>(subscription);
+        var creditCard = await _creditCardRepository.GetCreditCardFromSubscription(subscriptionId);
+        return (CreditCardDto)creditCard;
     }
 
     public async Task<CreditCardDto> GetCreditCardFromPurchase(int purchaseId)
     {
-        var purchase = await _creditCardRepository.GetCreditCardFromPurchase(purchaseId);
-        return _mapper.Map<CreditCardDto>(purchase);
+        var creditCard = await _creditCardRepository.GetCreditCardFromPurchase(purchaseId);
+        return (CreditCardDto)creditCard;
     }
 
     public async Task Add(CreditCardDto creditCardDto)

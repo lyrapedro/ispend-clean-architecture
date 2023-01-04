@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using iSpend.Application.DTOs;
+﻿using iSpend.Application.DTOs;
 using iSpend.Application.Interfaces;
 using iSpend.Domain.Entities;
 using iSpend.Domain.Interfaces;
@@ -11,47 +10,46 @@ public class PurchaseService : IPurchaseService
     private IPurchaseRepository _purchaseRepository;
     private readonly IInstallmentRepository _installmentRepository;
     private readonly ICreditCardRepository _creditCardRepository;
-    private readonly IMapper _mapper;
 
-    public PurchaseService(IPurchaseRepository purchaseRepository, IInstallmentRepository installmentRepository, ICreditCardRepository creditCardRepository, IMapper mapper)
+    public PurchaseService(IPurchaseRepository purchaseRepository, IInstallmentRepository installmentRepository,
+        ICreditCardRepository creditCardRepository)
     {
         _purchaseRepository = purchaseRepository;
         _installmentRepository = installmentRepository;
         _creditCardRepository = creditCardRepository;
-        _mapper = mapper;
     }
 
-    public async Task<IEnumerable<PurchaseDTO>> GetPurchases(string userId)
+    public async Task<IEnumerable<PurchaseDto>> GetPurchases(string userId)
     {
         var purchases = await _purchaseRepository.GetPurchases(userId);
-        return _mapper.Map<IEnumerable<PurchaseDTO>>(purchases);
+        return purchases.Select(p => (PurchaseDto)p);
     }
 
-    public async Task<IEnumerable<PurchaseDTO>> GetPurchasesFromCreditCard(int creditCardId)
+    public async Task<IEnumerable<PurchaseDto>> GetPurchasesFromCreditCard(int creditCardId)
     {
         var purchases = await _purchaseRepository.GetPurchasesFromCreditCard(creditCardId);
-        return _mapper.Map<IEnumerable<PurchaseDTO>>(purchases);
+        return purchases.Select(p => (PurchaseDto)p);
     }
 
-    public async Task<PurchaseDTO> GetById(int id)
+    public async Task<PurchaseDto> GetById(int id)
     {
         var purchase = await _purchaseRepository.GetById(id);
-        return _mapper.Map<PurchaseDTO>(purchase);
+        return (PurchaseDto)purchase;
     }
 
-    public async Task<IEnumerable<PurchaseDTO>> GetByName(string userId, string name)
+    public async Task<IEnumerable<PurchaseDto>> GetByName(string userId, string name)
     {
-        IEnumerable<PurchaseDTO> purchases;
+        IEnumerable<PurchaseDto> purchases;
 
         var query = await _purchaseRepository.GetByName(userId, name);
-        purchases = query.Select(c => _mapper.Map<PurchaseDTO>(c)).ToList();
+        purchases = query.Select(p => (PurchaseDto)p);
 
         return purchases;
     }
 
-    public async Task Add(PurchaseDTO purchaseDTO)
+    public async Task Add(PurchaseDto purchaseDto)
     {
-        var purchase = _mapper.Map<Purchase>(purchaseDTO);
+        var purchase = (Purchase)purchaseDto;
         var purchaseCreated = _purchaseRepository.Create(purchase).Result;
         var creditCard = await _creditCardRepository.GetById(purchaseCreated.CreditCardId);
 
@@ -63,18 +61,19 @@ public class PurchaseService : IPurchaseService
         }
     }
 
-    public async Task Update(PurchaseDTO purchaseDTO)
+    public async Task Update(PurchaseDto purchaseDto)
     {
-        var purchase = _mapper.Map<Purchase>(purchaseDTO);
+        var purchase = (Purchase)purchaseDto;
         await _purchaseRepository.Update(purchase);
     }
 
-    public async Task Remove(PurchaseDTO purchaseDTO)
+    public async Task Remove(PurchaseDto purchaseDto)
     {
-        var purchase = _mapper.Map<Purchase>(purchaseDTO);
+        var purchase = (Purchase)purchaseDto;
         await _purchaseRepository.Remove(purchase);
     }
 
     #region Util
+
     #endregion
 }

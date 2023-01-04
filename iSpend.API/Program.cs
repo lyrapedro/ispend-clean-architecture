@@ -1,4 +1,3 @@
-using iSpend.Application.Mappings;
 using iSpend.Domain.Account;
 using iSpend.Infra.Data.Context;
 using iSpend.Infra.Data.Identity;
@@ -38,8 +37,6 @@ builder.Services.AddInfrastructureAPI(builder.Configuration);
 builder.Services.AddInfrastructureJWT(builder.Configuration);
 
 builder.Services.AddControllers();
-
-builder.Services.AddAutoMapper(typeof(DomainToDTOMappingProfile));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>

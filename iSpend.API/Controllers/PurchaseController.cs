@@ -21,7 +21,7 @@ public class PurchaseController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IAsyncEnumerable<PurchaseDTO>>> GetPurchases()
+    public async Task<ActionResult<IAsyncEnumerable<PurchaseDto>>> GetPurchases()
     {
         try
         {
@@ -37,7 +37,7 @@ public class PurchaseController : ControllerBase
     }
 
     [HttpGet("CreditCard/{creditCardId:int}")]
-    public async Task<ActionResult<IAsyncEnumerable<PurchaseDTO>>> GetPurchasesFromCreditCard(int creditCardId)
+    public async Task<ActionResult<IAsyncEnumerable<PurchaseDto>>> GetPurchasesFromCreditCard(int creditCardId)
     {
         try
         {
@@ -58,7 +58,7 @@ public class PurchaseController : ControllerBase
     }
 
     [HttpGet("{id:int}", Name = "GetPurchase")]
-    public async Task<ActionResult<PurchaseDTO>> GetPurchase(int id)
+    public async Task<ActionResult<PurchaseDto>> GetPurchase(int id)
     {
         try
         {
@@ -80,7 +80,7 @@ public class PurchaseController : ControllerBase
     }
 
     [HttpGet("Find")]
-    public async Task<ActionResult<IAsyncEnumerable<PurchaseDTO>>> GetPurchasesByName([FromQuery] string name)
+    public async Task<ActionResult<IAsyncEnumerable<PurchaseDto>>> GetPurchasesByName([FromQuery] string name)
     {
         try
         {
@@ -99,7 +99,7 @@ public class PurchaseController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create([FromBody] PurchaseDTO purchase)
+    public async Task<ActionResult> Create([FromBody] PurchaseDto purchase)
     {
         try
         {
@@ -117,7 +117,7 @@ public class PurchaseController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Edit(int id, [FromBody] PurchaseDTO purchase)
+    public async Task<ActionResult> Edit(int id, [FromBody] PurchaseDto purchase)
     {
         try
         {

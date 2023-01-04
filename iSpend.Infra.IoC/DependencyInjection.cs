@@ -1,5 +1,4 @@
 ﻿using iSpend.Application.Interfaces;
-using iSpend.Application.Mappings;
 using iSpend.Application.Services;
 using iSpend.Domain.Account;
 using iSpend.Domain.Interfaces;
@@ -40,8 +39,6 @@ public static class DependencyInjection
         services.AddScoped<IInstallmentService, InstallmentService>();
         services.AddScoped<IPurchaseService, PurchaseService>();
         services.AddScoped<ISubscriptionService, SubscriptionService>();
-
-        services.AddAutoMapper(typeof(DomainToDTOMappingProfile));
 
         return services;
     }

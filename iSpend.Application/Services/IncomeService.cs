@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using iSpend.Application.DTOs;
+﻿using iSpend.Application.DTOs;
 using iSpend.Application.Interfaces;
 using iSpend.Domain.Entities;
 using iSpend.Domain.Interfaces;
@@ -9,34 +8,32 @@ namespace iSpend.Application.Services;
 public class IncomeService : IIncomeService
 {
     private IIncomeRepository _incomeRepository;
-    private readonly IMapper _mapper;
 
-    public IncomeService(IIncomeRepository incomeRepository, IMapper mapper)
+    public IncomeService(IIncomeRepository incomeRepository)
     {
         _incomeRepository = incomeRepository;
-        _mapper = mapper;
     }
 
-    public async Task<IEnumerable<IncomeDTO>> GetIncomes(string userId)
+    public async Task<IEnumerable<IncomeDto>> GetIncomes(string userId)
     {
         var incomes = await _incomeRepository.GetIncomes(userId);
-        return _mapper.Map<IEnumerable<IncomeDTO>>(incomes);
+        return incomes.Select(i => (IncomeDto)i);
     }
 
-    public async Task<IncomeDTO> GetById(int id)
+    public async Task<IncomeDto> GetById(int id)
     {
         var income = await _incomeRepository.GetById(id);
-        return _mapper.Map<IncomeDTO>(income);
+        return (IncomeDto)income;
     }
 
-    public async Task<IEnumerable<IncomeDTO>> GetByName(string userId, string name)
+    public async Task<IEnumerable<IncomeDto>> GetByName(string userId, string name)
     {
-        IEnumerable<IncomeDTO> incomes;
+        IEnumerable<IncomeDto> incomes;
 
         if (!string.IsNullOrEmpty(name))
         {
             var query = await _incomeRepository.GetByName(userId, name);
-            incomes = query.Select(c => _mapper.Map<IncomeDTO>(c)).ToList();
+            incomes = query.Select(i => (IncomeDto)i);
         }
         else
         {
@@ -46,21 +43,21 @@ public class IncomeService : IIncomeService
         return incomes;
     }
 
-    public async Task Add(IncomeDTO incomeDTO)
+    public async Task Add(IncomeDto incomeDto)
     {
-        var income = _mapper.Map<Income>(incomeDTO);
+        var income = (Income)incomeDto;
         await _incomeRepository.Create(income);
     }
 
-    public async Task Update(IncomeDTO incomeDTO)
+    public async Task Update(IncomeDto incomeDto)
     {
-        var income = _mapper.Map<Income>(incomeDTO);
+        var income = (Income)incomeDto;
         await _incomeRepository.Update(income);
     }
 
-    public async Task Remove(IncomeDTO incomeDTO)
+    public async Task Remove(IncomeDto incomeDto)
     {
-        var income = _mapper.Map<Income>(incomeDTO);
+        var income = (Income)incomeDto;
         await _incomeRepository.Remove(income);
     }
 }

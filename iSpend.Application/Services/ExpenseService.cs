@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using iSpend.Application.DTOs;
+﻿using iSpend.Application.DTOs;
 using iSpend.Application.Interfaces;
 using iSpend.Domain.Entities;
 using iSpend.Domain.Interfaces;
@@ -9,19 +8,17 @@ namespace iSpend.Application.Services;
 public class ExpenseService : IExpenseService
 {
     private IExpenseRepository _expenseRepository;
-    private readonly IMapper _mapper;
 
-    public ExpenseService(IExpenseRepository expenseRepository, IMapper mapper)
+    public ExpenseService(IExpenseRepository expenseRepository)
     {
         _expenseRepository = expenseRepository;
-        _mapper = mapper;
     }
 
-    public async Task<IEnumerable<ExpenseDTO>> GetExpenses(string userId)
+    public async Task<IEnumerable<ExpenseDto>> GetExpenses(string userId)
     {
         var expenses = await _expenseRepository.GetExpenses(userId);
 
-        var expensesDto = _mapper.Map<IEnumerable<ExpenseDTO>>(expenses);
+        var expensesDto = expenses.Select(e => (ExpenseDto)e);
 
         foreach (var dto in expensesDto)
         {
@@ -31,25 +28,25 @@ public class ExpenseService : IExpenseService
         return expensesDto;
     }
 
-    public async Task<ExpenseDTO> GetById(int id)
+    public async Task<ExpenseDto> GetById(int id)
     {
         var expense = await _expenseRepository.GetById(id);
         bool hasPendingPayment = await HasLatePayment(id, expense.BillingDay);
 
-        var expenseDto = _mapper.Map<ExpenseDTO>(expense);
+        var expenseDto = (ExpenseDto)expense;
         expenseDto.Late = hasPendingPayment;
 
         return expenseDto;
     }
 
-    public async Task<IEnumerable<ExpenseDTO>> GetByName(string userId, string name)
+    public async Task<IEnumerable<ExpenseDto>> GetByName(string userId, string name)
     {
-        IEnumerable<ExpenseDTO> expenses;
+        IEnumerable<ExpenseDto> expenses;
 
         if (!string.IsNullOrEmpty(name))
         {
             var query = await _expenseRepository.GetByName(userId, name);
-            expenses = query.Select(c => _mapper.Map<ExpenseDTO>(c)).ToList();
+            expenses = query.Select(c => (ExpenseDto)c);
         }
         else
         {
@@ -64,25 +61,27 @@ public class ExpenseService : IExpenseService
         return expenses;
     }
 
-    public async Task Add(ExpenseDTO expenseDTO)
+    public async Task Add(ExpenseDto expenseDto)
     {
-        var expense = _mapper.Map<Expense>(expenseDTO);
+        var expense = (Expense)expenseDto;
         await _expenseRepository.Create(expense);
     }
 
-    public async Task Update(ExpenseDTO expenseDTO)
+    public async Task Update(ExpenseDto expenseDto)
     {
-        var expense = _mapper.Map<Expense>(expenseDTO);
+        expenseDto.ModifiedAt = DateTime.Now;
+        var expense = (Expense)expenseDto;
         await _expenseRepository.Update(expense);
     }
 
-    public async Task Remove(ExpenseDTO expenseDTO)
+    public async Task Remove(ExpenseDto expenseDto)
     {
-        var expense = _mapper.Map<Expense>(expenseDTO);
+        var expense = (Expense)expenseDto;
         await _expenseRepository.Remove(expense);
     }
 
     #region Util
+
     public async Task<bool> HasLatePayment(int expenseId, int billingDay)
     {
         var todayDate = DateTime.Now;
@@ -96,12 +95,14 @@ public class ExpenseService : IExpenseService
 
         if (lastPayment != null)
         {
-            var lastPaymentWasThisMonth = (lastPayment.ReferenceDate.Month == todayDate.Month && lastPayment.ReferenceDate.Year == todayDate.Year);
+            var lastPaymentWasThisMonth = (lastPayment.ReferenceDate.Month == todayDate.Month &&
+                                           lastPayment.ReferenceDate.Year == todayDate.Year);
             if (lastPaymentWasThisMonth)
                 return false;
         }
 
         return true;
     }
+
     #endregion
 }

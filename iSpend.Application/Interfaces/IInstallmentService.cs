@@ -4,10 +4,10 @@ namespace iSpend.Application.Interfaces;
 
 public interface IInstallmentService
 {
-    Task<IEnumerable<InstallmentDTO>> GetInstallments(string userId);
-    Task<InstallmentDTO> GetById(int id);
-    Task<IEnumerable<InstallmentDTO>> GetInstallmentsFromPurchase(string userId, int purchaseId);
-    Task Add(InstallmentDTO installmentDTO);
-    Task Update(InstallmentDTO installmentDTO);
-    Task Remove(InstallmentDTO installmentDTO);
+    Task<IEnumerable<InstallmentDto>> GetInstallments(string userId);
+    Task<InstallmentDto> GetById(int id);
+    Task<IEnumerable<InstallmentDto>> GetInstallmentsFromPurchase(string userId, int purchaseId);
+    Task Add(InstallmentDto installmentDTO);
+    Task Update(InstallmentDto installmentDTO);
+    Task Remove(InstallmentDto installmentDTO);
 }

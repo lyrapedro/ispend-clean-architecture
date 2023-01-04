@@ -19,7 +19,7 @@ public class InstallmentController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<InstallmentDTO>> GetInstallment(int id)
+    public async Task<ActionResult<InstallmentDto>> GetInstallment(int id)
     {
         try
         {
@@ -41,7 +41,7 @@ public class InstallmentController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IAsyncEnumerable<InstallmentDTO>>> GetInstallments()
+    public async Task<ActionResult<IAsyncEnumerable<InstallmentDto>>> GetInstallments()
     {
         try
         {
@@ -57,7 +57,7 @@ public class InstallmentController : ControllerBase
     }
 
     [HttpGet("Purchase/{purchaseId:int}")]
-    public async Task<ActionResult<IAsyncEnumerable<InstallmentDTO>>> GetInstallmentsFromPurchase(int purchaseId)
+    public async Task<ActionResult<IAsyncEnumerable<InstallmentDto>>> GetInstallmentsFromPurchase(int purchaseId)
     {
         try
         {

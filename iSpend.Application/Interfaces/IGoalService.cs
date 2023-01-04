@@ -4,10 +4,10 @@ namespace iSpend.Application.Interfaces;
 
 public interface IGoalService
 {
-    Task<IEnumerable<GoalDTO>> GetGoals(string userId);
-    Task<GoalDTO> GetById(int id);
-    Task<IEnumerable<GoalDTO>> GetByName(string userid, string name);
-    Task Add(GoalDTO goalDTO);
-    Task Update(GoalDTO goalDTO);
-    Task Remove(GoalDTO goalDTO);
+    Task<IEnumerable<GoalDto>> GetGoals(string userId);
+    Task<GoalDto> GetById(int id);
+    Task<IEnumerable<GoalDto>> GetByName(string userid, string name);
+    Task Add(GoalDto goalDTO);
+    Task Update(GoalDto goalDTO);
+    Task Remove(GoalDto goalDTO);
 }

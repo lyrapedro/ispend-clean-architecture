@@ -19,7 +19,7 @@ public class ExpenseController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IAsyncEnumerable<ExpenseDTO>>> GetExpenses()
+    public async Task<ActionResult<IAsyncEnumerable<ExpenseDto>>> GetExpenses()
     {
         try
         {
@@ -35,7 +35,7 @@ public class ExpenseController : ControllerBase
     }
 
     [HttpGet("{id:int}", Name = "GetExpense")]
-    public async Task<ActionResult<ExpenseDTO>> GetExpense(int id)
+    public async Task<ActionResult<ExpenseDto>> GetExpense(int id)
     {
         try
         {
@@ -57,7 +57,7 @@ public class ExpenseController : ControllerBase
     }
 
     [HttpGet("Find")]
-    public async Task<ActionResult<IAsyncEnumerable<ExpenseDTO>>> GetExpensesByName([FromQuery] string name)
+    public async Task<ActionResult<IAsyncEnumerable<ExpenseDto>>> GetExpensesByName([FromQuery] string name)
     {
         try
         {
@@ -76,7 +76,7 @@ public class ExpenseController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create([FromBody] ExpenseDTO expense)
+    public async Task<ActionResult> Create([FromBody] ExpenseDto expense)
     {
         try
         {
@@ -98,7 +98,7 @@ public class ExpenseController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Edit(int id, [FromBody] ExpenseDTO expense)
+    public async Task<ActionResult> Edit(int id, [FromBody] ExpenseDto expense)
     {
         try
         {

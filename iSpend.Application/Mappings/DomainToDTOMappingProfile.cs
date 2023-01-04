@@ -9,7 +9,6 @@ public class DomainToDTOMappingProfile : Profile
     public DomainToDTOMappingProfile()
     {
         CreateMap<Subscription, SubscriptionDTO>().ReverseMap();
-        CreateMap<Expense, ExpenseDTO>().ReverseMap();
         CreateMap<Income, IncomeDTO>().ReverseMap();
         CreateMap<Goal, GoalDTO>().ReverseMap();
         CreateMap<Installment, InstallmentDTO>().ReverseMap();
