@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\iSpend.Application\iSpend.Application.csproj" />
+      <ProjectReference Include="..\iSpend.Domain\iSpend.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="12.0.0" />
+      <PackageReference Include="BenchmarkDotNet" Version="0.13.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Benchmark\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Benchmark\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Benchmark\**" />
+    </ItemGroup>
+
+</Project>
