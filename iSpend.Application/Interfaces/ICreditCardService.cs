@@ -4,12 +4,12 @@ namespace iSpend.Application.Interfaces;
 
 public interface ICreditCardService
 {
-    Task<IEnumerable<CreditCardDTO>> GetCreditCards(string userId);
-    Task<CreditCardDTO> GetById(int id);
-    Task<IEnumerable<CreditCardDTO>> GetByName(string userId, string name);
-    Task<CreditCardDTO> GetCreditCardFromPurchase(int purchaseId);
-    Task<CreditCardDTO> GetCreditCardFromSubscription(int subscriptionId);
-    Task Add(CreditCardDTO creditCardDTO);
-    Task Update(CreditCardDTO creditCardDTO);
-    Task Remove(CreditCardDTO creditCardDTO);
+    Task<IEnumerable<CreditCardDto>> GetCreditCards(string userId);
+    Task<CreditCardDto> GetById(int id);
+    Task<IEnumerable<CreditCardDto>> GetByName(string userId, string name);
+    Task<CreditCardDto> GetCreditCardFromPurchase(int purchaseId);
+    Task<CreditCardDto> GetCreditCardFromSubscription(int subscriptionId);
+    Task Add(CreditCardDto CreditCardDto);
+    Task Update(CreditCardDto CreditCardDto);
+    Task Remove(CreditCardDto CreditCardDto);
 }

@@ -8,8 +8,6 @@ public class DomainToDTOMappingProfile : Profile
 {
     public DomainToDTOMappingProfile()
     {
-        CreateMap<Category, CategoryDTO>().ReverseMap();
-        CreateMap<CreditCard, CreditCardDTO>().ReverseMap();
         CreateMap<Subscription, SubscriptionDTO>().ReverseMap();
         CreateMap<Expense, ExpenseDTO>().ReverseMap();
         CreateMap<Income, IncomeDTO>().ReverseMap();

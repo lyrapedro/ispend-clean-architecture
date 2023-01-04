@@ -9,34 +9,32 @@ namespace iSpend.Application.Services;
 public class CategoryService : ICategoryService
 {
     private ICategoryRepository _categoryRepository;
-    private readonly IMapper _mapper;
 
-    public CategoryService(ICategoryRepository categoryRepository, IMapper mapper)
+    public CategoryService(ICategoryRepository categoryRepository)
     {
         _categoryRepository = categoryRepository;
-        _mapper = mapper;
     }
 
-    public async Task<IEnumerable<CategoryDTO>> GetCategories(string userId)
+    public async Task<IEnumerable<CategoryDto>> GetCategories(string userId)
     {
         var categories = await _categoryRepository.GetCategories(userId);
-        return _mapper.Map<IEnumerable<CategoryDTO>>(categories);
+        return categories.Select(c => (CategoryDto)c);
     }
 
-    public async Task<CategoryDTO> GetById(int id)
+    public async Task<CategoryDto> GetById(int id)
     {
         var category = await _categoryRepository.GetById(id);
-        return _mapper.Map<CategoryDTO>(category);
+        return (CategoryDto)category;
     }
 
-    public async Task<IEnumerable<CategoryDTO>> GetByName(string userId, string name)
+    public async Task<IEnumerable<CategoryDto>> GetByName(string userId, string name)
     {
-        IEnumerable<CategoryDTO> categories;
+        IEnumerable<CategoryDto> categories;
 
         if (!string.IsNullOrEmpty(name))
         {
             var query = await _categoryRepository.GetByName(userId, name);
-            categories = query.Select(c => _mapper.Map<CategoryDTO>(c)).ToList();
+            categories = query.Select(c => (CategoryDto)c);
         }
         else
         {
@@ -46,21 +44,22 @@ public class CategoryService : ICategoryService
         return categories;
     }
 
-    public async Task Add(CategoryDTO categoryDTO)
+    public async Task Add(CategoryDto categoryDto)
     {
-        var category = _mapper.Map<Category>(categoryDTO);
+        var category = (Category)categoryDto;
         await _categoryRepository.Create(category);
     }
 
-    public async Task Update(CategoryDTO categoryDTO)
+    public async Task Update(CategoryDto categoryDto)
     {
-        var category = _mapper.Map<Category>(categoryDTO);
+        categoryDto.ModifiedAt = DateTime.Now;
+        var category = (Category)categoryDto;
         await _categoryRepository.Update(category);
     }
 
-    public async Task Remove(CategoryDTO categoryDTO)
+    public async Task Remove(CategoryDto categoryDto)
     {
-        var category = _mapper.Map<Category>(categoryDTO);
+        var category = (Category)categoryDto;
         await _categoryRepository.Remove(category);
     }
 }

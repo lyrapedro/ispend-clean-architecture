@@ -19,7 +19,7 @@ public class CreditCardController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IAsyncEnumerable<CreditCardDTO>>> GetCreditCards()
+    public async Task<ActionResult<IAsyncEnumerable<CreditCardDto>>> GetCreditCards()
     {
         try
         {
@@ -35,7 +35,7 @@ public class CreditCardController : ControllerBase
     }
 
     [HttpGet("{id:int}", Name = "GetCard")]
-    public async Task<ActionResult<CreditCardDTO>> GetCreditCard(int id)
+    public async Task<ActionResult<CreditCardDto>> GetCreditCard(int id)
     {
         try
         {
@@ -57,7 +57,7 @@ public class CreditCardController : ControllerBase
     }
 
     [HttpGet("Find")]
-    public async Task<ActionResult<IAsyncEnumerable<CreditCardDTO>>> GetCreditCardsByName([FromQuery] string name)
+    public async Task<ActionResult<IAsyncEnumerable<CreditCardDto>>> GetCreditCardsByName([FromQuery] string name)
     {
         try
         {
@@ -76,7 +76,7 @@ public class CreditCardController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create([FromBody] CreditCardDTO creditCard)
+    public async Task<ActionResult> Create([FromBody] CreditCardDto creditCard)
     {
         try
         {
@@ -98,7 +98,7 @@ public class CreditCardController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Edit(int id, [FromBody] CreditCardDTO creditCard)
+    public async Task<ActionResult> Edit(int id, [FromBody] CreditCardDto creditCard)
     {
         try
         {
@@ -124,7 +124,7 @@ public class CreditCardController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<ActionResult<CreditCardDTO>> Delete(int id)
+    public async Task<ActionResult<CreditCardDto>> Delete(int id)
     {
         try
         {

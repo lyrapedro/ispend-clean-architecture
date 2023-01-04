@@ -19,7 +19,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IAsyncEnumerable<CategoryDTO>>> GetCategories()
+    public async Task<ActionResult<IAsyncEnumerable<CategoryDto>>> GetCategories()
     {
         try
         {
@@ -35,7 +35,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet("{id:int}", Name = "GetCategory")]
-    public async Task<ActionResult<CategoryDTO>> GetCategory(int id)
+    public async Task<ActionResult<CategoryDto>> GetCategory(int id)
     {
         try
         {
@@ -57,7 +57,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet("Find")]
-    public async Task<ActionResult<IAsyncEnumerable<CategoryDTO>>> GetCategoriesByName([FromQuery] string name)
+    public async Task<ActionResult<IAsyncEnumerable<CategoryDto>>> GetCategoriesByName([FromQuery] string name)
     {
         try
         {
@@ -76,7 +76,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create([FromBody] CategoryDTO category)
+    public async Task<ActionResult> Create([FromBody] CategoryDto category)
     {
         try
         {
@@ -98,13 +98,13 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Edit(int id, [FromBody] CategoryDTO category)
+    public async Task<ActionResult> Edit(int id, [FromBody] CategoryDto category)
     {
         try
         {
             if (category is null)
                 return BadRequest("Invalid request");
-
+            
             if (category.Id != id)
                 return BadRequest("Invalid request");
 

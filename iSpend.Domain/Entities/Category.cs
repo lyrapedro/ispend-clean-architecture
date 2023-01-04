@@ -13,24 +13,24 @@ public class Category : Entity
     public ICollection<Income> Incomes { get; private set; }
     public ICollection<Expense> Expenses { get; private set; }
 
-    public Category(string name, string color)
+    public Category(string name, string color, string? userId)
     {
-        ValidateDomain(name, color);
+        ValidateDomain(name, color, userId);
     }
-
-    public Category(int id, string name, string color)
+    
+    public Category(int id, string name, string color, string? userId)
     {
         DomainExceptionValidation.When(id < 0, "Invalid Id value.");
         Id = id;
-        ValidateDomain(name, color);
+        ValidateDomain(name, color, userId);
     }
 
     public void Update(string name, string color)
     {
-        ValidateDomain(name, color);
+        ValidateDomain(name, color, null);
     }
 
-    private void ValidateDomain(string name, string color)
+    private void ValidateDomain(string name, string color, string? userId)
     {
         var hexRegex = new Regex(@"^#(?:[0-9a-fA-F]{3}){1,2}$");
 
@@ -46,6 +46,7 @@ public class Category : Entity
         DomainExceptionValidation.When(name.Length < 3 || name.Length > 30,
            "Invalid name, too short, minimum 3 characters and max 30");
 
+        UserId = userId;
         Name = name;
         Color = color;
         RegisteredAt = DateTime.Now;

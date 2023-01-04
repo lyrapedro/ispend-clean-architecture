@@ -7,7 +7,7 @@ namespace iSpend.Benchmarks;
 
 public class Benchmark
 {
-    private CreditCard[] _creditCards;
+    private Category[] _categories;
     private IMapper _mapper;
     [Params(10, 100, 1000)]
     public int NumberOfElements { get; set; }
@@ -16,36 +16,36 @@ public class Benchmark
     public void Init()
     {
         var config = new MapperConfiguration((cfg =>
-            cfg.CreateMap<CreditCard, CreditCardDTO>().ReverseMap()));
+            cfg.CreateMap<Category, CategoryDto>().ReverseMap()));
         _mapper = config.CreateMapper();
         
-        _creditCards = Enumerable.Range(1, NumberOfElements)
-            .Select(n => new CreditCard(Guid.NewGuid().ToString(), $"Card" + n, n * 1000, 10, 1)).ToArray();
+        _categories = Enumerable.Range(1, NumberOfElements)
+            .Select(n => new Category($"Category" + n, "#FFF", null)).ToArray();
     }
 
     // [Benchmark]
     // public void With_Auto_Mapper_ForEach()
     // {
-    //     IEnumerable<CreditCardDTO> creditCards = Array.Empty<CreditCardDTO>();
+    //     IEnumerable<CreditCardDto> creditCards = Array.Empty<CreditCardDto>();
     //     foreach (var card in _creditCards)
     //     {
-    //         creditCards.Append(_mapper.Map<CreditCardDTO>(card));
+    //         creditCards.Append(_mapper.Map<CreditCardDto>(card));
     //     }
     // }
     
-    [Benchmark]
-    public void With_Auto_Mapper_Select()
-    {
-        var creditCards = _creditCards.Select(c => _mapper.Map<CreditCardDTO>(c));
-    }
+    // [Benchmark]
+    // public void With_Auto_Mapper_Select()
+    // {
+    //     var creditCards = _categories.Select(c => _mapper.Map<CreditCardDto>(c));
+    // }
     
     // [Benchmark]
     // public void With_Direct_Assigment_ForEach()
     // {
-    //     IEnumerable<CreditCardDTO> creditCards = Array.Empty<CreditCardDTO>();
+    //     IEnumerable<CreditCardDto> creditCards = Array.Empty<CreditCardDto>();
     //     foreach (var card in _creditCards)
     //     {
-    //         creditCards.Append(new CreditCardDTO
+    //         creditCards.Append(new CreditCardDto
     //         {
     //             UserId = card.UserId,
     //             Name = card.Name,
@@ -61,13 +61,12 @@ public class Benchmark
     [Benchmark]
     public void With_Direct_Assigment_Select()
     {
-        var creditCards = _creditCards.Select(c => new CreditCardDTO
+        var categories = _categories.Select(c => new CategoryDto
         {
+            Id = c.Id,
             UserId = c.UserId,
             Name = c.Name,
-            Limit = c.Limit,
-            ExpirationDay = c.ExpirationDay,
-            ClosingDay = c.ClosingDay,
+            Color = c.Color,
             ModifiedAt = c.ModifiedAt,
             RegisteredAt = c.RegisteredAt
         });
@@ -76,18 +75,18 @@ public class Benchmark
     // [Benchmark]
     // public void With_Implicit_Operator_ForEach()
     // {
-    //     IEnumerable<CreditCardDTO> creditCards = Array.Empty<CreditCardDTO>();
+    //     IEnumerable<CreditCardDto> creditCards = Array.Empty<CreditCardDto>();
     //     foreach (var creditCard in _creditCards)
     //     {
-    //         CreditCardDTO dto = creditCard;
+    //         CreditCardDto dto = creditCard;
     //         creditCards.Append(dto);
     //     }
     // }
     
-    // [Benchmark]
-    // public void With_Implicit_Operator_Select()
-    // {
-    //     IEnumerable<CreditCardDTO> creditCards = Array.Empty<CreditCardDTO>();
-    //     creditCards = _creditCards.Select(x => (CreditCardDTO)x);
-    // }
+    [Benchmark]
+    public void With_Explicit_Operator_Select()
+    {
+        IEnumerable<CategoryDto> categories = Array.Empty<CategoryDto>();
+        categories = _categories.Select(x => (CategoryDto)x);
+    }
 }

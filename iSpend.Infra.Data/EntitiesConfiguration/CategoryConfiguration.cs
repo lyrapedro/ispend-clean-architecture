@@ -13,10 +13,10 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
         builder.Property(c => c.Name).HasMaxLength(30).IsRequired();
 
         builder.HasData(
-          new Category(1, "Lazer", "#c0eb34"),
-          new Category(2, "Vestuário", "#eb9334"),
-          new Category(3, "Mercado", "#ebdc34"),
-          new Category(4, "Saúde", "#349ceb")
+            new Category(1,"Lazer", "#c0eb34", null),
+            new Category(2,"Vestuário", "#eb9334", null),
+            new Category(3,"Mercado", "#ebdc34", null),
+            new Category(4,"Saúde", "#349ceb", null)
         );
     }
 }
