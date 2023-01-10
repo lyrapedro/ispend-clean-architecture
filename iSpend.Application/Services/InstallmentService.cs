@@ -7,7 +7,7 @@ namespace iSpend.Application.Services;
 
 public class InstallmentService : IInstallmentService
 {
-    private IInstallmentRepository _installmentRepository;
+    private readonly IInstallmentRepository _installmentRepository;
 
     public InstallmentService(IInstallmentRepository installmentRepository)
     {

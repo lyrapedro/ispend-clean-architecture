@@ -9,7 +9,7 @@ public interface ICreditCardService
     Task<IEnumerable<CreditCardDto>> GetByName(string userId, string name);
     Task<CreditCardDto> GetCreditCardFromPurchase(int purchaseId);
     Task<CreditCardDto> GetCreditCardFromSubscription(int subscriptionId);
-    Task Add(CreditCardDto CreditCardDto);
-    Task Update(CreditCardDto CreditCardDto);
-    Task Remove(CreditCardDto CreditCardDto);
+    Task Add(CreditCardDto creditCardDto);
+    Task Update(CreditCardDto creditCardDto);
+    Task Remove(CreditCardDto creditCardDto);
 }

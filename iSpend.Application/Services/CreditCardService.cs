@@ -7,7 +7,7 @@ namespace iSpend.Application.Services;
 
 public class CreditCardService : ICreditCardService
 {
-    private ICreditCardRepository _creditCardRepository;
+    private readonly ICreditCardRepository _creditCardRepository;
 
     public CreditCardService(ICreditCardRepository creditCardRepository)
     {

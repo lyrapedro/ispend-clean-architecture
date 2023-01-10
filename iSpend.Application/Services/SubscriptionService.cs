@@ -7,7 +7,7 @@ namespace iSpend.Application.Services;
 
 public class SubscriptionService : ISubscriptionService
 {
-    private ISubscriptionRepository _subscriptionRepository;
+    private readonly ISubscriptionRepository _subscriptionRepository;
 
     public SubscriptionService(ISubscriptionRepository subscriptionRepository)
     {
@@ -20,12 +20,13 @@ public class SubscriptionService : ISubscriptionService
 
         var subscriptionsDto = subscriptions.Select(s => (SubscriptionDto)s);
 
-        foreach (var dto in subscriptionsDto)
+        var subscriptionDtos = subscriptionsDto.ToList();
+        foreach (var dto in subscriptionDtos)
         {
             dto.Late = await HasLatePayment(dto.Id, dto.BillingDay);
         }
 
-        return subscriptionsDto;
+        return subscriptionDtos;
     }
 
     public async Task<IEnumerable<SubscriptionDto>> GetSubscriptionsFromCreditCard(int creditCardId)
@@ -37,7 +38,7 @@ public class SubscriptionService : ISubscriptionService
     public async Task<SubscriptionDto> GetById(int id)
     {
         var subscription = await _subscriptionRepository.GetById(id);
-        bool hasPendingPayment = await HasLatePayment(id, subscription.BillingDay);
+        var hasPendingPayment = await HasLatePayment(id, subscription.BillingDay);
 
         var subscriptionDto = (SubscriptionDto)subscription;
         subscriptionDto.Late = hasPendingPayment;
@@ -59,12 +60,13 @@ public class SubscriptionService : ISubscriptionService
             subscriptions = await GetSubscriptions(userId);
         }
 
-        foreach (var subscription in subscriptions)
+        var subscriptionDtos = subscriptions.ToList();
+        foreach (var subscription in subscriptionDtos)
         {
             subscription.Late = await HasLatePayment(subscription.Id, subscription.BillingDay);
         }
 
-        return subscriptions;
+        return subscriptionDtos;
     }
 
     public async Task Add(SubscriptionDto subscriptionDto)
@@ -87,7 +89,7 @@ public class SubscriptionService : ISubscriptionService
 
     #region Util
 
-    public async Task<bool> HasLatePayment(int subscriptionId, int billingDay)
+    private async Task<bool> HasLatePayment(int subscriptionId, int billingDay)
     {
         var todayDate = DateTime.Now;
         var paymentDate = new DateTime(todayDate.Year, todayDate.Month, billingDay);
@@ -96,15 +98,13 @@ public class SubscriptionService : ISubscriptionService
             return false;
 
         var alreadyPaid = await _subscriptionRepository.GetAlreadyPaid(subscriptionId);
-        var lastPayment = alreadyPaid.OrderBy(x => x.ReferenceDate).FirstOrDefault();
+        var lastPayment = alreadyPaid.MinBy(x => x.ReferenceDate);
 
-        if (lastPayment != null)
-        {
-            var lastPaymentWasThisMonth = (lastPayment.ReferenceDate.Month == todayDate.Month &&
-                                           lastPayment.ReferenceDate.Year == todayDate.Year);
-            if (lastPaymentWasThisMonth)
-                return false;
-        }
+        if (lastPayment == null) return true;
+        var lastPaymentWasThisMonth = (lastPayment.ReferenceDate.Month == todayDate.Month &&
+                                       lastPayment.ReferenceDate.Year == todayDate.Year);
+        if (lastPaymentWasThisMonth)
+            return false;
 
         return true;
     }

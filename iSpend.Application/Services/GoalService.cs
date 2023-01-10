@@ -7,7 +7,7 @@ namespace iSpend.Application.Services;
 
 public class GoalService : IGoalService
 {
-    private IGoalRepository _goalRepository;
+    private readonly IGoalRepository _goalRepository;
 
     public GoalService(IGoalRepository goalRepository)
     {

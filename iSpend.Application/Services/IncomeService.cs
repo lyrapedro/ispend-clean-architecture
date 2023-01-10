@@ -7,7 +7,7 @@ namespace iSpend.Application.Services;
 
 public class IncomeService : IIncomeService
 {
-    private IIncomeRepository _incomeRepository;
+    private readonly IIncomeRepository _incomeRepository;
 
     public IncomeService(IIncomeRepository incomeRepository)
     {

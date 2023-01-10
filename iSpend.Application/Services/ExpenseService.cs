@@ -7,7 +7,7 @@ namespace iSpend.Application.Services;
 
 public class ExpenseService : IExpenseService
 {
-    private IExpenseRepository _expenseRepository;
+    private readonly IExpenseRepository _expenseRepository;
 
     public ExpenseService(IExpenseRepository expenseRepository)
     {
@@ -20,18 +20,19 @@ public class ExpenseService : IExpenseService
 
         var expensesDto = expenses.Select(e => (ExpenseDto)e);
 
-        foreach (var dto in expensesDto)
+        var expenseDtos = expensesDto.ToList();
+        foreach (var dto in expenseDtos)
         {
             dto.Late = await HasLatePayment(dto.Id, dto.BillingDay);
         }
 
-        return expensesDto;
+        return expenseDtos;
     }
 
     public async Task<ExpenseDto> GetById(int id)
     {
         var expense = await _expenseRepository.GetById(id);
-        bool hasPendingPayment = await HasLatePayment(id, expense.BillingDay);
+        var hasPendingPayment = await HasLatePayment(id, expense.BillingDay);
 
         var expenseDto = (ExpenseDto)expense;
         expenseDto.Late = hasPendingPayment;
@@ -53,12 +54,13 @@ public class ExpenseService : IExpenseService
             expenses = await GetExpenses(userId);
         }
 
-        foreach (var expense in expenses)
+        var expenseDtos = expenses.ToList();
+        foreach (var expense in expenseDtos)
         {
             expense.Late = await HasLatePayment(expense.Id, expense.BillingDay);
         }
 
-        return expenses;
+        return expenseDtos;
     }
 
     public async Task Add(ExpenseDto expenseDto)
@@ -82,7 +84,7 @@ public class ExpenseService : IExpenseService
 
     #region Util
 
-    public async Task<bool> HasLatePayment(int expenseId, int billingDay)
+    private async Task<bool> HasLatePayment(int expenseId, int billingDay)
     {
         var todayDate = DateTime.Now;
         var paymentDate = new DateTime(todayDate.Year, todayDate.Month, billingDay);
@@ -91,15 +93,13 @@ public class ExpenseService : IExpenseService
             return false;
 
         var alreadyPaid = await _expenseRepository.GetAlreadyPaid(expenseId);
-        var lastPayment = alreadyPaid.OrderBy(x => x.ReferenceDate).FirstOrDefault();
+        var lastPayment = alreadyPaid.MinBy(x => x.ReferenceDate);
 
-        if (lastPayment != null)
-        {
-            var lastPaymentWasThisMonth = (lastPayment.ReferenceDate.Month == todayDate.Month &&
-                                           lastPayment.ReferenceDate.Year == todayDate.Year);
-            if (lastPaymentWasThisMonth)
-                return false;
-        }
+        if (lastPayment == null) return true;
+        var lastPaymentWasThisMonth = (lastPayment.ReferenceDate.Month == todayDate.Month &&
+                                       lastPayment.ReferenceDate.Year == todayDate.Year);
+        if (lastPaymentWasThisMonth)
+            return false;
 
         return true;
     }

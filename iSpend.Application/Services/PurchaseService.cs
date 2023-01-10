@@ -7,7 +7,7 @@ namespace iSpend.Application.Services;
 
 public class PurchaseService : IPurchaseService
 {
-    private IPurchaseRepository _purchaseRepository;
+    private readonly IPurchaseRepository _purchaseRepository;
     private readonly IInstallmentRepository _installmentRepository;
     private readonly ICreditCardRepository _creditCardRepository;
 
@@ -39,10 +39,8 @@ public class PurchaseService : IPurchaseService
 
     public async Task<IEnumerable<PurchaseDto>> GetByName(string userId, string name)
     {
-        IEnumerable<PurchaseDto> purchases;
-
         var query = await _purchaseRepository.GetByName(userId, name);
-        purchases = query.Select(p => (PurchaseDto)p);
+        var purchases = query.Select(p => (PurchaseDto)p);
 
         return purchases;
     }
